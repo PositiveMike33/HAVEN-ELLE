@@ -1,33 +1,84 @@
-import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment } from '../types';
+import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile } from '../types';
 
 const STORAGE_KEYS = {
-  CONTACTS: 'haven_trusted_contacts_v1',
+  CONTACTS: 'haven_trusted_contacts_v3',
   ALERTS: 'haven_alerts_history_v1',
   INCIDENTS: 'haven_incidents_v1',
-  SAFETY_PLAN: 'haven_safety_plan_v2',
+  SAFETY_PLAN: 'haven_safety_plan_v3',
   APPOINTMENTS: 'haven_appointments_v1',
   SETTINGS: 'haven_user_settings_v1',
   ONBOARDING: 'haven_onboarding_completed_v1',
+  ASSESSMENT: 'haven_confidential_assessment_v1',
+};
+
+export const DEFAULT_ASSESSMENT_PROFILE: UserAssessmentProfile = {
+  id: 'assessment-default',
+  completedAt: '',
+  isCompleted: false,
+  personalInfo: {
+    preferredName: '',
+    ageRange: '25-34',
+    gender: 'Femme',
+    livingSituation: 'Vit avec la personne menaçante',
+    postalCodeOrRegion: '',
+  },
+  childrenInfo: {
+    hasChildren: false,
+    childrenCount: 0,
+    children: [],
+    custodyStatus: 'Aucun jugement',
+    areChildrenExposedDirectly: false,
+    noChildrenSpecifics: {
+      cohabitationEnvironment: 'Logement partagé en commun',
+      threatFrequencyPattern: 'Tension quotidienne permanente',
+      keyTargetedVulnerabilities: ['Autonomie financière & travail', 'Isolement vis-à-vis des proches'],
+      evidenceStorageSecurity: 'Fichiers numériques sécurisés',
+      objectiveFactsContext: '',
+    },
+  },
+  problemTypes: {
+    psychologicalAbuse: true,
+    physicalViolence: false,
+    financialControl: false,
+    cyberHarassment: false,
+    threatsAndBlackmail: false,
+    sexualViolence: false,
+  },
+  immediateImpacts: {
+    stressLevel: 4,
+    dangerLevelPerceived: 'Élevé',
+    physicalSymptoms: ['Insomnies ou cauchemars', 'Tension permanente / Épuisement'],
+    emotionalSymptoms: ['Peur constante / Hypervigilance', 'Sentiment d\'isolement ou de honte'],
+    isolationLevel: 'Quelques proches au courant',
+    immediateNeeds: ['Écoute psychologique & déculpabilisation', 'Plan de sécurité pour le départ'],
+    urgentSafetyConcerns: '',
+  },
+  priorActions: {
+    hasReportedToPolice: false,
+    hasMedicalCertificate: false,
+    hasLawyer: false,
+    hasTrustedContactsConfigured: false,
+  },
 };
 
 export const INITIAL_SAFETY_PLAN: DetailedSafetyPlan = {
   threatLevel: 'Élevé',
   summary: 'Plan de sûreté coordonné incluant mise à l\'abri immédiate, déclenchement d\'alerte silencieuse et protection prioritaire des enfants.',
-  lastUpdated: '2026-08-23',
+  lastUpdated: '2026-08-24',
   emergencyContactsProtocol: {
-    contactsSummary: '2 contacts de confiance principaux (Clara & Sarah) alertés simultanément avec géolocalisation et double des clés disponible.',
-    secretTriggerWords: ['Café annulé', 'Rappelle-moi vite', 'Pain complet'],
+    contactsSummary: '2 contacts de confiance principaux (Michael Gauthier Guillet & Sarah) alertés simultanément avec géolocalisation et double des clés disponible.',
+    secretTriggerWords: ['Mamadou', 'Rappelle-moi vite', 'Pain complet'],
     actionOnTrigger: 'Appel immédiat du 17 par le contact et mise à disposition du véhicule de secours.',
   },
   safeLocations: {
-    primaryShelter: 'Appartement de Clara (Code porte: 45B8, 3ème étage)',
+    primaryShelter: 'Domicile de Michael Gauthier Guillet (Lieu sûr convenu)',
     secondaryShelter: 'Maison des Femmes & Centre d\'Hébergement d\'Urgence CIDFF (Accueil 24/7)',
     safeRouteGuidelines: [
       'Emprunter l\'escalier de service plutôt que l\'ascenseur en cas d\'urgence',
       'Éviter l\'avenue principale si surveillance par véhicule suspectée',
       'Rejoindre la station de métro éclairée ou le commissariat le plus proche',
     ],
-    accessKeysStrategy: 'Double des clés de voiture et du domicile déposé dans un casier sécurisé chez Clara.',
+    accessKeysStrategy: 'Double des clés de voiture et du domicile déposé dans un endroit sécurisé chez Michael.',
   },
   communicationStrategies: {
     camouflageKeywords: ['Recette tarte aux pommes = Tout va bien', 'Ingrédient manquant = Prépare-toi à m\'accueillir'],
@@ -154,15 +205,24 @@ export const INITIAL_INCIDENTS: IncidentRecord[] = [
 export const StorageService = {
   getContacts(): TrustedContact[] {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.CONTACTS);
+      // Check current key
+      let data = localStorage.getItem(STORAGE_KEYS.CONTACTS);
+      if (!data) {
+        // Check if legacy key existed
+        const legacyData = localStorage.getItem('haven_trusted_contacts_v1') || localStorage.getItem('haven_trusted_contacts_v2') || localStorage.getItem('haven_trusted_contacts');
+        if (legacyData) {
+          data = legacyData;
+        }
+      }
+
       if (!data) {
         localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(INITIAL_CONTACTS));
         return INITIAL_CONTACTS;
       }
       const parsed: TrustedContact[] = JSON.parse(data);
-      // Migrate old default contact name and details if needed
+      // Migrate any old default contact name and details
       const updated = parsed.map((c) => {
-        if (c.id === 'tc-1') {
+        if (c.id === 'tc-1' || c.name.toLowerCase().includes('clara') || c.email.includes('clara') || c.phone.includes('12 34 56 78')) {
           return {
             ...c,
             name: 'Michael Gauthier Guillet',
@@ -170,6 +230,7 @@ export const StorageService = {
             phone: '438-543-2555',
             email: 'mikegauthierguillet@gmail.com',
             secretCodeWord: 'Mamadou',
+            notes: 'Possède un double de mes clés et connaît ma situation.',
           };
         }
         return c;
@@ -289,11 +350,28 @@ export const StorageService = {
     }
   },
 
+  getAssessmentProfile(): UserAssessmentProfile {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.ASSESSMENT);
+      if (!data) {
+        return DEFAULT_ASSESSMENT_PROFILE;
+      }
+      return JSON.parse(data);
+    } catch {
+      return DEFAULT_ASSESSMENT_PROFILE;
+    }
+  },
+
+  saveAssessmentProfile(profile: UserAssessmentProfile): void {
+    localStorage.setItem(STORAGE_KEYS.ASSESSMENT, JSON.stringify(profile));
+  },
+
   clearAllSensitiveData(): void {
     localStorage.removeItem(STORAGE_KEYS.CONTACTS);
     localStorage.removeItem(STORAGE_KEYS.ALERTS);
     localStorage.removeItem(STORAGE_KEYS.INCIDENTS);
     localStorage.removeItem(STORAGE_KEYS.SAFETY_PLAN);
     localStorage.removeItem(STORAGE_KEYS.APPOINTMENTS);
+    localStorage.removeItem(STORAGE_KEYS.ASSESSMENT);
   },
 };

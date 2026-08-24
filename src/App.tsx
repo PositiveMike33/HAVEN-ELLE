@@ -11,8 +11,9 @@ import { EvidenceLocker } from './components/EvidenceLocker';
 import { TherapeuticRelaxation } from './components/TherapeuticRelaxation';
 import { DiscreetAppointments } from './components/DiscreetAppointments';
 import { OnboardingModal } from './components/OnboardingModal';
+import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
 import { StorageService } from './utils/storage';
-import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment } from './types';
+import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment, UserAssessmentProfile } from './types';
 import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
 
 export default function App() {
@@ -20,6 +21,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('contacts');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showAssessmentModal, setShowAssessmentModal] = useState(false);
+  const [assessmentProfile, setAssessmentProfile] = useState<UserAssessmentProfile>(() => {
+    return StorageService.getAssessmentProfile();
+  });
 
   // App Data State
   const [contacts, setContacts] = useState<TrustedContact[]>([]);
@@ -47,6 +52,7 @@ export default function App() {
     }
     setShowGlobalSOSModal(false);
     setShowOnboarding(false);
+    setShowAssessmentModal(false);
     setIsCamouflageActive(true);
   };
 
@@ -82,6 +88,8 @@ export default function App() {
         onQuickExit={handleQuickExit}
         onTriggerSOS={() => setShowGlobalSOSModal(true)}
         onOpenOnboarding={() => setShowOnboarding(true)}
+        onOpenAssessment={() => setShowAssessmentModal(true)}
+        isAssessmentCompleted={assessmentProfile.isCompleted}
         contactsCount={contacts.filter((c) => c.isActive).length}
       />
 
@@ -155,6 +163,19 @@ export default function App() {
         onNavigateToTab={(tab) => {
           setActiveTab(tab);
           setShowOnboarding(false);
+        }}
+        onOpenAssessment={() => {
+          setShowOnboarding(false);
+          setShowAssessmentModal(true);
+        }}
+      />
+
+      {/* Confidential Encrypted Diagnostic Assessment Form */}
+      <ConfidentialAssessmentModal
+        isOpen={showAssessmentModal}
+        onClose={() => setShowAssessmentModal(false)}
+        onAssessmentCompleted={(updated) => {
+          setAssessmentProfile(updated);
         }}
       />
     </div>

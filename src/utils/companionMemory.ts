@@ -1,6 +1,6 @@
 import { CompanionMemoryProfile, DetailedSafetyPlan } from '../types';
 
-const COMPANION_STORAGE_KEY = 'haven_companion_evolution_v1';
+const COMPANION_STORAGE_KEY = 'haven_companion_evolution_v2';
 
 export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
   relationshipLevel: 2,
@@ -33,7 +33,7 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
       date: '2026-08-20',
       topic: 'Préparation du sac de départ d\'urgence',
       emotionalState: 'Inquiétude modérée',
-      keyTakeaway: 'Livret de famille et double des clés confiés à Clara.',
+      keyTakeaway: 'Livret de famille et double des clés confiés à Michael Gauthier Guillet.',
     },
     {
       date: '2026-08-22',

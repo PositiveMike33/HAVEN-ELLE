@@ -48,17 +48,28 @@ export const HighThinkingSafetyPlan: React.FC<HighThinkingSafetyPlanProps> = ({
   const [newChecklistTask, setNewChecklistTask] = useState('');
   const [newChecklistCategory, setNewChecklistCategory] = useState<'documents' | 'finances' | 'essentials' | 'children' | 'tech'>('essentials');
 
-  // Input Assessment Form
-  const [formData, setFormData] = useState({
-    livingSituation: 'Cohabitation avec le partenaire violent',
-    hasChildren: true,
-    financialDependency: true,
-    techSurveillance: true,
-    selectedRisks: [
-      'Menaces de mort ou de violences physiques',
-      'Contrôle des déplacements et du téléphone',
-      'Isolement des proches et de la famille',
-    ],
+  // Input Assessment Form synced with Confidential Assessment Profile if present
+  const [formData, setFormData] = useState(() => {
+    const assessment = StorageService.getAssessmentProfile();
+    const hasChildren = assessment?.childrenInfo?.hasChildren ?? true;
+    const selectedRisks: string[] = [];
+    if (assessment?.problemTypes?.physicalViolence) selectedRisks.push('Menaces de mort ou de violences physiques');
+    if (assessment?.problemTypes?.cyberHarassment) selectedRisks.push('Contrôle des déplacements et du téléphone');
+    if (assessment?.problemTypes?.psychologicalAbuse) selectedRisks.push('Isolement des proches et de la famille');
+    if (assessment?.problemTypes?.financialControl) selectedRisks.push('Violence économique (privation d’argent, compte bloqué)');
+    if (assessment?.problemTypes?.threatsAndBlackmail) selectedRisks.push('Menaces d’enlever les enfants en cas de séparation');
+
+    return {
+      livingSituation: assessment?.personalInfo?.livingSituation || 'Cohabitation avec le partenaire violent',
+      hasChildren: hasChildren,
+      financialDependency: assessment?.problemTypes?.financialControl ?? true,
+      techSurveillance: assessment?.problemTypes?.cyberHarassment ?? true,
+      selectedRisks: selectedRisks.length > 0 ? selectedRisks : [
+        'Menaces de mort ou de violences physiques',
+        'Contrôle des déplacements et du téléphone',
+        'Isolement des proches et de la famille',
+      ],
+    };
   });
 
   const riskOptions = [

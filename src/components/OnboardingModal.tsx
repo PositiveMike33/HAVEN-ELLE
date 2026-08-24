@@ -20,9 +20,10 @@ interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigateToTab?: (tab: string) => void;
+  onOpenAssessment?: () => void;
 }
 
-export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onNavigateToTab }) => {
+export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onNavigateToTab, onOpenAssessment }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   if (!isOpen) return null;
@@ -180,6 +181,27 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
             <div 
               onClick={() => {
                 handleComplete();
+                onOpenAssessment?.();
+              }}
+              className="p-3.5 rounded-xl bg-[#E5EAD9]/80 border-2 border-[#8A9A5B] hover:bg-[#d8dfcb] flex items-center justify-between cursor-pointer transition-all shadow-2xs group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#5A5A40] text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+                  <Lock className="w-4 h-4 text-[#E5EAD9]" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#3E3B39] group-hover:text-[#5A5A40]">
+                    Remplir le Bilan Confidentiel Chiffré (Recommandé)
+                  </h4>
+                  <p className="text-[11px] text-[#5A5A40]">Enfants, impacts psychologiques, niveau de stress & violences subies.</p>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#5A5A40] group-hover:translate-x-0.5 transition-all" />
+            </div>
+
+            <div 
+              onClick={() => {
+                handleComplete();
                 onNavigateToTab?.('contacts');
               }}
               className="p-3 rounded-xl bg-white border border-[#E5E2D9] hover:border-[#8A9A5B] flex items-center justify-between cursor-pointer transition-all shadow-2xs group"
@@ -221,8 +243,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
               <div className="flex items-center gap-3">
                 <div className="w-7 h-7 rounded-lg bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center font-bold text-xs">3</div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#3E3B39] group-hover:text-[#5A5A40]">Échanger avec HAVEN-ELLE</h4>
-                  <p className="text-[11px] text-[#8E8B82]">Posez vos questions juridiques ou confiez vos angoisses.</p>
+                  <h4 className="text-xs font-bold text-[#3E3B39] group-hover:text-[#5A5A40]">Échanger avec l'Intelligence Thérapeutique</h4>
+                  <p className="text-[11px] text-[#8E8B82]">Démarches, soutien somato-émotionnel ou urgence.</p>
                 </div>
               </div>
               <ArrowRight className="w-4 h-4 text-[#8E8B82] group-hover:text-[#5A5A40] group-hover:translate-x-0.5 transition-all" />

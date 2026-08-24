@@ -70,16 +70,22 @@ export const EvidenceLocker: React.FC<EvidenceLockerProps> = ({ incidents, onUpd
     }
   };
 
-  const handleGenerateOfficialStatement = async () => {
+  const handleGenerateOfficialStatement = async (anonymized: boolean = true) => {
     setGeneratingStatement(true);
     try {
+      const assessment = StorageService.getAssessmentProfile();
+      const preferredName = assessment.personalInfo.preferredName || 'Personne Protégée HAVEN-ELLE';
+      const declaredName = anonymized ? 'Personne Déclarante (Identité Sécurisée sous Numéro Confidentiel HAVEN)' : preferredName;
+
       const res = await fetch('/api/docs/generate-statement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           incidents,
-          victimName: 'Personne Protégée HAVEN-ELLE',
-          summaryNotes: 'Demande urgente de protection et d\'éloignement du conjoint violent.',
+          victimName: declaredName,
+          summaryNotes: assessment.childrenInfo.hasChildren
+            ? `Demande urgente de protection pour la personne déclarante et ${assessment.childrenInfo.childrenCount || assessment.childrenInfo.children.length} enfant(s) à charge.`
+            : 'Demande de protection individuelle et d\'ordonnance d\'éloignement (procédure confidentielle).',
         }),
       });
 

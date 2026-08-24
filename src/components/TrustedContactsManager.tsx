@@ -571,7 +571,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="Ex: Clara, Me Dupont..."
+                    placeholder="Ex: Michael, Me Dupont..."
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-[#E5E2D9] focus:outline-none focus:ring-2 focus:ring-[#8A9A5B]/30 focus:border-[#8A9A5B] text-[#3E3B39] bg-white"

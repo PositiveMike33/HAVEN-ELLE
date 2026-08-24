@@ -127,6 +127,76 @@ export interface CompanionMemoryProfile {
   }>;
 }
 
+export interface ChildImpactInfo {
+  id: string;
+  age: string;
+  gender: 'Fille' | 'Garçon' | 'Autre' | 'Préfère ne pas préciser';
+  psychologicalImpacts: string[];
+  observedBehaviors: string[];
+  specialNeedsNotes?: string;
+}
+
+export interface UserAssessmentProfile {
+  id: string;
+  completedAt: string;
+  isCompleted: boolean;
+  
+  // Profil de base
+  personalInfo: {
+    preferredName?: string;
+    ageRange: '18-24' | '25-34' | '35-44' | '45-54' | '55-64' | '65+' | 'Préfère ne pas préciser';
+    gender: 'Femme' | 'Homme' | 'Non-binaire' | 'Autre' | 'Préfère ne pas préciser';
+    livingSituation: 'Vit avec la personne menaçante' | 'En séparation récente' | 'Hébergée chez des tiers' | 'Logement autonome' | 'Autre';
+    postalCodeOrRegion?: string;
+  };
+
+  // Enfants & Famille ou Situation Individuelle
+  childrenInfo: {
+    hasChildren: boolean;
+    childrenCount: number;
+    children: ChildImpactInfo[];
+    custodyStatus?: 'Garde exclusive' | 'Garde alternée' | 'Aucun jugement' | 'Conflit de garde aigu';
+    areChildrenExposedDirectly: boolean;
+    // Questions spécifiques & neutres quand aucun enfant n'est impliqué (objectives, sans mise en accusation ni mention de noms)
+    noChildrenSpecifics?: {
+      cohabitationEnvironment?: 'Logement partagé en commun' | 'Bail individuel' | 'Hébergement temporaire' | 'Séparés géographiquement';
+      threatFrequencyPattern?: 'Événements sporadiques imprévisibles' | 'Tension quotidienne permanente' | 'Intensification lors des moments de désaccord' | 'Surveillance à distance continue';
+      keyTargetedVulnerabilities?: string[]; // ex: Emploi/Revenus, Animaux de compagnie, Isolement relationnel, Logement/Biens matériels, Intimidation psychologique
+      evidenceStorageSecurity?: 'Preuves physiques cachées' | 'Fichiers numériques sécurisés' | 'Preuves déjà transmises à un tiers' | 'Aucune trace conservée par crainte';
+      objectiveFactsContext?: string; // Description neutre et factuelle des événements sans noms ni jugements
+    };
+  };
+
+  // Nature de la situation / Problématiques
+  problemTypes: {
+    psychologicalAbuse: boolean; // Dénigrement, isolement, gaslighting
+    physicalViolence: boolean; // Coups, bousculades, menaces d'agression
+    financialControl: boolean; // Privation de ressources, contrôle des comptes
+    cyberHarassment: boolean; // Traçage GPS, espionnage téléphone, piratage
+    threatsAndBlackmail: boolean; // Menaces de mort, chantage aux enfants/suicide
+    sexualViolence: boolean; // Consentement bafoué
+  };
+
+  // Conséquences immédiates & Stress perçu
+  immediateImpacts: {
+    stressLevel: 1 | 2 | 3 | 4 | 5; // 1 = faible, 5 = stress extrême / panique
+    dangerLevelPerceived: 'Faible' | 'Modéré' | 'Élevé' | 'Danger Mortel / Urgence Vitale';
+    physicalSymptoms: string[]; // Insomnies, palpitations, perte d'appétit, tremblements
+    emotionalSymptoms: string[]; // Peur constante, culpabilité, honte, dissociation, tristesse profonde
+    isolationLevel: 'Très entourée' | 'Quelques proches au courant' | 'Totalement isolée';
+    immediateNeeds: string[]; // Hébergement d'urgence, soutien psy, aide juridique, écoute anonyme
+    urgentSafetyConcerns?: string;
+  };
+
+  // Démarches antérieures
+  priorActions: {
+    hasReportedToPolice: boolean;
+    hasMedicalCertificate: boolean;
+    hasLawyer: boolean;
+    hasTrustedContactsConfigured: boolean;
+  };
+}
+
 export interface ShelterResource {
   name: string;
   type: string;

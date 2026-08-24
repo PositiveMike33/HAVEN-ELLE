@@ -13,7 +13,9 @@ import {
   Heart, 
   Video,
   HelpCircle,
-  AlertOctagon
+  AlertOctagon,
+  ClipboardList,
+  Lock
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -24,6 +26,8 @@ interface HeaderProps {
   onQuickExit: () => void;
   onTriggerSOS: () => void;
   onOpenOnboarding: () => void;
+  onOpenAssessment: () => void;
+  isAssessmentCompleted?: boolean;
   contactsCount: number;
 }
 
@@ -35,6 +39,8 @@ export const Header: React.FC<HeaderProps> = ({
   onQuickExit,
   onTriggerSOS,
   onOpenOnboarding,
+  onOpenAssessment,
+  isAssessmentCompleted,
   contactsCount,
 }) => {
   // Global Esc key listener for instant Panic Mode / Quick Exit
@@ -81,6 +87,23 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Assessment Form Button */}
+          <button
+            id="header-assessment-btn"
+            onClick={onOpenAssessment}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs ${
+              isAssessmentCompleted
+                ? 'bg-[#E5EAD9] text-[#5A5A40] border border-[#CED6C1] hover:bg-[#dbe2ce]'
+                : 'bg-[#5A5A40] text-white hover:bg-[#4a4a35] animate-pulse'
+            }`}
+            title="Bilan confidentiel chiffré : enfants, impacts, stress & violences subies"
+          >
+            <ClipboardList className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">
+              {isAssessmentCompleted ? 'Mon Bilan Confidentiel' : 'Compléter Bilan Sûreté'}
+            </span>
+          </button>
+
           {/* Guide & Onboarding Button */}
           <button
             id="header-onboarding-btn"
@@ -89,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
             title="Ouvrir le guide d'accueil et consignes de sécurité"
           >
             <HelpCircle className="w-3.5 h-3.5 text-[#8A9A5B]" />
-            <span className="hidden sm:inline">Guide Sécurité</span>
+            <span className="hidden md:inline">Guide Sécurité</span>
           </button>
 
           {/* Quick Camouflage switch */}
