@@ -76,14 +76,14 @@ export const INITIAL_SAFETY_PLAN: DetailedSafetyPlan = {
 export const INITIAL_CONTACTS: TrustedContact[] = [
   {
     id: 'tc-1',
-    name: 'Clara (Amie de confiance)',
-    relationship: 'Amie d\'enfance',
-    phone: '+33 6 12 34 56 78',
-    email: 'clara.confiance@haven-safe.org',
+    name: 'Michael Gauthier Guillet',
+    relationship: 'Ami de confiance',
+    phone: '438-543-2555',
+    email: 'mikegauthierguillet@gmail.com',
     tier: 'primary_sos',
     notifyBy: 'all',
     isActive: true,
-    secretCodeWord: 'Café annulé',
+    secretCodeWord: 'Mamadou',
     notes: 'Possède un double de mes clés et connaît ma situation.',
   },
   {
@@ -159,7 +159,23 @@ export const StorageService = {
         localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(INITIAL_CONTACTS));
         return INITIAL_CONTACTS;
       }
-      return JSON.parse(data);
+      const parsed: TrustedContact[] = JSON.parse(data);
+      // Migrate old default contact name and details if needed
+      const updated = parsed.map((c) => {
+        if (c.id === 'tc-1') {
+          return {
+            ...c,
+            name: 'Michael Gauthier Guillet',
+            relationship: 'Ami de confiance',
+            phone: '438-543-2555',
+            email: 'mikegauthierguillet@gmail.com',
+            secretCodeWord: 'Mamadou',
+          };
+        }
+        return c;
+      });
+      localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(updated));
+      return updated;
     } catch {
       return INITIAL_CONTACTS;
     }

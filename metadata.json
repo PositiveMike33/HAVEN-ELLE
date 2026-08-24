@@ -1,6 +1,12 @@
 {
   "name": "HAVEN-ELLE",
   "description": "Plateforme intégrée de santé, sécurité, accompagnement juridique et bien-être pour femmes en situation de vulnérabilité ou de maltraitance.",
-  "requestFramePermissions": ["camera", "microphone", "geolocation"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
