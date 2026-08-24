@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const navItems = [
     { id: 'contacts', label: 'Contacts de Confiance', icon: Users, badge: contactsCount > 0 ? `${contactsCount}` : undefined },
-    { id: 'chat', label: 'Écoute IA 24/7', icon: MessageCircle },
+    { id: 'chat', label: 'Intelligence Thérapeutique', icon: MessageCircle },
     { id: 'safety_plan', label: 'Plan de Sûreté', icon: Sparkles },
     { id: 'shelters', label: 'Refuges & Soins', icon: Compass },
     { id: 'legal', label: 'Droits & Lois', icon: Scale },

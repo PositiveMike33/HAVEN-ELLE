@@ -60,10 +60,11 @@ export const GeminiCrisisChat: React.FC = () => {
   }, [messages, loading]);
 
   const quickPrompts = [
-    { label: "🆘 En danger immédiat chez moi", prompt: "Je suis chez moi et la situation devient dangereuse, que dois-je faire immédiatement pour me protéger ?", urgency: 'critical' },
-    { label: "👜 Sac de départ d'urgence", prompt: "Quels sont les documents et objets essentiels à mettre dans un sac de départ d'urgence sans éveiller les soupçons ?", urgency: 'normal' },
-    { label: "⚖️ Ordonnance de protection", prompt: "Comment fonctionne une ordonnance de protection en urgence et quels sont les délais ?", urgency: 'legal' },
-    { label: "🧘 Attaque de panique / Angoisse", prompt: "Je fais une crise d'angoisse et je tremble, guide-moi avec un exercice d'apaisement immédiat.", urgency: 'fast' },
+    { label: "🕊️ Consultation Thérapeutique Holistique", prompt: "Je traverse une épreuve douloureuse et un blocage intérieur. Guide-moi avec le protocole thérapeutique intégral (Corps, Cœur, Esprit).", urgency: 'critical' },
+    { label: "🌿 Régulation Somatique & Panique", prompt: "Je ressens une vive angoisse et des tensions physiques intenses, guide-moi avec une micro-action somatique immédiate.", urgency: 'fast' },
+    { label: "💔 Guérison Enfant Intérieur", prompt: "Je ressens de la culpabilité et un profond sentiment de rejet/honte, aide-moi à déconstruire cette croyance racine.", urgency: 'normal' },
+    { label: "✨ Transmutation & Sens", prompt: "Comment puis-je bénir cette épreuve, élever ma conscience et retrouver ma souveraineté intérieure ?", urgency: 'normal' },
+    { label: "⚖️ Protection & Sécurité Réelle", prompt: "Quelles sont les démarches d'urgence (ordonnance de protection, sac de départ, numéros utiles) pour me protéger ?", urgency: 'legal' },
   ];
 
   const handleSendMessage = async (textToSend?: string, specificUrgency?: string) => {
@@ -191,10 +192,11 @@ export const GeminiCrisisChat: React.FC = () => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold tracking-tight font-serif-natural">HAVEN-ELLE • Écoute & Alliance</h3>
+              <h3 className="text-sm font-bold tracking-tight font-serif-natural">HAVEN-ELLE • Intelligence Thérapeutique Méta-Orchestrée</h3>
               <span className="w-2 h-2 rounded-full bg-[#8A9A5B] animate-pulse" />
             </div>
             <p className="text-[11px] text-[#E5EAD9]/80 flex items-center gap-1.5">
+              <span className="bg-white/15 px-1.5 py-0.2 rounded font-medium text-[10px]">ToT × AoT × Loop</span>
               <span>{profile.relationshipTitle}</span> • 
               <span className="text-[#CED6C1]">{profile.resiliencePoints} pts de résilience</span>
             </p>
