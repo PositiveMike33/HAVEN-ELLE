@@ -39,6 +39,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 }) => {
   const [globalPlaying, setGlobalPlaying] = useState(true);
   const [globalMuted, setGlobalMuted] = useState(false);
+  const [globalVolume, setGlobalVolume] = useState(50);
   const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 210 });
   const [activeStep, setActiveStep] = useState<number>(1);
   const [isSaved, setIsSaved] = useState(false);
@@ -50,11 +51,15 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
       const customEvent = e as CustomEvent<{
         isPlaying: boolean;
         isMuted: boolean;
+        volume?: number;
         trackProgress?: { currentTime: number; duration: number };
       }>;
       if (customEvent.detail) {
         setGlobalPlaying(customEvent.detail.isPlaying);
         setGlobalMuted(customEvent.detail.isMuted);
+        if (typeof customEvent.detail.volume === 'number') {
+          setGlobalVolume(customEvent.detail.volume);
+        }
         if (customEvent.detail.trackProgress) {
           setTrackProgress(customEvent.detail.trackProgress);
         }
@@ -245,7 +250,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                 <span className="flex items-center gap-1.5">
                   <Repeat className="w-3 h-3 text-[#8A9A5B]" />
                   <span>
-                    {globalMuted ? 'Audio en sourdine' : 'Lecture audio & vidéo complète en boucle'}
+                    {globalMuted ? 'Audio en sourdine' : `Lecture audio (${globalVolume}%) & vidéo complète en boucle`}
                   </span>
                 </span>
                 <span className="text-[10px] text-[#CED6C1] bg-white/10 px-2 py-0.5 rounded-md font-mono">

@@ -17,11 +17,13 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState<number>(50); // 50% volume as requested
   const [opacity, setOpacity] = useState<number>(33); // 33% as requested
   const [showControls, setShowControls] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(true);
   const [isApiReady, setIsApiReady] = useState(false);
   const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 210 });
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
 
   const playerRef = useRef<any>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +64,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         videoId: videoId,
         playerVars: {
           autoplay: 1,
-          mute: isMuted ? 1 : 0,
+          mute: 0,
           loop: 1,
           playlist: videoId,
           controls: 0,
@@ -76,19 +78,24 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         },
         events: {
           onReady: (event: any) => {
-            if (isMuted) {
-              event.target.mute();
-            } else {
+            try {
+              // Set volume to 50% immediately
+              event.target.setVolume(50);
               event.target.unMute();
-            }
-            if (isPlaying && !isPanicOrCamouflage) {
-              event.target.playVideo();
+              if (!isPanicOrCamouflage) {
+                event.target.playVideo();
+                setIsPlaying(true);
+                setIsMuted(false);
+              }
+            } catch (e) {
+              console.warn('Autoplay ready event notice:', e);
             }
           },
           onStateChange: (event: any) => {
             // 0 = YT.PlayerState.ENDED -> Guarantee 100% full song complete loop without cutting
             if (event.data === 0) {
               event.target.seekTo(0, true);
+              event.target.setVolume(volume);
               event.target.playVideo();
             } else if (event.data === 1) {
               setIsPlaying(true);
@@ -102,9 +109,42 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         },
       });
     } catch (e) {
-      console.warn('Failed to initialize YouTube API player, using iframe fallback:', e);
+      console.warn('Failed to initialize YouTube API player:', e);
     }
   }, [isApiReady]);
+
+  // Proactive browser gesture unlocker:
+  // Many modern browsers require a first user interaction anywhere on the page to start unmuted sound
+  useEffect(() => {
+    const tryUnlockAudio = () => {
+      if (audioUnlocked) return;
+      if (playerRef.current && !isPanicOrCamouflage) {
+        try {
+          playerRef.current.setVolume(volume);
+          playerRef.current.unMute();
+          playerRef.current.playVideo();
+          setIsPlaying(true);
+          setIsMuted(false);
+          setAudioUnlocked(true);
+        } catch {
+          // ignore transient policy errors
+        }
+      }
+    };
+
+    // First user gesture triggers unmuted audio automatically
+    window.addEventListener('click', tryUnlockAudio, { capture: true, once: true });
+    window.addEventListener('pointerdown', tryUnlockAudio, { capture: true, once: true });
+    window.addEventListener('touchstart', tryUnlockAudio, { capture: true, once: true });
+    window.addEventListener('keydown', tryUnlockAudio, { capture: true, once: true });
+
+    return () => {
+      window.removeEventListener('click', tryUnlockAudio, { capture: true });
+      window.removeEventListener('pointerdown', tryUnlockAudio, { capture: true });
+      window.removeEventListener('touchstart', tryUnlockAudio, { capture: true });
+      window.removeEventListener('keydown', tryUnlockAudio, { capture: true });
+    };
+  }, [audioUnlocked, volume, isPanicOrCamouflage]);
 
   // Keep track of playback duration and enforce complete infinite loop
   useEffect(() => {
@@ -160,28 +200,52 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         setOpacity(customEvent.detail.opacity);
       }
     };
+    const handleGlobalSetVolume = (e: Event) => {
+      const customEvent = e as CustomEvent<{ volume: number }>;
+      if (customEvent.detail && typeof customEvent.detail.volume === 'number') {
+        handleVolumeChange(customEvent.detail.volume);
+      }
+    };
 
     window.addEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
     window.addEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
     window.addEventListener('haven-audio-restart', handleGlobalRestart);
     window.addEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
+    window.addEventListener('haven-audio-set-volume', handleGlobalSetVolume);
 
     return () => {
       window.removeEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
       window.removeEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
       window.removeEventListener('haven-audio-restart', handleGlobalRestart);
       window.removeEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
+      window.removeEventListener('haven-audio-set-volume', handleGlobalSetVolume);
     };
-  }, [isPlaying, isMuted]);
+  }, [isPlaying, isMuted, volume]);
 
   // Dispatch current state for other UI components
   useEffect(() => {
     window.dispatchEvent(
       new CustomEvent('haven-audio-state-changed', {
-        detail: { isPlaying, isMuted, opacity, isVideoVisible, trackProgress },
+        detail: { isPlaying, isMuted, volume, opacity, isVideoVisible, trackProgress },
       })
     );
-  }, [isPlaying, isMuted, opacity, isVideoVisible, trackProgress]);
+  }, [isPlaying, isMuted, volume, opacity, isVideoVisible, trackProgress]);
+
+  const handleVolumeChange = (newVolume: number) => {
+    const clamped = Math.max(0, Math.min(100, Math.round(newVolume)));
+    setVolume(clamped);
+    if (playerRef.current) {
+      if (typeof playerRef.current.setVolume === 'function') {
+        playerRef.current.setVolume(clamped);
+      }
+      if (clamped > 0 && isMuted) {
+        setIsMuted(false);
+        if (typeof playerRef.current.unMute === 'function') {
+          playerRef.current.unMute();
+        }
+      }
+    }
+  };
 
   const togglePlayPause = () => {
     const nextState = !isPlaying;
@@ -189,7 +253,10 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     if (playerRef.current) {
       if (nextState) {
         if (typeof playerRef.current.playVideo === 'function') {
+          playerRef.current.setVolume(volume);
+          playerRef.current.unMute();
           playerRef.current.playVideo();
+          setIsMuted(false);
         }
       } else {
         if (typeof playerRef.current.pauseVideo === 'function') {
@@ -208,6 +275,9 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
           playerRef.current.mute();
         }
       } else {
+        if (typeof playerRef.current.setVolume === 'function') {
+          playerRef.current.setVolume(volume || 50);
+        }
         if (typeof playerRef.current.unMute === 'function') {
           playerRef.current.unMute();
         }
@@ -313,6 +383,59 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                 >
                   <RotateCcw className="w-2.5 h-2.5" /> Rejouer
                 </button>
+              </div>
+
+              {/* Volume Slider */}
+              <div className="space-y-1 bg-[#F8F7F2] p-2 rounded-xl border border-[#E5E2D9]">
+                <div className="flex justify-between items-center text-[11px] text-[#5A5A40]">
+                  <span className="font-medium flex items-center gap-1">
+                    {isMuted || volume === 0 ? <VolumeX className="w-3 h-3 text-[#A64D4D]" /> : <Volume2 className="w-3 h-3 text-[#8A9A5B]" />}
+                    Volume sonore
+                  </span>
+                  <span className="font-bold text-[#8A9A5B]">{isMuted ? 'Muet' : `${volume}%`}</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={isMuted ? 0 : volume}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    handleVolumeChange(val);
+                  }}
+                  className="w-full h-1.5 bg-[#CED6C1] rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
+                />
+                <div className="flex justify-between text-[9px] text-[#8E8B82]">
+                  <button
+                    type="button"
+                    onClick={() => handleVolumeChange(25)}
+                    className="hover:text-[#5A5A40]"
+                  >
+                    25%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleVolumeChange(50)}
+                    className="font-semibold text-[#5A5A40] underline decoration-[#8A9A5B]"
+                  >
+                    50% (Défaut)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleVolumeChange(75)}
+                    className="hover:text-[#5A5A40]"
+                  >
+                    75%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleVolumeChange(100)}
+                    className="hover:text-[#5A5A40]"
+                  >
+                    100%
+                  </button>
+                </div>
               </div>
 
               {/* Opacity slider */}
