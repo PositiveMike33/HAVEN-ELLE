@@ -237,3 +237,16 @@ export interface DiscreetAppointment {
   meetLink: string;
   status: 'CONFIRMED' | 'PENDING' | 'COMPLETED';
 }
+
+export type WellnessMood = 'serene' | 'peaceful' | 'neutral' | 'tired' | 'anxious' | 'fragile';
+
+export interface WellnessDailyEntry {
+  id: string;
+  date: string; // ISO format 'YYYY-MM-DD'
+  mood: WellnessMood;
+  stressLevel: 1 | 2 | 3 | 4 | 5; // 1 = minimal / apaisé, 5 = critique / surcharge
+  sleepQuality?: 'restful' | 'average' | 'disturbed';
+  soothingPractice?: 'breathing' | 'ambient_music' | 'art_avatar' | 'rest' | 'walk' | 'reading';
+  discreetNote?: string; // Anonymized, non-compromising brief personal anchor
+  createdAt: string;
+}

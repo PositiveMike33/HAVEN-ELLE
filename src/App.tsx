@@ -165,7 +165,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'relaxation' && <TherapeuticRelaxation />}
+        {activeTab === 'relaxation' && <TherapeuticRelaxation isNightMode={isNightMode} />}
 
         {activeTab === 'appointments' && (
           <DiscreetAppointments

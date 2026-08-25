@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, Sparkles, Wind, Play, Pause, RefreshCw, 
   Image as ImageIcon, Video, Volume2, UserCheck, Check 
 } from 'lucide-react';
+import { WellnessCalendarTracker } from './WellnessCalendarTracker';
 
-export const TherapeuticRelaxation: React.FC = () => {
+interface TherapeuticRelaxationProps {
+  isNightMode?: boolean;
+}
+
+export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ isNightMode = false }) => {
   // Breathing Coach State (4-7-8 or 5-5 cardiac coherence)
   const [breathingActive, setBreathingActive] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState<'inspire' | 'hold' | 'expire'>('inspire');
   const [phaseSeconds, setPhaseSeconds] = useState(4);
   const [totalCycles, setTotalCycles] = useState(0);
+  const breathingSectionRef = useRef<HTMLDivElement>(null);
 
   // Avatar & Art Therapy State
   const [avatarPrompt, setAvatarPrompt] = useState('Portrait aquarelle apaisant, profil doux abstrait en tons lavande et or');
@@ -18,6 +24,15 @@ export const TherapeuticRelaxation: React.FC = () => {
 
   // Calming Video State (Veo 3.1)
   const [videoActive, setVideoActive] = useState(false);
+
+  const startBreathingSession = () => {
+    setBreathingActive(true);
+    setBreathingPhase('inspire');
+    setPhaseSeconds(4);
+    if (breathingSectionRef.current) {
+      breathingSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -66,8 +81,18 @@ export const TherapeuticRelaxation: React.FC = () => {
 
   return (
     <div id="therapeutic-relaxation-section" className="space-y-6">
-      {/* 1. Interactive Breathing Guide (Cardiac Coherence / 4-7-8) */}
-      <div className="bg-gradient-to-b from-[#5A5A40] to-[#3E3B39] text-white rounded-3xl p-6 md:p-8 shadow-md border border-[#CED6C1]/20">
+      {/* 1. Module de Calendrier de Suivi de Bien-être (Météo Intérieure & Stress) */}
+      <WellnessCalendarTracker 
+        onStartBreathing={startBreathingSession}
+        isNightMode={isNightMode}
+      />
+
+      {/* 2. Interactive Breathing Guide (Cardiac Coherence / 4-7-8) */}
+      <div 
+        ref={breathingSectionRef}
+        id="cardiac-coherence-box"
+        className="bg-gradient-to-b from-[#5A5A40] to-[#3E3B39] text-white rounded-3xl p-6 md:p-8 shadow-md border border-[#CED6C1]/20"
+      >
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="max-w-md">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#E5EAD9] text-xs font-semibold mb-3 border border-white/10">
@@ -124,7 +149,7 @@ export const TherapeuticRelaxation: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Art-Thérapie & Création d'Avatars Anonymes (Nano Banana 2 / Imagen) */}
+      {/* 3. Art-Thérapie & Création d'Avatars Anonymes (Nano Banana 2 / Imagen) */}
       <div className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] p-6 shadow-xs">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center">
@@ -210,3 +235,4 @@ export const TherapeuticRelaxation: React.FC = () => {
     </div>
   );
 };
+

@@ -1,4 +1,4 @@
-import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile, VoiceRecordingEvidence } from '../types';
+import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile, VoiceRecordingEvidence, WellnessDailyEntry } from '../types';
 
 const STORAGE_KEYS = {
   CONTACTS: 'haven_trusted_contacts_v3',
@@ -14,6 +14,7 @@ const STORAGE_KEYS = {
   UI_OPACITY: 'haven_ui_opacity_v1',
   VIDEO_OPACITY: 'haven_video_opacity_v1',
   BG_VOLUME: 'haven_bg_volume_v1',
+  WELLNESS_ENTRIES: 'haven_wellness_tracker_entries_v1',
 };
 
 export const DEFAULT_ASSESSMENT_PROFILE: UserAssessmentProfile = {
@@ -476,5 +477,53 @@ export const StorageService = {
     localStorage.removeItem(STORAGE_KEYS.SAFETY_PLAN);
     localStorage.removeItem(STORAGE_KEYS.APPOINTMENTS);
     localStorage.removeItem(STORAGE_KEYS.ASSESSMENT);
+    localStorage.removeItem(STORAGE_KEYS.WELLNESS_ENTRIES);
+  },
+
+  getWellnessEntries(): WellnessDailyEntry[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.WELLNESS_ENTRIES);
+      if (!data) return [];
+      return JSON.parse(data) as WellnessDailyEntry[];
+    } catch {
+      return [];
+    }
+  },
+
+  getWellnessEntryForDate(dateStr: string): WellnessDailyEntry | undefined {
+    const entries = this.getWellnessEntries();
+    return entries.find((e) => e.date === dateStr);
+  },
+
+  saveWellnessEntry(entry: WellnessDailyEntry): void {
+    try {
+      const entries = this.getWellnessEntries();
+      const existingIdx = entries.findIndex((e) => e.date === entry.date);
+      if (existingIdx >= 0) {
+        entries[existingIdx] = entry;
+      } else {
+        entries.push(entry);
+      }
+      // Sort newest to oldest
+      entries.sort((a, b) => b.date.localeCompare(a.date));
+      localStorage.setItem(STORAGE_KEYS.WELLNESS_ENTRIES, JSON.stringify(entries));
+    } catch (e) {
+      console.error('Failed to save wellness entry', e);
+    }
+  },
+
+  deleteWellnessEntry(idOrDate: string): void {
+    try {
+      const entries = this.getWellnessEntries().filter(
+        (e) => e.id !== idOrDate && e.date !== idOrDate
+      );
+      localStorage.setItem(STORAGE_KEYS.WELLNESS_ENTRIES, JSON.stringify(entries));
+    } catch (e) {
+      console.error('Failed to delete wellness entry', e);
+    }
+  },
+
+  clearWellnessEntries(): void {
+    localStorage.removeItem(STORAGE_KEYS.WELLNESS_ENTRIES);
   },
 };
