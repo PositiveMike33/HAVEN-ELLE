@@ -19,6 +19,9 @@ import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
 
 export default function App() {
   const [isCamouflageActive, setIsCamouflageActive] = useState(false);
+  const [isNightMode, setIsNightMode] = useState<boolean>(() => {
+    return StorageService.isNightMode();
+  });
   const [activeTab, setActiveTab] = useState('contacts');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -45,6 +48,27 @@ export default function App() {
       setShowOnboarding(true);
     }
   }, []);
+
+  // Sync night mode class with document body and initialize opacity variables
+  useEffect(() => {
+    if (isNightMode) {
+      document.body.classList.add('night-mode');
+    } else {
+      document.body.classList.remove('night-mode');
+    }
+    StorageService.setNightMode(isNightMode);
+  }, [isNightMode]);
+
+  useEffect(() => {
+    const initialUiOpacity = StorageService.getUiOpacity();
+    const root = document.documentElement;
+    root.style.setProperty('--ui-surface-opacity', (initialUiOpacity / 100).toFixed(2));
+    root.style.setProperty('--ui-bg-opacity', ((initialUiOpacity / 100) * 0.4).toFixed(2));
+  }, []);
+
+  const handleToggleNightMode = () => {
+    setIsNightMode((prev) => !prev);
+  };
 
   // Panic Mode: Silences sound instantly, closes sensitive modals, and switches to Camouflage
   const handlePanicMode = () => {
@@ -79,9 +103,19 @@ export default function App() {
   }
 
   return (
-    <div id="haven-app-root" className="relative min-h-screen bg-[#F8F7F2]/80 backdrop-blur-[0.5px] text-[#3E3B39] flex flex-col font-sans selection:bg-[#E5EAD9] selection:text-[#5A5A40]">
+    <div
+      id="haven-app-root"
+      className={`relative min-h-screen flex flex-col font-sans transition-colors duration-200 ${
+        isNightMode
+          ? 'night-mode bg-[#161715]/95 text-[#D6D4CD] selection:bg-[#2A3122] selection:text-[#A5B67D]'
+          : 'bg-[#F8F7F2]/80 backdrop-blur-[0.5px] text-[#3E3B39] selection:bg-[#E5EAD9] selection:text-[#5A5A40]'
+      }`}
+    >
       {/* Background Music & Official Video (Theory of a Deadman - History of Violence) */}
-      <BackgroundMusicVideo isPanicOrCamouflage={isCamouflageActive} />
+      <BackgroundMusicVideo 
+        isPanicOrCamouflage={isCamouflageActive} 
+        isNightMode={isNightMode} 
+      />
 
       {/* Top Header & Emergency Bar */}
       <Header
@@ -95,6 +129,8 @@ export default function App() {
         onOpenAssessment={() => setShowAssessmentModal(true)}
         isAssessmentCompleted={assessmentProfile.isCompleted}
         contactsCount={contacts.filter((c) => c.isActive).length}
+        isNightMode={isNightMode}
+        onToggleNightMode={handleToggleNightMode}
       />
 
       {/* Main Content Area */}

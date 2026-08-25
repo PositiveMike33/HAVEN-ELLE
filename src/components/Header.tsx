@@ -15,9 +15,13 @@ import {
   HelpCircle,
   AlertOctagon,
   ClipboardList,
-  Lock
+  Lock,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { HeaderAudioPlayer } from './HeaderAudioPlayer';
+import { QuickLocationShare } from './QuickLocationShare';
+import { UiOpacityControl } from './UiOpacityControl';
 
 interface HeaderProps {
   activeTab: string;
@@ -30,6 +34,8 @@ interface HeaderProps {
   onOpenAssessment: () => void;
   isAssessmentCompleted?: boolean;
   contactsCount: number;
+  isNightMode?: boolean;
+  onToggleNightMode?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -43,6 +49,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAssessment,
   isAssessmentCompleted,
   contactsCount,
+  isNightMode = false,
+  onToggleNightMode,
 }) => {
   // Global Esc key listener for instant Panic Mode / Quick Exit
   useEffect(() => {
@@ -92,7 +100,40 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Quick Geolocation Sharing Button */}
+          <QuickLocationShare isNightMode={isNightMode} />
+
+          {/* UI & Fiches Transparency Controller */}
+          <UiOpacityControl isNightMode={isNightMode} />
+
+          {/* Low-Contrast Night / Discreet Mode Toggle */}
+          {onToggleNightMode && (
+            <button
+              type="button"
+              id="header-night-mode-toggle-btn"
+              onClick={onToggleNightMode}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
+                isNightMode
+                  ? 'bg-[#2A2C28] text-[#D8E4C7] border border-[#3E4238] hover:bg-[#343630]'
+                  : 'bg-[#F8F7F2] text-[#5A5A40] border border-[#E5E2D9] hover:bg-[#E5EAD9]'
+              }`}
+              title={isNightMode ? 'Désactiver le Mode Nuit (revenir au thème clair)' : 'Activer le Mode Nuit Discret (contraste réduit pour l\'obscurité)'}
+            >
+              {isNightMode ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-[#E6B800]" />
+                  <span className="hidden xl:inline text-[11px]">Jour</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-[#728642]" />
+                  <span className="hidden xl:inline text-[11px]">Nuit</span>
+                </>
+              )}
+            </button>
+          )}
+
           {/* Assessment Form Button */}
           <button
             id="header-assessment-btn"
@@ -106,7 +147,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <ClipboardList className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">
-              {isAssessmentCompleted ? 'Mon Bilan Confidentiel' : 'Compléter Bilan Sûreté'}
+              {isAssessmentCompleted ? 'Mon Bilan' : 'Bilan Sûreté'}
             </span>
           </button>
 

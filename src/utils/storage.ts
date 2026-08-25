@@ -10,6 +10,9 @@ const STORAGE_KEYS = {
   SETTINGS: 'haven_user_settings_v1',
   ONBOARDING: 'haven_onboarding_completed_v1',
   ASSESSMENT: 'haven_confidential_assessment_v1',
+  NIGHT_MODE: 'haven_night_mode_v1',
+  UI_OPACITY: 'haven_ui_opacity_v1',
+  VIDEO_OPACITY: 'haven_video_opacity_v1',
 };
 
 export const DEFAULT_ASSESSMENT_PROFILE: UserAssessmentProfile = {
@@ -384,6 +387,64 @@ export const StorageService = {
 
   saveAssessmentProfile(profile: UserAssessmentProfile): void {
     localStorage.setItem(STORAGE_KEYS.ASSESSMENT, JSON.stringify(profile));
+  },
+
+  isNightMode(): boolean {
+    try {
+      return localStorage.getItem(STORAGE_KEYS.NIGHT_MODE) === 'true';
+    } catch {
+      return false;
+    }
+  },
+
+  setNightMode(enabled: boolean): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.NIGHT_MODE, enabled ? 'true' : 'false');
+    } catch {
+      // Ignore
+    }
+  },
+
+  getUiOpacity(): number {
+    try {
+      const val = localStorage.getItem(STORAGE_KEYS.UI_OPACITY);
+      if (val !== null) {
+        const num = Number(val);
+        if (!isNaN(num) && num >= 10 && num <= 100) return num;
+      }
+      return 85; // 85% default balanced transparency
+    } catch {
+      return 85;
+    }
+  },
+
+  setUiOpacity(opacity: number): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.UI_OPACITY, Math.round(opacity).toString());
+    } catch {
+      // Ignore
+    }
+  },
+
+  getVideoOpacity(): number {
+    try {
+      const val = localStorage.getItem(STORAGE_KEYS.VIDEO_OPACITY);
+      if (val !== null) {
+        const num = Number(val);
+        if (!isNaN(num) && num >= 0 && num <= 100) return num;
+      }
+      return 45; // 45% default video opacity
+    } catch {
+      return 45;
+    }
+  },
+
+  setVideoOpacity(opacity: number): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.VIDEO_OPACITY, Math.round(opacity).toString());
+    } catch {
+      // Ignore
+    }
   },
 
   clearAllSensitiveData(): void {

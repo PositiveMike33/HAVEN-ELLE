@@ -2,6 +2,11 @@
 
 @layer base {
   :root {
+    --ui-surface-opacity: 0.85;
+    --ui-bg-opacity: 0.25;
+    --ui-blur: 16px;
+    --video-opacity: 0.45;
+
     --color-canvas: #F8F7F2;
     --color-surface: #FFFFFF;
     --color-surface-soft: #F5F2ED;
@@ -22,11 +27,206 @@
     background-color: #F8F7F2;
     color: #3E3B39;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  body.night-mode {
+    background-color: #121311;
+    color: #D6D4CD;
   }
 
   h1, h2, h3, .font-serif-natural {
     font-family: 'Newsreader', Georgia, Cambria, 'Times New Roman', Times, serif;
   }
+}
+
+/* Base Light Theme Translucent Surfaces */
+#haven-app-root {
+  background-color: rgba(248, 247, 242, calc(var(--ui-surface-opacity) * 0.35 + 0.05));
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+header {
+  background-color: rgba(255, 255, 255, calc(var(--ui-surface-opacity) * 0.95)) !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+  transition: background-color 0.2s ease;
+}
+
+/* Translucent Cards & Fiches in Light Mode */
+.bg-white,
+.bg-\[\#FFFFFF\],
+.bg-\[\#FFFFFF\]\/90,
+.bg-\[\#FFFFFF\]\/92,
+.bg-\[\#FFFFFF\]\/95 {
+  background-color: rgba(255, 255, 255, var(--ui-surface-opacity)) !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+  transition: background-color 0.2s ease;
+}
+
+.bg-\[\#F8F7F2\],
+.bg-\[\#F5F2ED\],
+.bg-\[\#F0EEE6\] {
+  background-color: rgba(245, 242, 237, var(--ui-surface-opacity)) !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.bg-\[\#E5EAD9\],
+.bg-\[\#EBF1E4\],
+.bg-\[\#F2F6EC\],
+.bg-\[\#EAF2DE\] {
+  background-color: rgba(229, 234, 217, var(--ui-surface-opacity)) !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+/* Translucent Hero Banner in Light Mode */
+#trusted-contacts-section > div.bg-\[\#5A5A40\],
+.bg-\[\#5A5A40\] {
+  background-color: rgba(90, 90, 64, var(--ui-surface-opacity)) !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+/* Low-contrast Night Mode Overrides */
+.night-mode {
+  --color-canvas: #121311;
+  --color-surface: #1E201B;
+  --color-surface-soft: #252721;
+  --color-surface-muted: #2C2F27;
+  --color-moss: #7A8D50;
+  --color-moss-dark: #A5B67D;
+  --color-moss-light: #2A3122;
+  --color-moss-border: #3E4633;
+  --color-sand-border: #363932;
+  --color-sand-muted: #484C42;
+  --color-text-main: #D6D4CD;
+  --color-text-muted: #9E9C94;
+}
+
+.night-mode #haven-app-root {
+  background-color: rgba(18, 19, 17, calc(var(--ui-surface-opacity) * 0.45 + 0.1));
+  color: #D6D4CD;
+}
+
+.night-mode header {
+  background-color: rgba(28, 30, 25, calc(var(--ui-surface-opacity) * 0.95)) !important;
+  border-color: #363932 !important;
+  color: #D6D4CD !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode header .border-b {
+  border-color: #31342D !important;
+}
+
+.night-mode footer {
+  background-color: rgba(26, 28, 24, calc(var(--ui-surface-opacity) * 0.95)) !important;
+  border-color: #363932 !important;
+  color: #9E9C94 !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode #header-global-audio-pill {
+  background-color: rgba(39, 41, 36, var(--ui-surface-opacity)) !important;
+  border-color: #3A3E34 !important;
+  color: #D6D4CD !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+/* Translucent Cards & Fiches in Night Mode */
+.night-mode .bg-white,
+.night-mode .bg-\[\#FFFFFF\],
+.night-mode .bg-\[\#FFFFFF\]\/90,
+.night-mode .bg-\[\#FFFFFF\]\/92,
+.night-mode .bg-\[\#FFFFFF\]\/95 {
+  background-color: rgba(30, 32, 27, var(--ui-surface-opacity)) !important;
+  color: #D6D4CD;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode .bg-\[\#F8F7F2\],
+.night-mode .bg-\[\#F5F2ED\],
+.night-mode .bg-\[\#F0EEE6\],
+.night-mode .bg-\[\#FAF9F5\] {
+  background-color: rgba(37, 39, 33, var(--ui-surface-opacity)) !important;
+  color: #D6D4CD;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode .bg-\[\#E5EAD9\],
+.night-mode .bg-\[\#EBF1E4\],
+.night-mode .bg-\[\#F2F6EC\],
+.night-mode .bg-\[\#EAF2DE\] {
+  background-color: rgba(42, 49, 34, var(--ui-surface-opacity)) !important;
+  color: #C8D8B0 !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode .bg-\[\#5A5A40\] {
+  background-color: rgba(55, 58, 48, var(--ui-surface-opacity)) !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode .bg-\[\#F5E6E0\] {
+  background-color: rgba(56, 37, 37, var(--ui-surface-opacity)) !important;
+  color: #E29F9F !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+/* Translucent buttons in night mode */
+.night-mode button:not(#open-emergency-sos-btn):not(#header-emergency-sos-button):not(#header-audio-play-pause-btn):not(.bg-\[\#8A9A5B\]):not(.bg-\[\#A64D4D\]) {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.night-mode .border-\[\#E5E2D9\],
+.night-mode .border-\[\#F0EEE6\],
+.night-mode .border-\[\#D9D4C7\],
+.night-mode .border-\[\#CED6C1\],
+.night-mode .border-\[\#CEDEC0\],
+.night-mode .border-\[\#DDD8CB\],
+.night-mode .border-\[\#BDCEAA\] {
+  border-color: rgba(62, 66, 56, 0.7) !important;
+}
+
+.night-mode .text-\[\#3E3B39\] {
+  color: #D6D4CD !important;
+}
+
+.night-mode .text-\[\#5A5A40\],
+.night-mode .text-\[\#4F6331\] {
+  color: #B5C09B !important;
+}
+
+.night-mode .text-\[\#716E65\],
+.night-mode .text-\[\#8E8B82\] {
+  color: #9C9A91 !important;
+}
+
+.night-mode input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+.night-mode textarea,
+.night-mode select {
+  background-color: rgba(26, 28, 24, calc(var(--ui-surface-opacity) * 0.95)) !important;
+  border-color: #3B3E36 !important;
+  color: #E2E0D8 !important;
+  backdrop-filter: blur(var(--ui-blur));
+  -webkit-backdrop-filter: blur(var(--ui-blur));
+}
+
+.night-mode input::placeholder,
+.night-mode textarea::placeholder {
+  color: #78776F !important;
 }
 
 /* Natural Tones custom scrollbars */
@@ -35,12 +235,23 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8F7F2;
+  background: transparent;
+}
+.night-mode ::-webkit-scrollbar-track {
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: #D9D4C7;
   border-radius: 9999px;
 }
+.night-mode ::-webkit-scrollbar-thumb {
+  background: #3B3E36;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #8E8B82;
 }
+.night-mode ::-webkit-scrollbar-thumb:hover {
+  background: #5A5E53;
+}
+
+

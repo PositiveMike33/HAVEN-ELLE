@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Volume2, VolumeX, Music, Eye, EyeOff, Sliders, RotateCcw, Repeat } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Music, Eye, EyeOff, Sliders, RotateCcw, Repeat, Layers } from 'lucide-react';
+import { StorageService } from '../utils/storage';
 
 declare global {
   interface Window {
@@ -10,15 +11,18 @@ declare global {
 
 interface BackgroundMusicVideoProps {
   isPanicOrCamouflage: boolean;
+  isNightMode?: boolean;
 }
 
 export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
   isPanicOrCamouflage,
+  isNightMode = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState<number>(50); // 50% volume as requested
-  const [opacity, setOpacity] = useState<number>(33); // 33% as requested
+  const [opacity, setOpacity] = useState<number>(() => StorageService.getVideoOpacity()); // Video opacity
+  const [uiOpacity, setUiOpacity] = useState<number>(() => StorageService.getUiOpacity()); // UI cards opacity
   const [showControls, setShowControls] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(true);
   const [isApiReady, setIsApiReady] = useState(false);
@@ -209,6 +213,12 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     const handleGlobalToggleVideo = () => {
       setIsVideoVisible((prev) => !prev);
     };
+    const handleGlobalUiOpacity = (e: Event) => {
+      const customEvent = e as CustomEvent<{ opacity: number }>;
+      if (customEvent.detail && typeof customEvent.detail.opacity === 'number') {
+        setUiOpacity(customEvent.detail.opacity);
+      }
+    };
 
     window.addEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
     window.addEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
@@ -216,6 +226,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     window.addEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
     window.addEventListener('haven-audio-set-volume', handleGlobalSetVolume);
     window.addEventListener('haven-audio-toggle-video', handleGlobalToggleVideo);
+    window.addEventListener('haven-ui-opacity-changed', handleGlobalUiOpacity);
 
     return () => {
       window.removeEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
@@ -224,8 +235,23 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
       window.removeEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
       window.removeEventListener('haven-audio-set-volume', handleGlobalSetVolume);
       window.removeEventListener('haven-audio-toggle-video', handleGlobalToggleVideo);
+      window.removeEventListener('haven-ui-opacity-changed', handleGlobalUiOpacity);
     };
   }, [isPlaying, isMuted, volume]);
+
+  const handleUiOpacitySliderChange = (newVal: number) => {
+    const clamped = Math.max(10, Math.min(100, Math.round(newVal)));
+    setUiOpacity(clamped);
+    StorageService.setUiOpacity(clamped);
+    const root = document.documentElement;
+    root.style.setProperty('--ui-surface-opacity', (clamped / 100).toFixed(2));
+    root.style.setProperty('--ui-bg-opacity', ((clamped / 100) * 0.4).toFixed(2));
+    window.dispatchEvent(
+      new CustomEvent('haven-ui-opacity-changed', {
+        detail: { opacity: clamped },
+      })
+    );
+  };
 
   // Dispatch current state for other UI components
   useEffect(() => {
@@ -335,8 +361,14 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
           />
         </div>
 
-        {/* Ambient gradient overlay to maintain elegance & contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F8F7F2]/10 via-transparent to-[#F8F7F2]/40 mix-blend-overlay pointer-events-none" />
+        {/* Ambient gradient overlay to maintain elegance & contrast in both Day and Night modes */}
+        <div
+          className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+            isNightMode
+              ? 'bg-gradient-to-b from-black/40 via-transparent to-black/60 mix-blend-multiply'
+              : 'bg-gradient-to-b from-[#F8F7F2]/10 via-transparent to-[#F8F7F2]/40 mix-blend-overlay'
+          }`}
+        />
       </div>
 
       {/* Floating Audio & Clip Widget (Bottom Right) */}
@@ -347,26 +379,30 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         >
           {/* Expanded settings menu */}
           {showControls && (
-            <div className="bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-[#CED6C1] text-xs text-[#3E3B39] w-72 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
-              <div className="flex items-center justify-between border-b border-[#E5E2D9] pb-2">
-                <div className="flex items-center gap-1.5 font-bold text-[#5A5A40]">
-                  <Music className="w-4 h-4 text-[#8A9A5B]" />
+            <div className={`p-3.5 rounded-2xl shadow-2xl border text-xs w-80 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200 backdrop-blur-xl ${
+              isNightMode 
+                ? 'bg-[#1E201B]/95 border-[#3E4633] text-[#D6D4CD]' 
+                : 'bg-white/95 border-[#CED6C1] text-[#3E3B39]'
+            }`}>
+              <div className="flex items-center justify-between border-b border-inherit/30 pb-2">
+                <div className="flex items-center gap-1.5 font-bold text-[#8A9A5B]">
+                  <Music className="w-4 h-4" />
                   <span>Ambiance & Clip Vidéo Complet</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowControls(false)}
-                  className="text-[#8E8B82] hover:text-[#3E3B39] text-xs px-1.5 py-0.5 rounded-md hover:bg-[#F5F2ED]"
+                  className="opacity-70 hover:opacity-100 text-xs px-1.5 py-0.5 rounded-md hover:bg-black/10"
                 >
                   ✕
                 </button>
               </div>
 
               <div>
-                <p className="font-semibold text-[#3E3B39] truncate">
+                <p className="font-semibold truncate">
                   Theory of a Deadman
                 </p>
-                <p className="text-[11px] text-[#8E8B82] truncate flex items-center justify-between">
+                <p className="text-[11px] opacity-75 truncate flex items-center justify-between">
                   <span>« History of Violence »</span>
                   <span className="text-[#8A9A5B] font-mono font-medium">
                     {formatTrackTime(trackProgress.currentTime)} / {formatTrackTime(trackProgress.duration)}
@@ -375,7 +411,9 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
               </div>
 
               {/* Loop and Status indicator */}
-              <div className="flex items-center justify-between bg-[#E5EAD9]/60 p-2 rounded-xl border border-[#CED6C1] text-[11px] text-[#5A5A40]">
+              <div className={`flex items-center justify-between p-2 rounded-xl border text-[11px] ${
+                isNightMode ? 'bg-[#2A3122]/60 border-[#3E4633] text-[#C8D8B0]' : 'bg-[#E5EAD9]/60 border-[#CED6C1] text-[#5A5A40]'
+              }`}>
                 <span className="flex items-center gap-1">
                   <Repeat className="w-3.5 h-3.5 text-[#8A9A5B]" />
                   Boucle infinie intégrale
@@ -383,7 +421,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                 <button
                   type="button"
                   onClick={restartTrack}
-                  className="px-2 py-0.5 bg-white text-[#5A5A40] rounded-md font-medium text-[10px] hover:bg-[#F5F2ED] border border-[#CED6C1] flex items-center gap-1"
+                  className="px-2 py-0.5 bg-black/10 hover:bg-black/20 rounded-md font-medium text-[10px] border border-inherit/40 flex items-center gap-1"
                   title="Recommencer depuis le début"
                 >
                   <RotateCcw className="w-2.5 h-2.5" /> Rejouer
@@ -391,8 +429,8 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
               </div>
 
               {/* Volume Slider */}
-              <div className="space-y-1 bg-[#F8F7F2] p-2 rounded-xl border border-[#E5E2D9]">
-                <div className="flex justify-between items-center text-[11px] text-[#5A5A40]">
+              <div className="space-y-1 bg-black/5 p-2 rounded-xl border border-inherit/30">
+                <div className="flex justify-between items-center text-[11px]">
                   <span className="font-medium flex items-center gap-1">
                     {isMuted || volume === 0 ? <VolumeX className="w-3 h-3 text-[#A64D4D]" /> : <Volume2 className="w-3 h-3 text-[#8A9A5B]" />}
                     Volume sonore
@@ -409,59 +447,91 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                     const val = Number(e.target.value);
                     handleVolumeChange(val);
                   }}
-                  className="w-full h-1.5 bg-[#CED6C1] rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
+                  className="w-full h-1.5 bg-[#CED6C1]/40 rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
                 />
-                <div className="flex justify-between text-[9px] text-[#8E8B82]">
+                <div className="flex justify-between text-[9px] opacity-75">
                   <button
                     type="button"
                     onClick={() => handleVolumeChange(25)}
-                    className="hover:text-[#5A5A40]"
+                    className="hover:text-[#8A9A5B]"
                   >
                     25%
                   </button>
                   <button
                     type="button"
                     onClick={() => handleVolumeChange(50)}
-                    className="font-semibold text-[#5A5A40] underline decoration-[#8A9A5B]"
+                    className="font-semibold underline decoration-[#8A9A5B]"
                   >
                     50% (Défaut)
                   </button>
                   <button
                     type="button"
                     onClick={() => handleVolumeChange(75)}
-                    className="hover:text-[#5A5A40]"
+                    className="hover:text-[#8A9A5B]"
                   >
                     75%
                   </button>
                   <button
                     type="button"
                     onClick={() => handleVolumeChange(100)}
-                    className="hover:text-[#5A5A40]"
+                    className="hover:text-[#8A9A5B]"
                   >
                     100%
                   </button>
                 </div>
               </div>
 
-              {/* Opacity slider */}
-              <div className="space-y-1 bg-[#F8F7F2] p-2 rounded-xl border border-[#E5E2D9]">
-                <div className="flex justify-between items-center text-[11px] text-[#5A5A40]">
-                  <span className="font-medium">Opacité de l'arrière-plan</span>
+              {/* UI Cards & Buttons Opacity Slider (Transparency) */}
+              <div className="space-y-1 bg-black/5 p-2 rounded-xl border border-inherit/30">
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="font-medium flex items-center gap-1">
+                    <Layers className="w-3 h-3 text-[#8A9A5B]" />
+                    Transparence Fiches & Boutons
+                  </span>
+                  <span className="font-bold text-[#8A9A5B]">{uiOpacity}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="15"
+                  max="100"
+                  step="5"
+                  value={uiOpacity}
+                  onChange={(e) => handleUiOpacitySliderChange(Number(e.target.value))}
+                  className="w-full h-1.5 bg-[#CED6C1]/40 rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
+                />
+                <div className="flex justify-between text-[9px] opacity-75">
+                  <button type="button" onClick={() => handleUiOpacitySliderChange(25)} className="hover:text-[#8A9A5B]">Translucide (25%)</button>
+                  <button type="button" onClick={() => handleUiOpacitySliderChange(65)} className="hover:text-[#8A9A5B]">Équilibré (65%)</button>
+                  <button type="button" onClick={() => handleUiOpacitySliderChange(95)} className="hover:text-[#8A9A5B]">Opaque (95%)</button>
+                </div>
+              </div>
+
+              {/* Video Opacity slider */}
+              <div className="space-y-1 bg-black/5 p-2 rounded-xl border border-inherit/30">
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="font-medium flex items-center gap-1">
+                    <Eye className="w-3 h-3 text-[#8A9A5B]" />
+                    Opacité de la vidéo de fond
+                  </span>
                   <span className="font-bold text-[#8A9A5B]">{opacity}%</span>
                 </div>
                 <input
                   type="range"
                   min="10"
-                  max="80"
-                  step="1"
+                  max="90"
+                  step="5"
                   value={opacity}
-                  onChange={(e) => setOpacity(Number(e.target.value))}
-                  className="w-full h-1.5 bg-[#CED6C1] rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
+                  onChange={(e) => {
+                    const v = Number(e.target.value);
+                    setOpacity(v);
+                    StorageService.setVideoOpacity(v);
+                  }}
+                  className="w-full h-1.5 bg-[#CED6C1]/40 rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
                 />
-                <div className="flex justify-between text-[9px] text-[#8E8B82]">
-                  <span>Subtil (10%)</span>
-                  <span className="font-semibold text-[#5A5A40]">Recommandé (33%)</span>
-                  <span>Intense (80%)</span>
+                <div className="flex justify-between text-[9px] opacity-75">
+                  <span>Subtil (15%)</span>
+                  <span className="font-semibold">Recommandé (45%)</span>
+                  <span>Intense (85%)</span>
                 </div>
               </div>
 
@@ -469,16 +539,19 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
               <div className="flex items-center justify-between gap-2 pt-1">
                 <button
                   type="button"
-                  onClick={() => setOpacity(33)}
-                  className="px-2.5 py-1 text-[11px] bg-[#E5EAD9] hover:bg-[#dbe2ce] text-[#5A5A40] rounded-lg font-medium transition-colors"
+                  onClick={() => {
+                    setOpacity(45);
+                    handleUiOpacitySliderChange(65);
+                  }}
+                  className="px-2.5 py-1 text-[11px] bg-black/5 hover:bg-black/10 rounded-lg font-medium transition-colors border border-inherit/30"
                 >
-                  Réinitialiser (33%)
+                  Mode Équilibré
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIsVideoVisible(!isVideoVisible)}
-                  className="px-2.5 py-1 text-[11px] bg-white border border-[#E5E2D9] hover:bg-[#F5F2ED] text-[#3E3B39] rounded-lg font-medium flex items-center gap-1 transition-colors"
+                  className="px-2.5 py-1 text-[11px] bg-black/5 border border-inherit/30 hover:bg-black/10 rounded-lg font-medium flex items-center gap-1 transition-colors"
                 >
                   {isVideoVisible ? <EyeOff className="w-3 h-3 text-[#A64D4D]" /> : <Eye className="w-3 h-3 text-[#8A9A5B]" />}
                   <span>{isVideoVisible ? 'Masquer vidéo' : 'Afficher vidéo'}</span>

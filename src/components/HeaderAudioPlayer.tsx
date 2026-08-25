@@ -11,20 +11,22 @@ import {
   Music,
   Repeat,
   Sparkles,
-  Maximize2
+  Layers
 } from 'lucide-react';
+import { StorageService } from '../utils/storage';
 
 export const HeaderAudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState<number>(50);
-  const [opacity, setOpacity] = useState<number>(33);
+  const [opacity, setOpacity] = useState<number>(() => StorageService.getVideoOpacity());
+  const [uiOpacity, setUiOpacity] = useState<number>(() => StorageService.getUiOpacity());
   const [isVideoVisible, setIsVideoVisible] = useState(true);
   const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 210 });
   const [showSettings, setShowSettings] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
 
-  // Synchronize state with background audio engine
+  // Synchronize state with background audio engine and UI opacity events
   useEffect(() => {
     const handleStateChanged = (e: Event) => {
       const customEvent = e as CustomEvent<{
@@ -53,7 +55,15 @@ export const HeaderAudioPlayer: React.FC = () => {
       }
     };
 
+    const handleUiOpacityChanged = (e: Event) => {
+      const customEvent = e as CustomEvent<{ opacity: number }>;
+      if (customEvent.detail && typeof customEvent.detail.opacity === 'number') {
+        setUiOpacity(customEvent.detail.opacity);
+      }
+    };
+
     window.addEventListener('haven-audio-state-changed', handleStateChanged);
+    window.addEventListener('haven-ui-opacity-changed', handleUiOpacityChanged);
 
     // Close settings dropdown on outside click
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,6 +75,7 @@ export const HeaderAudioPlayer: React.FC = () => {
 
     return () => {
       window.removeEventListener('haven-audio-state-changed', handleStateChanged);
+      window.removeEventListener('haven-ui-opacity-changed', handleUiOpacityChanged);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -86,7 +97,19 @@ export const HeaderAudioPlayer: React.FC = () => {
   };
 
   const changeOpacity = (newOpacity: number) => {
+    setOpacity(newOpacity);
+    StorageService.setVideoOpacity(newOpacity);
     window.dispatchEvent(new CustomEvent('haven-audio-set-opacity', { detail: { opacity: newOpacity } }));
+  };
+
+  const changeUiOpacity = (newUiOpacity: number) => {
+    const clamped = Math.max(10, Math.min(100, Math.round(newUiOpacity)));
+    setUiOpacity(clamped);
+    StorageService.setUiOpacity(clamped);
+    const root = document.documentElement;
+    root.style.setProperty('--ui-surface-opacity', (clamped / 100).toFixed(2));
+    root.style.setProperty('--ui-bg-opacity', ((clamped / 100) * 0.4).toFixed(2));
+    window.dispatchEvent(new CustomEvent('haven-ui-opacity-changed', { detail: { opacity: clamped } }));
   };
 
   const toggleVideoVisibility = () => {
@@ -210,7 +233,7 @@ export const HeaderAudioPlayer: React.FC = () => {
 
       {/* Expanded Quick Settings Popover */}
       {showSettings && (
-        <div className="absolute right-0 top-full mt-2 z-50 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-[#CED6C1] text-xs text-[#3E3B39] w-72 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 font-sans">
+        <div className="absolute right-0 top-full mt-2 z-50 bg-white/95 backdrop-blur-xl p-3.5 rounded-2xl shadow-2xl border border-[#CED6C1] text-xs text-[#3E3B39] w-76 sm:w-80 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 font-sans">
           <div className="flex items-center justify-between border-b border-[#E5E2D9] pb-2">
             <div className="flex items-center gap-1.5 font-bold text-[#5A5A40]">
               <Music className="w-4 h-4 text-[#8A9A5B]" />
@@ -230,7 +253,7 @@ export const HeaderAudioPlayer: React.FC = () => {
             <div className="flex justify-between items-center text-[11px] text-[#5A5A40]">
               <span className="font-medium flex items-center gap-1.5">
                 {isMuted || volume === 0 ? <VolumeX className="w-3.5 h-3.5 text-[#A64D4D]" /> : <Volume2 className="w-3.5 h-3.5 text-[#8A9A5B]" />}
-                <span>Volume Audio</span>
+                <span>Volume Sonore</span>
               </span>
               <span className="font-bold text-[#8A9A5B] font-mono">{isMuted ? 'Muet' : `${volume}%`}</span>
             </div>
@@ -252,29 +275,53 @@ export const HeaderAudioPlayer: React.FC = () => {
             </div>
           </div>
 
+          {/* UI Transparency Control */}
+          <div className="space-y-1.5 bg-[#F8F7F2] p-2.5 rounded-xl border border-[#E5E2D9]">
+            <div className="flex justify-between items-center text-[11px] text-[#5A5A40]">
+              <span className="font-medium flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-[#8A9A5B]" />
+                <span>Transparence Fiches & Boutons</span>
+              </span>
+              <span className="font-bold text-[#8A9A5B] font-mono">{uiOpacity}%</span>
+            </div>
+            <input
+              type="range"
+              min="15"
+              max="100"
+              step="5"
+              value={uiOpacity}
+              onChange={(e) => changeUiOpacity(Number(e.target.value))}
+              className="w-full h-1.5 bg-[#CED6C1] rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
+            />
+            <div className="flex justify-between text-[9px] text-[#8E8B82]">
+              <button type="button" onClick={() => changeUiOpacity(25)} className="hover:text-[#5A5A40]">Translucide (25%)</button>
+              <button type="button" onClick={() => changeUiOpacity(65)} className="hover:text-[#5A5A40]">Équilibré (65%)</button>
+              <button type="button" onClick={() => changeUiOpacity(95)} className="hover:text-[#5A5A40]">Opaque (95%)</button>
+            </div>
+          </div>
+
           {/* Opacity Video Control */}
           <div className="space-y-1.5 bg-[#F8F7F2] p-2.5 rounded-xl border border-[#E5E2D9]">
             <div className="flex justify-between items-center text-[11px] text-[#5A5A40]">
               <span className="font-medium flex items-center gap-1.5">
                 <Eye className="w-3.5 h-3.5 text-[#8A9A5B]" />
-                <span>Transparence Vidéo Arrière-Plan</span>
+                <span>Intensité Vidéo de Fond</span>
               </span>
               <span className="font-bold text-[#8A9A5B] font-mono">{opacity}%</span>
             </div>
             <input
               type="range"
-              min="5"
-              max="100"
+              min="10"
+              max="90"
               step="5"
               value={opacity}
               onChange={(e) => changeOpacity(Number(e.target.value))}
               className="w-full h-1.5 bg-[#CED6C1] rounded-lg appearance-none cursor-pointer accent-[#8A9A5B]"
             />
             <div className="flex justify-between text-[9px] text-[#8E8B82]">
-              <button type="button" onClick={() => changeOpacity(15)} className="hover:text-[#5A5A40]">15% Furtif</button>
-              <button type="button" onClick={() => changeOpacity(33)} className="font-bold text-[#5A5A40] underline decoration-[#8A9A5B]">33% Optimal</button>
-              <button type="button" onClick={() => changeOpacity(70)} className="hover:text-[#5A5A40]">70% Immersion</button>
-              <button type="button" onClick={() => changeOpacity(100)} className="hover:text-[#5A5A40]">100%</button>
+              <button type="button" onClick={() => changeOpacity(20)} className="hover:text-[#5A5A40]">20% Discret</button>
+              <button type="button" onClick={() => changeOpacity(45)} className="font-bold text-[#5A5A40] underline decoration-[#8A9A5B]">45% Optimal</button>
+              <button type="button" onClick={() => changeOpacity(80)} className="hover:text-[#5A5A40]">80% Immersion</button>
             </div>
           </div>
 
