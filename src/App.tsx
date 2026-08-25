@@ -12,6 +12,7 @@ import { TherapeuticRelaxation } from './components/TherapeuticRelaxation';
 import { DiscreetAppointments } from './components/DiscreetAppointments';
 import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
+import { BackgroundMusicVideo } from './components/BackgroundMusicVideo';
 import { StorageService } from './utils/storage';
 import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment, UserAssessmentProfile } from './types';
 import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
@@ -78,7 +79,10 @@ export default function App() {
   }
 
   return (
-    <div id="haven-app-root" className="min-h-screen bg-[#F8F7F2] text-[#3E3B39] flex flex-col font-sans selection:bg-[#E5EAD9] selection:text-[#5A5A40]">
+    <div id="haven-app-root" className="relative min-h-screen bg-[#F8F7F2]/80 backdrop-blur-[0.5px] text-[#3E3B39] flex flex-col font-sans selection:bg-[#E5EAD9] selection:text-[#5A5A40]">
+      {/* Background Music & Official Video (Theory of a Deadman - History of Violence) */}
+      <BackgroundMusicVideo isPanicOrCamouflage={isCamouflageActive} />
+
       {/* Top Header & Emergency Bar */}
       <Header
         activeTab={activeTab}
@@ -110,6 +114,7 @@ export default function App() {
           <HighThinkingSafetyPlan
             onNavigateToRelaxation={() => setActiveTab('relaxation')}
             onNavigateToContacts={() => setActiveTab('contacts')}
+            onOpenDetailedAssessment={() => setShowAssessmentModal(true)}
           />
         )}
 
@@ -135,14 +140,14 @@ export default function App() {
       </main>
 
       {/* Security & Confidentiality Footer */}
-      <footer className="bg-[#FFFFFF] border-t border-[#E5E2D9] py-4 px-4 text-center text-xs text-[#8E8B82]">
+      <footer className="bg-[#FFFFFF]/90 backdrop-blur-md border-t border-[#E5E2D9] py-4 px-4 text-center text-xs text-[#8E8B82]">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[#3E3B39] font-medium">
             <Lock className="w-3.5 h-3.5 text-[#8A9A5B]" />
             <span>HAVEN-ELLE • Chiffrement local & Zéro traçage • Mode Anonyme</span>
           </div>
           <p className="text-[11px] text-[#8E8B82]">
-            En cas de danger immédiat, composez le <strong className="text-[#A64D4D]">17</strong> (Police) ou le <strong className="text-[#A64D4D]">114</strong> (SMS).
+            En cas de danger immédiat : composez le <strong className="text-[#A64D4D]">911</strong> / <strong className="text-[#A64D4D]">17</strong> ou SMS <strong className="text-[#8A9A5B]">1-438-543-2555</strong>.
           </p>
         </div>
       </footer>

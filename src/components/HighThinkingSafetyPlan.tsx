@@ -24,15 +24,18 @@ import {
 import { DetailedSafetyPlan } from '../types';
 import { StorageService, INITIAL_SAFETY_PLAN } from '../utils/storage';
 import { CompanionMemoryService } from '../utils/companionMemory';
+import { MainScreenVideoAndQuestions } from './MainScreenVideoAndQuestions';
 
 interface HighThinkingSafetyPlanProps {
   onNavigateToRelaxation?: () => void;
   onNavigateToContacts?: () => void;
+  onOpenDetailedAssessment?: () => void;
 }
 
 export const HighThinkingSafetyPlan: React.FC<HighThinkingSafetyPlanProps> = ({ 
   onNavigateToRelaxation,
   onNavigateToContacts,
+  onOpenDetailedAssessment,
 }) => {
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState<DetailedSafetyPlan>(() => StorageService.getSafetyPlan());
@@ -205,6 +208,14 @@ export const HighThinkingSafetyPlan: React.FC<HighThinkingSafetyPlanProps> = ({
 
   return (
     <div id="safety-plan-main-container" className="space-y-6">
+      {/* Official Video Screen & Primary Assessment Form Hub */}
+      <MainScreenVideoAndQuestions 
+        onPlanGenerated={() => {
+          setPlan(StorageService.getSafetyPlan());
+        }}
+        onOpenDetailedAssessment={onOpenDetailedAssessment}
+      />
+
       {/* Assessment & Generation Card */}
       <div className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] p-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E5E2D9]">
