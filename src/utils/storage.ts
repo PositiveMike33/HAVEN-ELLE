@@ -1,9 +1,10 @@
-import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile } from '../types';
+import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile, VoiceRecordingEvidence } from '../types';
 
 const STORAGE_KEYS = {
   CONTACTS: 'haven_trusted_contacts_v3',
   ALERTS: 'haven_alerts_history_v1',
   INCIDENTS: 'haven_incidents_v1',
+  VOICE_RECORDINGS: 'haven_voice_recordings_v1',
   SAFETY_PLAN: 'haven_safety_plan_v3',
   APPOINTMENTS: 'haven_appointments_v1',
   SETTINGS: 'haven_user_settings_v1',
@@ -276,6 +277,25 @@ export const StorageService = {
 
   saveIncidents(incidents: IncidentRecord[]): void {
     localStorage.setItem(STORAGE_KEYS.INCIDENTS, JSON.stringify(incidents));
+  },
+
+  getVoiceRecordings(): VoiceRecordingEvidence[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.VOICE_RECORDINGS);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveVoiceRecordings(recordings: VoiceRecordingEvidence[]): void {
+    localStorage.setItem(STORAGE_KEYS.VOICE_RECORDINGS, JSON.stringify(recordings));
+  },
+
+  saveVoiceRecording(recording: VoiceRecordingEvidence): void {
+    const existing = this.getVoiceRecordings();
+    const updated = [recording, ...existing.filter((r) => r.id !== recording.id)];
+    this.saveVoiceRecordings(updated);
   },
 
   getAppointments(): DiscreetAppointment[] {

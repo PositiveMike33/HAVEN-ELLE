@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Volume2, VolumeX, Music, Eye, EyeOff, Sliders, Sparkles } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Music, Eye, EyeOff, Sliders, RotateCcw, Repeat } from 'lucide-react';
+
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady?: () => void;
+    YT?: any;
+  }
+}
 
 interface BackgroundMusicVideoProps {
   isPanicOrCamouflage: boolean;
@@ -13,90 +20,249 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
   const [opacity, setOpacity] = useState<number>(33); // 33% as requested
   const [showControls, setShowControls] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(true);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isApiReady, setIsApiReady] = useState(false);
+  const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 210 });
+
+  const playerRef = useRef<any>(null);
+  const iframeContainerRef = useRef<HTMLDivElement>(null);
+  const pollIntervalRef = useRef<number | null>(null);
 
   // YouTube Video ID for Theory of a Deadman - History of Violence
   const videoId = 'hgHwXM7GYuk';
 
-  // Handle Panic or Camouflage mode: immediately mute and hide
+  // Initialize YouTube IFrame API once
+  useEffect(() => {
+    // Load YouTube API script if not present
+    if (!window.YT || !window.YT.Player) {
+      const existingScript = document.getElementById('youtube-iframe-api-script');
+      if (!existingScript) {
+        const tag = document.createElement('script');
+        tag.id = 'youtube-iframe-api-script';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+      }
+
+      const prevCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (prevCallback) prevCallback();
+        setIsApiReady(true);
+      };
+    } else {
+      setIsApiReady(true);
+    }
+  }, []);
+
+  // Instantiate persistent YouTube Player when API is ready
+  useEffect(() => {
+    if (!isApiReady || playerRef.current || !window.YT) return;
+
+    try {
+      playerRef.current = new window.YT.Player('haven-persistent-bg-player', {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 1,
+          mute: isMuted ? 1 : 0,
+          loop: 1,
+          playlist: videoId,
+          controls: 0,
+          showinfo: 0,
+          rel: 0,
+          modestbranding: 1,
+          playsinline: 1,
+          iv_load_policy: 3,
+          enablejsapi: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: (event: any) => {
+            if (isMuted) {
+              event.target.mute();
+            } else {
+              event.target.unMute();
+            }
+            if (isPlaying && !isPanicOrCamouflage) {
+              event.target.playVideo();
+            }
+          },
+          onStateChange: (event: any) => {
+            // 0 = YT.PlayerState.ENDED -> Guarantee 100% full song complete loop without cutting
+            if (event.data === 0) {
+              event.target.seekTo(0, true);
+              event.target.playVideo();
+            } else if (event.data === 1) {
+              setIsPlaying(true);
+            } else if (event.data === 2) {
+              setIsPlaying(false);
+            }
+          },
+          onError: (err: any) => {
+            console.warn('YouTube Player event notice:', err);
+          },
+        },
+      });
+    } catch (e) {
+      console.warn('Failed to initialize YouTube API player, using iframe fallback:', e);
+    }
+  }, [isApiReady]);
+
+  // Keep track of playback duration and enforce complete infinite loop
+  useEffect(() => {
+    pollIntervalRef.current = window.setInterval(() => {
+      if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+        try {
+          const current = playerRef.current.getCurrentTime() || 0;
+          const total = playerRef.current.getDuration() || 210;
+          setTrackProgress({ currentTime: Math.floor(current), duration: Math.floor(total) });
+
+          // If track reached near end (within 1s) and didn't trigger ended event automatically, loop back to 0
+          if (total > 10 && current >= total - 0.5) {
+            playerRef.current.seekTo(0, true);
+            playerRef.current.playVideo();
+          }
+        } catch {
+          // ignore transient poll error
+        }
+      }
+    }, 1000);
+
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
+
+  // Handle Panic or Camouflage mode: immediately mute and stop
   useEffect(() => {
     if (isPanicOrCamouflage) {
       setIsPlaying(false);
       setIsMuted(true);
-      if (iframeRef.current && iframeRef.current.contentWindow) {
-        iframeRef.current.contentWindow.postMessage(
-          JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }),
-          '*'
-        );
-        iframeRef.current.contentWindow.postMessage(
-          JSON.stringify({ event: 'command', func: 'mute', args: [] }),
-          '*'
-        );
+      if (playerRef.current && typeof playerRef.current.pauseVideo === 'function') {
+        playerRef.current.pauseVideo();
+        playerRef.current.mute();
       }
     }
   }, [isPanicOrCamouflage]);
 
+  // Synchronize global audio events across the entire app
+  useEffect(() => {
+    const handleGlobalTogglePlay = () => {
+      togglePlayPause();
+    };
+    const handleGlobalToggleMute = () => {
+      toggleMute();
+    };
+    const handleGlobalRestart = () => {
+      restartTrack();
+    };
+    const handleGlobalSetOpacity = (e: Event) => {
+      const customEvent = e as CustomEvent<{ opacity: number }>;
+      if (customEvent.detail && typeof customEvent.detail.opacity === 'number') {
+        setOpacity(customEvent.detail.opacity);
+      }
+    };
+
+    window.addEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
+    window.addEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
+    window.addEventListener('haven-audio-restart', handleGlobalRestart);
+    window.addEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
+
+    return () => {
+      window.removeEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
+      window.removeEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
+      window.removeEventListener('haven-audio-restart', handleGlobalRestart);
+      window.removeEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
+    };
+  }, [isPlaying, isMuted]);
+
+  // Dispatch current state for other UI components
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent('haven-audio-state-changed', {
+        detail: { isPlaying, isMuted, opacity, isVideoVisible, trackProgress },
+      })
+    );
+  }, [isPlaying, isMuted, opacity, isVideoVisible, trackProgress]);
+
   const togglePlayPause = () => {
     const nextState = !isPlaying;
     setIsPlaying(nextState);
-    if (iframeRef.current && iframeRef.current.contentWindow) {
-      const func = nextState ? 'playVideo' : 'pauseVideo';
-      iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: func, args: [] }),
-        '*'
-      );
+    if (playerRef.current) {
+      if (nextState) {
+        if (typeof playerRef.current.playVideo === 'function') {
+          playerRef.current.playVideo();
+        }
+      } else {
+        if (typeof playerRef.current.pauseVideo === 'function') {
+          playerRef.current.pauseVideo();
+        }
+      }
     }
   };
 
   const toggleMute = () => {
     const nextMute = !isMuted;
     setIsMuted(nextMute);
-    if (iframeRef.current && iframeRef.current.contentWindow) {
-      const func = nextMute ? 'mute' : 'unMute';
-      iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: func, args: [] }),
-        '*'
-      );
-      if (!nextMute && !isPlaying) {
-        setIsPlaying(true);
-        iframeRef.current.contentWindow.postMessage(
-          JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
-          '*'
-        );
+    if (playerRef.current) {
+      if (nextMute) {
+        if (typeof playerRef.current.mute === 'function') {
+          playerRef.current.mute();
+        }
+      } else {
+        if (typeof playerRef.current.unMute === 'function') {
+          playerRef.current.unMute();
+        }
+        if (!isPlaying) {
+          setIsPlaying(true);
+          if (typeof playerRef.current.playVideo === 'function') {
+            playerRef.current.playVideo();
+          }
+        }
       }
     }
   };
 
-  // Embed URL with loop, autoplay, playlist, controls disabled and enablejsapi enabled
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : '')}`;
+  const restartTrack = () => {
+    if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
+      playerRef.current.seekTo(0, true);
+      playerRef.current.playVideo();
+      setIsPlaying(true);
+    }
+  };
+
+  const formatTrackTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   return (
     <>
-      {/* Background Video Layer */}
-      {isVideoVisible && !isPanicOrCamouflage && (
+      {/* Background Video Layer - Persistent Container without iframe reloads */}
+      <div
+        id="music-video-background-layer"
+        className={`fixed inset-0 pointer-events-none -z-20 overflow-hidden select-none transition-opacity duration-700 ${
+          !isVideoVisible || isPanicOrCamouflage ? 'opacity-0 invisible' : ''
+        }`}
+        style={{ opacity: isVideoVisible && !isPanicOrCamouflage ? opacity / 100 : 0 }}
+        aria-hidden="true"
+      >
         <div
-          id="music-video-background-layer"
-          className="fixed inset-0 pointer-events-none -z-20 overflow-hidden select-none transition-opacity duration-700"
-          style={{ opacity: opacity / 100 }}
-          aria-hidden="true"
+          ref={iframeContainerRef}
+          className="absolute inset-0 w-full h-full flex items-center justify-center bg-black"
         >
-          <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black">
-            <iframe
-              ref={iframeRef}
-              src={embedUrl}
-              title="Theory of a Deadman - History of Violence (Official Video)"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              className="w-[150vw] h-[150vh] min-w-full min-h-full object-cover scale-[1.3] pointer-events-none border-0"
-              style={{
-                filter: 'contrast(105%) saturate(110%)',
-              }}
-            />
-          </div>
-
-          {/* Ambient gradient overlay to maintain elegance & contrast */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#F8F7F2]/10 via-transparent to-[#F8F7F2]/40 mix-blend-overlay pointer-events-none" />
+          {/* Permanent static element targeted by YouTube API */}
+          <div
+            id="haven-persistent-bg-player"
+            className="w-[150vw] h-[150vh] min-w-full min-h-full object-cover scale-[1.3] pointer-events-none border-0"
+            style={{
+              filter: 'contrast(105%) saturate(110%)',
+            }}
+          />
         </div>
-      )}
+
+        {/* Ambient gradient overlay to maintain elegance & contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8F7F2]/10 via-transparent to-[#F8F7F2]/40 mix-blend-overlay pointer-events-none" />
+      </div>
 
       {/* Floating Audio & Clip Widget (Bottom Right) */}
       {!isPanicOrCamouflage && (
@@ -110,7 +276,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
               <div className="flex items-center justify-between border-b border-[#E5E2D9] pb-2">
                 <div className="flex items-center gap-1.5 font-bold text-[#5A5A40]">
                   <Music className="w-4 h-4 text-[#8A9A5B]" />
-                  <span>Ambiance & Clip Vidéo</span>
+                  <span>Ambiance & Clip Vidéo Complet</span>
                 </div>
                 <button
                   type="button"
@@ -125,9 +291,28 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                 <p className="font-semibold text-[#3E3B39] truncate">
                   Theory of a Deadman
                 </p>
-                <p className="text-[11px] text-[#8E8B82] truncate">
-                  « History of Violence » (Clip Officiel en Boucle)
+                <p className="text-[11px] text-[#8E8B82] truncate flex items-center justify-between">
+                  <span>« History of Violence »</span>
+                  <span className="text-[#8A9A5B] font-mono font-medium">
+                    {formatTrackTime(trackProgress.currentTime)} / {formatTrackTime(trackProgress.duration)}
+                  </span>
                 </p>
+              </div>
+
+              {/* Loop and Status indicator */}
+              <div className="flex items-center justify-between bg-[#E5EAD9]/60 p-2 rounded-xl border border-[#CED6C1] text-[11px] text-[#5A5A40]">
+                <span className="flex items-center gap-1">
+                  <Repeat className="w-3.5 h-3.5 text-[#8A9A5B]" />
+                  Boucle infinie intégrale
+                </span>
+                <button
+                  type="button"
+                  onClick={restartTrack}
+                  className="px-2 py-0.5 bg-white text-[#5A5A40] rounded-md font-medium text-[10px] hover:bg-[#F5F2ED] border border-[#CED6C1] flex items-center gap-1"
+                  title="Recommencer depuis le début"
+                >
+                  <RotateCcw className="w-2.5 h-2.5" /> Rejouer
+                </button>
               </div>
 
               {/* Opacity slider */}
@@ -186,8 +371,9 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
               <span className="font-bold text-[11px] text-[#3E3B39] truncate leading-tight">
                 History of Violence
               </span>
-              <span className="text-[9px] text-[#8E8B82] truncate leading-tight">
-                Theory of a Deadman • 33% opacité
+              <span className="text-[9px] text-[#8E8B82] truncate leading-tight flex items-center gap-1">
+                <span>Theory of a Deadman</span>
+                <span className="font-mono text-[#8A9A5B]">• {formatTrackTime(trackProgress.currentTime)}</span>
               </span>
             </div>
 
@@ -230,3 +416,4 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     </>
   );
 };
+

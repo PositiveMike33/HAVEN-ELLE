@@ -43,16 +43,36 @@ export interface EmergencyAlert {
   isTest?: boolean;
 }
 
+export interface VoiceRecordingEvidence {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  durationSeconds: number;
+  encryptedData: string; // Base64 AES-GCM encrypted payload
+  iv: string; // Initialization vector for AES-GCM
+  checksumSha256: string; // Cryptographic hash for legal integrity
+  mimeType: string;
+  fileSizeBytes: number;
+  category: 'ambient_sound' | 'testimony' | 'emergency_audio' | 'threat_capture';
+  notes?: string;
+  location?: string;
+  isEncrypted: boolean;
+  incidentId?: string;
+  createdAt: string;
+}
+
 export interface IncidentRecord {
   id: string;
   date: string;
   time: string;
-  type: 'physical' | 'psychological' | 'financial' | 'stalking_tech' | 'threat';
+  type: 'physical' | 'psychological' | 'financial' | 'stalking_tech' | 'threat' | 'voice_recording';
   severity: 1 | 2 | 3 | 4 | 5;
   description: string;
   location?: string;
   witnesses?: string;
   evidenceFiles: string[]; // data URLs or Drive URLs
+  voiceRecordings?: VoiceRecordingEvidence[];
   hasReportedToPolice: boolean;
   createdAt: string;
 }
