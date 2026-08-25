@@ -20,7 +20,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState<number>(50); // 50% volume as requested
+  const [volume, setVolume] = useState<number>(() => StorageService.getBgVolume()); // 15% default volume
   const [opacity, setOpacity] = useState<number>(() => StorageService.getVideoOpacity()); // Video opacity
   const [uiOpacity, setUiOpacity] = useState<number>(() => StorageService.getUiOpacity()); // UI cards opacity
   const [showControls, setShowControls] = useState(false);
@@ -83,8 +83,8 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         events: {
           onReady: (event: any) => {
             try {
-              // Set volume to 50% immediately
-              event.target.setVolume(50);
+              // Set volume to default (15%) immediately
+              event.target.setVolume(volume);
               event.target.unMute();
               if (!isPanicOrCamouflage) {
                 event.target.playVideo();
@@ -265,6 +265,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
   const handleVolumeChange = (newVolume: number) => {
     const clamped = Math.max(0, Math.min(100, Math.round(newVolume)));
     setVolume(clamped);
+    StorageService.setBgVolume(clamped);
     if (playerRef.current) {
       if (typeof playerRef.current.setVolume === 'function') {
         playerRef.current.setVolume(clamped);
@@ -307,7 +308,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         }
       } else {
         if (typeof playerRef.current.setVolume === 'function') {
-          playerRef.current.setVolume(volume || 50);
+          playerRef.current.setVolume(volume || 15);
         }
         if (typeof playerRef.current.unMute === 'function') {
           playerRef.current.unMute();
@@ -452,24 +453,31 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                 <div className="flex justify-between text-[9px] opacity-75">
                   <button
                     type="button"
-                    onClick={() => handleVolumeChange(25)}
+                    onClick={() => handleVolumeChange(0)}
                     className="hover:text-[#8A9A5B]"
                   >
-                    25%
+                    0%
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleVolumeChange(50)}
+                    onClick={() => handleVolumeChange(15)}
                     className="font-semibold underline decoration-[#8A9A5B]"
                   >
-                    50% (Défaut)
+                    15% (Défaut)
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleVolumeChange(75)}
+                    onClick={() => handleVolumeChange(35)}
                     className="hover:text-[#8A9A5B]"
                   >
-                    75%
+                    35%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleVolumeChange(60)}
+                    className="hover:text-[#8A9A5B]"
+                  >
+                    60%
                   </button>
                   <button
                     type="button"

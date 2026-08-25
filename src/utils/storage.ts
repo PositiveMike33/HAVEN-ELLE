@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   NIGHT_MODE: 'haven_night_mode_v1',
   UI_OPACITY: 'haven_ui_opacity_v1',
   VIDEO_OPACITY: 'haven_video_opacity_v1',
+  BG_VOLUME: 'haven_bg_volume_v1',
 };
 
 export const DEFAULT_ASSESSMENT_PROFILE: UserAssessmentProfile = {
@@ -442,6 +443,27 @@ export const StorageService = {
   setVideoOpacity(opacity: number): void {
     try {
       localStorage.setItem(STORAGE_KEYS.VIDEO_OPACITY, Math.round(opacity).toString());
+    } catch {
+      // Ignore
+    }
+  },
+
+  getBgVolume(): number {
+    try {
+      const val = localStorage.getItem(STORAGE_KEYS.BG_VOLUME);
+      if (val !== null) {
+        const num = Number(val);
+        if (!isNaN(num) && num >= 0 && num <= 100) return num;
+      }
+      return 15; // 15% default volume as requested
+    } catch {
+      return 15;
+    }
+  },
+
+  setBgVolume(volume: number): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.BG_VOLUME, Math.round(volume).toString());
     } catch {
       // Ignore
     }

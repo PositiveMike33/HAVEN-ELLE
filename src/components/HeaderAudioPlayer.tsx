@@ -18,7 +18,7 @@ import { StorageService } from '../utils/storage';
 export const HeaderAudioPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState<number>(50);
+  const [volume, setVolume] = useState<number>(() => StorageService.getBgVolume());
   const [opacity, setOpacity] = useState<number>(() => StorageService.getVideoOpacity());
   const [uiOpacity, setUiOpacity] = useState<number>(() => StorageService.getUiOpacity());
   const [isVideoVisible, setIsVideoVisible] = useState(true);
@@ -205,7 +205,7 @@ export const HeaderAudioPlayer: React.FC = () => {
               ? 'bg-[#F5E6E0] text-[#A64D4D]'
               : 'hover:bg-black/5 text-[#5A5A40]'
           }`}
-          title={isMuted ? 'Rétablir le son (50%)' : 'Mettre en sourdine'}
+          title={isMuted ? `Rétablir le son (${volume || 15}%)` : 'Mettre en sourdine'}
         >
           {isMuted || volume === 0 ? (
             <VolumeX className="w-3.5 h-3.5" />
@@ -268,9 +268,9 @@ export const HeaderAudioPlayer: React.FC = () => {
             />
             <div className="flex justify-between text-[9px] text-[#8E8B82]">
               <button type="button" onClick={() => changeVolume(0)} className="hover:text-[#5A5A40]">0%</button>
-              <button type="button" onClick={() => changeVolume(25)} className="hover:text-[#5A5A40]">25%</button>
-              <button type="button" onClick={() => changeVolume(50)} className="font-bold text-[#5A5A40] underline decoration-[#8A9A5B]">50% (Défaut)</button>
-              <button type="button" onClick={() => changeVolume(75)} className="hover:text-[#5A5A40]">75%</button>
+              <button type="button" onClick={() => changeVolume(15)} className="font-bold text-[#5A5A40] underline decoration-[#8A9A5B]">15% (Défaut)</button>
+              <button type="button" onClick={() => changeVolume(35)} className="hover:text-[#5A5A40]">35%</button>
+              <button type="button" onClick={() => changeVolume(60)} className="hover:text-[#5A5A40]">60%</button>
               <button type="button" onClick={() => changeVolume(100)} className="hover:text-[#5A5A40]">100%</button>
             </div>
           </div>
