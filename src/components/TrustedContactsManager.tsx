@@ -104,6 +104,83 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
     StorageService.saveContacts(updated);
   };
 
+  const handleQuickSilentSms = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    const targetNumber = '1-438-543-2555';
+    const cleanNumber = '14385432555';
+    const secretPass = 'Mamadou';
+
+    const dispatchAndOpenSms = (lat?: number, lng?: number, accuracy?: number) => {
+      const mapsUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : 'Localisation GPS en cours de transmission';
+      const bodyText = `ALERTE SILENCIEUSE - Mot de passe secret : ${secretPass}. Besoin d'assistance immédiate. Localisation automatique : ${mapsUrl}`;
+
+      const alertPayload: EmergencyAlert = {
+        id: `ALT-SMS-${Date.now().toString(36).toUpperCase()}`,
+        timestamp: new Date().toISOString(),
+        mode: 'silent_beacon',
+        message: bodyText,
+        status: 'DISPATCHED',
+        recipients: [
+          {
+            name: 'Michael Gauthier Guillet (Contact Prioritaire)',
+            phone: targetNumber,
+            email: 'mikegauthierguillet@gmail.com',
+            tier: 'primary_sos',
+          },
+        ],
+        location: lat && lng ? {
+          latitude: lat,
+          longitude: lng,
+          accuracy: accuracy || 10,
+          mapsUrl: mapsUrl,
+          address: 'Coordonnées GPS directes en temps réel',
+          timestamp: Date.now(),
+        } : undefined,
+        isTest: false,
+      };
+
+      try {
+        fetch('/api/alert/dispatch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contacts: [{ name: 'Michael Gauthier Guillet', phone: targetNumber, tier: 'primary_sos' }],
+            message: bodyText,
+            location: alertPayload.location,
+            mode: 'silent_beacon',
+            secretCodeWord: secretPass,
+          }),
+        }).catch(() => {});
+      } catch {}
+
+      StorageService.saveAlert(alertPayload);
+      onAlertDispatched(alertPayload);
+      showToast(`SMS silencieux préparé pour le ${targetNumber} avec géolocalisation et mot secret : ${secretPass}`);
+
+      // Open SMS app on user device
+      const smsUri = `sms:${cleanNumber}?body=${encodeURIComponent(bodyText)}`;
+      window.location.href = smsUri;
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          dispatchAndOpenSms(
+            Number(pos.coords.latitude.toFixed(6)),
+            Number(pos.coords.longitude.toFixed(6)),
+            Math.round(pos.coords.accuracy)
+          );
+        },
+        () => {
+          dispatchAndOpenSms();
+        },
+        { enableHighAccuracy: true, timeout: 4000, maximumAge: 0 }
+      );
+    } else {
+      dispatchAndOpenSms();
+    }
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || (!formData.phone.trim() && !formData.email.trim())) {
@@ -262,24 +339,27 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
         {/* Quick Emergency Hotlines Bar */}
         <div className="mt-6 pt-5 border-t border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <a
-            href="tel:17"
+            href="tel:911"
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
           >
-            <div className="w-7 h-7 rounded-lg bg-[#A64D4D]/40 text-white flex items-center justify-center font-bold">17</div>
+            <div className="w-8 h-7 rounded-lg bg-[#A64D4D]/40 text-white flex items-center justify-center font-bold text-xs">911</div>
             <div>
-              <span className="font-bold block text-white">Police / Secours</span>
+              <span className="font-bold block text-white">911 / Police & Secours</span>
               <span className="text-[10px] text-[#E5EAD9]">Urgence vitale</span>
             </div>
           </a>
 
           <a
-            href="sms:114"
-            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
+            id="quick-silent-sms-btn"
+            href="sms:14385432555?body=ALERTE%20SILENCIEUSE%20-%20Mot%20de%20passe%20secret%20%3A%20Mamadou.%20Besoin%20d%27assistance%20imm%C3%A9diate."
+            onClick={handleQuickSilentSms}
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors cursor-pointer"
+            title="Envoyer SMS Silencieux au 1-438-543-2555 avec géolocalisation automatique et mot secret Mamadou"
           >
-            <div className="w-7 h-7 rounded-lg bg-white/15 text-[#E5EAD9] flex items-center justify-center font-bold">114</div>
+            <div className="w-8 h-7 rounded-lg bg-[#8A9A5B]/40 text-white flex items-center justify-center font-bold text-xs">SMS</div>
             <div>
-              <span className="font-bold block text-white">SMS Silencieux</span>
-              <span className="text-[10px] text-[#E5EAD9]">Si impossible de parler</span>
+              <span className="font-bold block text-white">SMS Silencieux (438)</span>
+              <span className="text-[10px] text-[#E5EAD9]">1-438-543-2555 • Mamadou</span>
             </div>
           </a>
 

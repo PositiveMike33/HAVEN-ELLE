@@ -35,7 +35,7 @@ export interface EmergencyAlert {
   recipients: Array<{
     name: string;
     phone: string;
-    email: string;
+    email?: string;
     tier: AlertTier;
   }>;
   location?: LocationData;

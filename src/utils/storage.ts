@@ -129,7 +129,7 @@ export const INITIAL_CONTACTS: TrustedContact[] = [
     id: 'tc-1',
     name: 'Michael Gauthier Guillet',
     relationship: 'Ami de confiance',
-    phone: '438-543-2555',
+    phone: '1-438-543-2555',
     email: 'mikegauthierguillet@gmail.com',
     tier: 'primary_sos',
     notifyBy: 'all',

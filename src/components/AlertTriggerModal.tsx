@@ -37,10 +37,10 @@ export const AlertTriggerModal: React.FC<AlertTriggerModalProps> = ({
 
   // Preset messages by mode
   const presetMessages: Record<AlertMode, string> = {
-    emergency_sos: "URGENCE VITALE : Je suis en danger immédiat. Veuillez prévenir les secours (Police / Gendarmerie) et consulter ma localisation en temps réel.",
-    secret_code: "Coucou ! Mon rendez-vous a pris un peu de retard. Peux-tu me rappeler dès que tu vois ce message s'il te plaît ? (Code Sécurité Actif)",
-    check_in: "Je suis bien arrivée à destination en sécurité. Tout va bien pour le moment. Voici ma localisation de confirmation.",
-    silent_beacon: "Balise silencieuse de détresse activée automatiquement. Suivi GPS confidentiel en cours.",
+    emergency_sos: "URGENCE VITALE : Je suis en danger immédiat. Mot de passe secret : Mamadou. Veuillez prévenir les secours (911) et consulter ma localisation GPS en temps réel.",
+    secret_code: "Code Secret : Mamadou. Coucou ! Mon rendez-vous a pris un peu de retard. Peux-tu me rappeler dès que tu vois ce message s'il te plaît ?",
+    check_in: "Je suis bien arrivée à destination en sécurité. Mot secret : Mamadou. Tout va bien pour le moment. Voici ma localisation de confirmation.",
+    silent_beacon: "ALERTE SILENCIEUSE - Mot de passe secret : Mamadou. Balise de détresse activée automatiquement pour 1-438-543-2555. Suivi GPS confidentiel en cours.",
   };
 
   useEffect(() => {
