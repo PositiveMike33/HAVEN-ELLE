@@ -264,3 +264,24 @@ export interface SubstituteAgent {
   initialGreeting: string;
   recommendedPrompts: { label: string; text: string }[];
 }
+
+export type TherapeuticAgentId = 'somatic_trauma' | 'financial_sovereignty' | 'gaslighting_clarity';
+
+export interface TherapeuticPerspectiveAgent {
+  id: TherapeuticAgentId;
+  perspectiveNumber: 1 | 2 | 3;
+  name: string;
+  codeName: string;
+  specialization: string;
+  archetype: string;
+  description: string;
+  methodology: string;
+  avatarEmoji: string;
+  themeColor: string;
+  bgColor: string;
+  borderColor: string;
+  badgeText: string;
+  systemPrompt: string;
+  initialGreeting: string;
+  fastSuggestions: { label: string; prompt: string }[];
+}

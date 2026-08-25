@@ -140,7 +140,7 @@ app.get('/api/health', (req, res) => {
 // 1. Gemini Chat & Crisis Triage
 app.post('/api/gemini/chat', async (req, res) => {
   try {
-    const { messages, urgency = 'normal', systemPrompt } = req.body;
+    const { messages, urgency = 'normal', systemPrompt, overrideSystemPrompt = false } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
     // Model selection based on urgency and task
@@ -165,9 +165,14 @@ app.post('/api/gemini/chat', async (req, res) => {
       parts: [{ text: m.content }],
     }));
 
-    const combinedSystemPrompt = systemPrompt
-      ? `${THERAPEUTIC_SYSTEM_PROMPT}\n\n---\n\n### CONTEXTE SPÉCIFIQUE DE LA CONSULTATION & HAVEN-ELLE:\n${systemPrompt}`
-      : THERAPEUTIC_SYSTEM_PROMPT;
+    let combinedSystemPrompt = THERAPEUTIC_SYSTEM_PROMPT;
+    if (systemPrompt) {
+      if (overrideSystemPrompt || systemPrompt.includes('IDENTITÉ ET RÔLE')) {
+        combinedSystemPrompt = systemPrompt;
+      } else {
+        combinedSystemPrompt = `${THERAPEUTIC_SYSTEM_PROMPT}\n\n---\n\n### CONTEXTE SPÉCIFIQUE DE LA CONSULTATION & HAVEN-ELLE:\n${systemPrompt}`;
+      }
+    }
 
     const response = await ai.models.generateContent({
       model: modelName,

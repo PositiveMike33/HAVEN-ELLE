@@ -16,10 +16,14 @@ import {
   ShieldCheck,
   Calendar,
   CheckCircle2,
-  Lock
+  Lock,
+  Users,
+  Layers,
+  MessageCircle
 } from 'lucide-react';
 import { CompanionMemoryService } from '../utils/companionMemory';
 import { CompanionMemoryProfile } from '../types';
+import { TherapeuticTeamPerspective } from './TherapeuticTeamPerspective';
 
 interface ChatMessage {
   id: string;
@@ -29,6 +33,7 @@ interface ChatMessage {
 }
 
 export const GeminiCrisisChat: React.FC = () => {
+  const [chatViewMode, setChatViewMode] = useState<'team' | 'sanctuary'>('team');
   const [profile, setProfile] = useState<CompanionMemoryProfile>(() => CompanionMemoryService.getProfile());
   const [showMemoryJournal, setShowMemoryJournal] = useState(false);
 
@@ -183,60 +188,104 @@ export const GeminiCrisisChat: React.FC = () => {
   };
 
   return (
-    <div id="gemini-crisis-chat" className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] shadow-sm overflow-hidden flex flex-col h-[660px]">
-      {/* Chat Top Bar */}
-      <div className="p-4 bg-[#5A5A40] text-white flex items-center justify-between border-b border-[#CED6C1]/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#8A9A5B]/30 border border-[#8A9A5B]/40 flex items-center justify-center text-[#E5EAD9]">
-            <Bot className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold tracking-tight font-serif-natural">HAVEN-ELLE • Intelligence Thérapeutique Méta-Orchestrée</h3>
-              <span className="w-2 h-2 rounded-full bg-[#8A9A5B] animate-pulse" />
-            </div>
-            <p className="text-[11px] text-[#E5EAD9]/80 flex items-center gap-1.5">
-              <span className="bg-white/15 px-1.5 py-0.2 rounded font-medium text-[10px]">ToT × AoT × Loop</span>
-              <span>{profile.relationshipTitle}</span> • 
-              <span className="text-[#CED6C1]">{profile.resiliencePoints} pts de résilience</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Action buttons */}
+    <div className="space-y-4">
+      {/* Top View Mode Switcher Header */}
+      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E5E2D9] p-2 sm:p-2.5 flex items-center justify-between gap-3 shadow-2xs">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowMemoryJournal(true)}
-            className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-[#F8F7F2] flex items-center gap-1.5 transition-colors"
-            title="Consulter le journal de votre relation et mémoire"
+            type="button"
+            onClick={() => setChatViewMode('team')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              chatViewMode === 'team'
+                ? 'bg-[#5A5A40] text-white shadow-xs'
+                : 'text-[#5A5A40] hover:bg-[#F8F7F2]'
+            }`}
           >
-            <BookOpen className="w-3.5 h-3.5" /> Journal d'Alliance
+            <Users className="w-4 h-4" />
+            <span>Team Perspective (3 Agents Côte à Côte)</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#8A9A5B] text-white font-mono">
+              3
+            </span>
           </button>
 
           <button
-            onClick={toggleLiveVoice}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-              liveVoiceActive
-                ? 'bg-[#A64D4D] text-white animate-pulse'
-                : 'bg-white/10 hover:bg-white/20 text-[#F8F7F2]'
+            type="button"
+            onClick={() => setChatViewMode('sanctuary')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              chatViewMode === 'sanctuary'
+                ? 'bg-[#5A5A40] text-white shadow-xs'
+                : 'text-[#5A5A40] hover:bg-[#F8F7F2]'
             }`}
-            title="Conversation Vocale Mains Libres"
           >
-            {liveVoiceActive ? <Mic className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
-            {liveVoiceActive ? 'Voix Active' : 'Voix (Live)'}
+            <MessageCircle className="w-4 h-4" />
+            <span>Sanctuaire Solo (HAVEN-ELLE)</span>
           </button>
+        </div>
 
-          {isSpeaking && (
-            <button
-              onClick={stopSpeaking}
-              className="p-2 rounded-xl bg-white/10 text-[#F5E6E0] hover:bg-white/20"
-              title="Arrêter la voix"
-            >
-              <StopCircle className="w-4 h-4" />
-            </button>
-          )}
+        <div className="hidden md:flex items-center gap-2 pr-2 text-xs text-[#8E8B82]">
+          <span className="w-2 h-2 rounded-full bg-[#8A9A5B] animate-pulse" />
+          <span>Loop Therapy • ToT 3 Branches • Healing Atoms</span>
         </div>
       </div>
+
+      {/* Main View Content */}
+      {chatViewMode === 'team' ? (
+        <TherapeuticTeamPerspective onBackToSanctuary={() => setChatViewMode('sanctuary')} />
+      ) : (
+        <div id="gemini-crisis-chat" className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] shadow-sm overflow-hidden flex flex-col h-[660px]">
+          {/* Chat Top Bar */}
+          <div className="p-4 bg-[#5A5A40] text-white flex items-center justify-between border-b border-[#CED6C1]/20">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#8A9A5B]/30 border border-[#8A9A5B]/40 flex items-center justify-center text-[#E5EAD9]">
+                <Bot className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold tracking-tight font-serif-natural">HAVEN-ELLE • Intelligence Thérapeutique Méta-Orchestrée</h3>
+                  <span className="w-2 h-2 rounded-full bg-[#8A9A5B] animate-pulse" />
+                </div>
+                <p className="text-[11px] text-[#E5EAD9]/80 flex items-center gap-1.5">
+                  <span className="bg-white/15 px-1.5 py-0.2 rounded font-medium text-[10px]">ToT × AoT × Loop</span>
+                  <span>{profile.relationshipTitle}</span> • 
+                  <span className="text-[#CED6C1]">{profile.resiliencePoints} pts de résilience</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowMemoryJournal(true)}
+                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-[#F8F7F2] flex items-center gap-1.5 transition-colors"
+                title="Consulter le journal de votre relation et mémoire"
+              >
+                <BookOpen className="w-3.5 h-3.5" /> Journal d'Alliance
+              </button>
+
+              <button
+                onClick={toggleLiveVoice}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  liveVoiceActive
+                    ? 'bg-[#A64D4D] text-white animate-pulse'
+                    : 'bg-white/10 hover:bg-white/20 text-[#F8F7F2]'
+                }`}
+                title="Conversation Vocale Mains Libres"
+              >
+                {liveVoiceActive ? <Mic className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
+                {liveVoiceActive ? 'Voix Active' : 'Voix (Live)'}
+              </button>
+
+              {isSpeaking && (
+                <button
+                  onClick={stopSpeaking}
+                  className="p-2 rounded-xl bg-white/10 text-[#F5E6E0] hover:bg-white/20"
+                  title="Arrêter la voix"
+                >
+                  <StopCircle className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
 
       {/* Quick Prompt Chips */}
       <div className="p-2.5 bg-[#F8F7F2] border-b border-[#E5E2D9] flex items-center gap-2 overflow-x-auto">
@@ -354,6 +403,8 @@ export const GeminiCrisisChat: React.FC = () => {
           <Send className="w-4 h-4" />
         </button>
       </form>
+    </div>
+  )}
 
       {/* Memory Journal Modal */}
       {showMemoryJournal && (
