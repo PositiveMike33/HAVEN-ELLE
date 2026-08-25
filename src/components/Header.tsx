@@ -17,6 +17,7 @@ import {
   ClipboardList,
   Lock
 } from 'lucide-react';
+import { HeaderAudioPlayer } from './HeaderAudioPlayer';
 
 interface HeaderProps {
   activeTab: string;
@@ -83,6 +84,11 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <p className="text-[11px] text-[#8E8B82] hidden sm:block">Protection, Écoute & Réseau d'Alerte pour Femmes</p>
           </div>
+        </div>
+
+        {/* PROMINENT GLOBAL AUDIO & VIDEO CONTROLLER */}
+        <div id="header-audio-container" className="flex items-center">
+          <HeaderAudioPlayer />
         </div>
 
         {/* Action Buttons */}

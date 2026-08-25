@@ -206,12 +206,16 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         handleVolumeChange(customEvent.detail.volume);
       }
     };
+    const handleGlobalToggleVideo = () => {
+      setIsVideoVisible((prev) => !prev);
+    };
 
     window.addEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
     window.addEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
     window.addEventListener('haven-audio-restart', handleGlobalRestart);
     window.addEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
     window.addEventListener('haven-audio-set-volume', handleGlobalSetVolume);
+    window.addEventListener('haven-audio-toggle-video', handleGlobalToggleVideo);
 
     return () => {
       window.removeEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
@@ -219,6 +223,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
       window.removeEventListener('haven-audio-restart', handleGlobalRestart);
       window.removeEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
       window.removeEventListener('haven-audio-set-volume', handleGlobalSetVolume);
+      window.removeEventListener('haven-audio-toggle-video', handleGlobalToggleVideo);
     };
   }, [isPlaying, isMuted, volume]);
 
