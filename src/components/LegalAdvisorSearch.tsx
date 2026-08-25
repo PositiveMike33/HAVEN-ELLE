@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Scale,
   Search,
@@ -15,7 +15,15 @@ import {
   ArrowRight,
   Bookmark,
   Sparkles,
-  Info
+  Info,
+  Volume2,
+  VolumeX,
+  Play,
+  Pause,
+  Square,
+  Headphones,
+  Sliders,
+  Radio
 } from 'lucide-react';
 import { LEGAL_FACT_SHEETS, LegalFactSheet } from '../data/legalFactSheets';
 
@@ -30,7 +38,29 @@ export const LegalAdvisorSearch: React.FC = () => {
     sources: ["Article 515-9 du Code Civil", "Ministère de la Justice", "Fédération Nationale Solidarité Femmes (3919)"],
   });
 
+  // Text-To-Speech (TTS) State
+  const [isTtsPlaying, setIsTtsPlaying] = useState(false);
+  const [isTtsPaused, setIsTtsPaused] = useState(false);
+  const [ttsSpeed, setTtsSpeed] = useState<number>(0.95);
+  const [ttsMode, setTtsMode] = useState<'full' | 'summary' | 'steps'>('full');
+  const [activeTtsTarget, setActiveTtsTarget] = useState<'sheet' | 'ai_result' | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
   const selectedSheet = LEGAL_FACT_SHEETS.find((s) => s.id === selectedSheetId) || LEGAL_FACT_SHEETS[0];
+
+  // Stop speech when unmounting or switching tabs/sheets
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // When changing fact sheet, stop ongoing speech
+  useEffect(() => {
+    stopTts();
+  }, [selectedSheetId, activeTabMode]);
 
   const popularQuestions = [
     "Puis-je partir du domicile avec mes enfants sans risque pénal ?",
@@ -40,10 +70,157 @@ export const LegalAdvisorSearch: React.FC = () => {
     "Comment obtenir un Téléphone Grave Danger (TGD) ?",
   ];
 
+  // Build audio narration text for the fact sheet
+  const buildNarrationText = (sheet: LegalFactSheet, mode: 'full' | 'summary' | 'steps') => {
+    if (mode === 'summary') {
+      return `Fiche réflexe juridique : ${sheet.title}. Sous-titre : ${sheet.subtitle}. Résumé essentiel : ${sheet.summary}.`;
+    }
+
+    if (mode === 'steps') {
+      const stepsText = sheet.keySteps
+        .map((s, idx) => `Étape ${idx + 1} : ${s.step}. Détail : ${s.detail}.`)
+        .join(' ');
+      return `Démarches prioritaires pour la fiche : ${sheet.title}. ${stepsText}`;
+    }
+
+    // Full Mode
+    const stepsText = sheet.keySteps
+      .map((s, idx) => `Étape numéro ${idx + 1} : ${s.step}. ${s.detail}.`)
+      .join(' ');
+
+    const lawsText = sheet.legalBasis.length > 0 
+      ? `Fondements légaux applicables : ${sheet.legalBasis.join('. ')}.`
+      : '';
+
+    const adviceText = sheet.practicalAdvice.length > 0
+      ? `Conseils pratiques et précautions de terrain : ${sheet.practicalAdvice.join('. ')}.`
+      : '';
+
+    const contactsText = sheet.emergencyContacts.length > 0
+      ? `Numéros d'urgence recommandés : ${sheet.emergencyContacts.map(c => `${c.name} au numéro ${c.number}.`).join(' ')}`
+      : '';
+
+    return `Fiche réflexe juridique d'urgence. ${sheet.title}. ${sheet.subtitle}. Résumé : ${sheet.summary}. Démarches et étapes réflexes à suivre : ${stepsText} ${lawsText} ${adviceText} ${contactsText}`;
+  };
+
+  const startTtsForSheet = (mode = ttsMode, speed = ttsSpeed) => {
+    if (!('speechSynthesis' in window)) {
+      alert('La synthèse vocale n\'est pas supportée par votre navigateur.');
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const text = buildNarrationText(selectedSheet, mode);
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = speed;
+    utterance.pitch = 1.0;
+
+    // Pick best French voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const frVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes('Compact')) || voices.find(v => v.lang.startsWith('fr'));
+    if (frVoice) {
+      utterance.voice = frVoice;
+    }
+
+    utterance.onstart = () => {
+      setIsTtsPlaying(true);
+      setIsTtsPaused(false);
+      setActiveTtsTarget('sheet');
+    };
+
+    utterance.onend = () => {
+      setIsTtsPlaying(false);
+      setIsTtsPaused(false);
+      setActiveTtsTarget(null);
+    };
+
+    utterance.onerror = () => {
+      setIsTtsPlaying(false);
+      setIsTtsPaused(false);
+      setActiveTtsTarget(null);
+    };
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const startTtsForAiResult = (speed = ttsSpeed) => {
+    if (!('speechSynthesis' in window) || !result) return;
+
+    window.speechSynthesis.cancel();
+    const text = `Réponse juridique personnalisée : ${result.answer}. Sources légales : ${result.sources?.join(', ') || 'Textes en vigueur'}.`;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = speed;
+    utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const frVoice = voices.find(v => v.lang.startsWith('fr'));
+    if (frVoice) utterance.voice = frVoice;
+
+    utterance.onstart = () => {
+      setIsTtsPlaying(true);
+      setIsTtsPaused(false);
+      setActiveTtsTarget('ai_result');
+    };
+
+    utterance.onend = () => {
+      setIsTtsPlaying(false);
+      setIsTtsPaused(false);
+      setActiveTtsTarget(null);
+    };
+
+    utterance.onerror = () => {
+      setIsTtsPlaying(false);
+      setIsTtsPaused(false);
+      setActiveTtsTarget(null);
+    };
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const togglePauseTts = () => {
+    if (!('speechSynthesis' in window)) return;
+
+    if (isTtsPaused) {
+      window.speechSynthesis.resume();
+      setIsTtsPaused(false);
+      setIsTtsPlaying(true);
+    } else if (isTtsPlaying) {
+      window.speechSynthesis.pause();
+      setIsTtsPaused(true);
+    }
+  };
+
+  const stopTts = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsTtsPlaying(false);
+    setIsTtsPaused(false);
+    setActiveTtsTarget(null);
+  };
+
+  const changeSpeed = (newSpeed: number) => {
+    setTtsSpeed(newSpeed);
+    if (isTtsPlaying) {
+      if (activeTtsTarget === 'sheet') {
+        startTtsForSheet(ttsMode, newSpeed);
+      } else if (activeTtsTarget === 'ai_result') {
+        startTtsForAiResult(newSpeed);
+      }
+    }
+  };
+
   const handleSearch = async (qToSend?: string) => {
     const q = qToSend || question.trim();
     if (!q) return;
 
+    stopTts();
     setActiveTabMode('search');
     setLoading(true);
     try {
@@ -203,13 +380,19 @@ export const LegalAdvisorSearch: React.FC = () => {
       {activeTabMode === 'fiches' && selectedSheet && (
         <div id="legal-fact-sheet-card" className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] p-6 shadow-xs space-y-5 animate-in fade-in duration-200">
           {/* Fact Sheet Header */}
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 border-b border-[#F0EEE6]">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 pb-4 border-b border-[#F0EEE6]">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E5EAD9] text-[#4E6130] border border-[#CED6C1]">
                   {selectedSheet.badge}
                 </span>
                 <span className="text-[11px] text-[#8E8B82]">Fiche d'intervention immédiate</span>
+                {isTtsPlaying && activeTtsTarget === 'sheet' && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#8A9A5B]/15 text-[#5A5A40] border border-[#8A9A5B]/30 flex items-center gap-1.5 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#8A9A5B]" />
+                    Lecture vocale en cours
+                  </span>
+                )}
               </div>
               <h3 className="text-base sm:text-lg font-bold text-[#3E3B39] font-serif-natural">
                 {selectedSheet.title}
@@ -219,8 +402,41 @@ export const LegalAdvisorSearch: React.FC = () => {
               </p>
             </div>
 
-            {/* Quick Actions for Fact Sheet */}
-            <div className="flex items-center gap-2 self-start shrink-0">
+            {/* Quick Actions & Text-To-Speech Controls for Fact Sheet */}
+            <div className="flex flex-wrap items-center gap-2 self-start shrink-0">
+              {/* Main TTS Listen Button */}
+              {isTtsPlaying && activeTtsTarget === 'sheet' ? (
+                <div className="flex items-center gap-1 bg-[#8A9A5B]/15 p-1 rounded-xl border border-[#8A9A5B]">
+                  <button
+                    type="button"
+                    onClick={togglePauseTts}
+                    className="px-2.5 py-1 rounded-lg bg-[#8A9A5B] text-white text-xs font-semibold flex items-center gap-1 hover:bg-[#78884d] transition-colors"
+                    title={isTtsPaused ? "Reprendre la lecture" : "Mettre en pause"}
+                  >
+                    {isTtsPaused ? <Play className="w-3.5 h-3.5 fill-current" /> : <Pause className="w-3.5 h-3.5 fill-current" />}
+                    <span>{isTtsPaused ? "Reprendre" : "Pause"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={stopTts}
+                    className="p-1 rounded-lg hover:bg-[#8A9A5B]/20 text-[#5A5A40] transition-colors"
+                    title="Arrêter la lecture (Stop immédiat)"
+                  >
+                    <Square className="w-3.5 h-3.5 fill-current text-[#A65B5B]" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => startTtsForSheet()}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#8A9A5B] hover:bg-[#78884d] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs group"
+                  title="Écouter cette fiche réflexe à voix haute en toute discrétion"
+                >
+                  <Volume2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <span>Écouter la Fiche</span>
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => handleCopyFactSheet(selectedSheet)}
@@ -245,6 +461,128 @@ export const LegalAdvisorSearch: React.FC = () => {
                 <span>Approfondir via IA</span>
               </button>
             </div>
+          </div>
+
+          {/* DEDICATED TTS AUDIO CONTROL BAR & DISCREET PLAYBACK PANEL */}
+          <div className="p-3 rounded-2xl bg-[#FAF9F5] border border-[#E5E2D9] space-y-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                  isTtsPlaying && activeTtsTarget === 'sheet'
+                    ? 'bg-[#8A9A5B] text-white animate-pulse'
+                    : 'bg-[#E5EAD9] text-[#5A5A40]'
+                }`}>
+                  <Headphones className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#3E3B39] flex items-center gap-1.5">
+                    Synthèse Vocale Discrète (Text-To-Speech)
+                  </span>
+                  <span className="text-[10px] text-[#8E8B82] block">
+                    Écoutez vos droits sans regarder l'écran (conseil : utilisez des oreillettes).
+                  </span>
+                </div>
+              </div>
+
+              {/* Mode & Speed Selector Chips */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Mode Selector */}
+                <div className="flex items-center bg-white rounded-xl p-0.5 border border-[#E5E2D9] text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTtsMode('full');
+                      if (isTtsPlaying && activeTtsTarget === 'sheet') startTtsForSheet('full', ttsSpeed);
+                    }}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition-colors ${
+                      ttsMode === 'full' ? 'bg-[#5A5A40] text-white' : 'text-[#5A5A40] hover:text-[#3E3B39]'
+                    }`}
+                  >
+                    Intégrale
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTtsMode('summary');
+                      if (isTtsPlaying && activeTtsTarget === 'sheet') startTtsForSheet('summary', ttsSpeed);
+                    }}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition-colors ${
+                      ttsMode === 'summary' ? 'bg-[#5A5A40] text-white' : 'text-[#5A5A40] hover:text-[#3E3B39]'
+                    }`}
+                  >
+                    Résumé
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTtsMode('steps');
+                      if (isTtsPlaying && activeTtsTarget === 'sheet') startTtsForSheet('steps', ttsSpeed);
+                    }}
+                    className={`px-2 py-0.5 rounded-lg font-semibold transition-colors ${
+                      ttsMode === 'steps' ? 'bg-[#5A5A40] text-white' : 'text-[#5A5A40] hover:text-[#3E3B39]'
+                    }`}
+                  >
+                    Démarches clés
+                  </button>
+                </div>
+
+                {/* Speed Controls */}
+                <div className="flex items-center bg-white rounded-xl p-0.5 border border-[#E5E2D9] text-[10px]">
+                  {[
+                    { label: '0.8x (Posé)', val: 0.8 },
+                    { label: '1.0x', val: 0.95 },
+                    { label: '1.2x', val: 1.2 },
+                  ].map((s) => (
+                    <button
+                      key={s.val}
+                      type="button"
+                      onClick={() => changeSpeed(s.val)}
+                      className={`px-1.5 py-0.5 rounded-lg font-semibold transition-colors ${
+                        Math.abs(ttsSpeed - s.val) < 0.05
+                          ? 'bg-[#8A9A5B] text-white'
+                          : 'text-[#716E65] hover:text-[#3E3B39]'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Visual audio wave bar when reading */}
+            {isTtsPlaying && activeTtsTarget === 'sheet' && (
+              <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-[#CED6C1] text-xs text-[#5A5A40] animate-in fade-in">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-end gap-0.5 h-4">
+                    <span className="w-1 bg-[#8A9A5B] h-2 animate-bounce" />
+                    <span className="w-1 bg-[#8A9A5B] h-4 animate-bounce [animation-delay:0.15s]" />
+                    <span className="w-1 bg-[#8A9A5B] h-3 animate-bounce [animation-delay:0.3s]" />
+                    <span className="w-1 bg-[#8A9A5B] h-4 animate-bounce [animation-delay:0.45s]" />
+                  </div>
+                  <span className="font-semibold text-[11px] truncate max-w-[200px] sm:max-w-xs text-[#3E3B39]">
+                    Lecture en cours : {selectedSheet.title} ({ttsMode === 'full' ? 'Fiche complète' : ttsMode === 'summary' ? 'Résumé' : 'Démarches'})
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={togglePauseTts}
+                    className="px-2 py-0.5 bg-[#F8F7F2] hover:bg-[#E5EAD9] rounded-lg text-[10px] font-bold text-[#5A5A40] transition-colors"
+                  >
+                    {isTtsPaused ? "Reprendre" : "Pause"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={stopTts}
+                    className="px-2 py-0.5 bg-[#FDF2F2] hover:bg-[#FCE8E8] text-[#A65B5B] rounded-lg text-[10px] font-bold transition-colors"
+                  >
+                    Arrêter
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Core Summary Callout */}
@@ -392,9 +730,43 @@ export const LegalAdvisorSearch: React.FC = () => {
           {/* Results Box */}
           {result && (
             <div className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] p-6 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#5A5A40]">
-                <ShieldCheck className="w-4 h-4 text-[#8A9A5B]" />
-                Réponse Juridique & Textes Applicables
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#5A5A40]">
+                  <ShieldCheck className="w-4 h-4 text-[#8A9A5B]" />
+                  Réponse Juridique & Textes Applicables
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {isTtsPlaying && activeTtsTarget === 'ai_result' ? (
+                    <div className="flex items-center gap-1 bg-[#8A9A5B]/15 p-1 rounded-xl border border-[#8A9A5B]">
+                      <button
+                        type="button"
+                        onClick={togglePauseTts}
+                        className="px-2.5 py-1 rounded-lg bg-[#8A9A5B] text-white text-xs font-semibold flex items-center gap-1 hover:bg-[#78884d] transition-colors"
+                      >
+                        {isTtsPaused ? <Play className="w-3 h-3 fill-current" /> : <Pause className="w-3 h-3 fill-current" />}
+                        <span>{isTtsPaused ? "Reprendre" : "Pause"}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={stopTts}
+                        className="p-1 rounded-lg hover:bg-[#8A9A5B]/20 text-[#5A5A40] transition-colors"
+                      >
+                        <Square className="w-3.5 h-3.5 fill-current text-[#A65B5B]" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => startTtsForAiResult()}
+                      className="px-3 py-1.5 rounded-xl bg-[#8A9A5B] hover:bg-[#78884d] text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs"
+                      title="Écouter la réponse juridique de l'IA"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>Écouter la réponse</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="text-xs md:text-sm text-[#3E3B39] leading-relaxed whitespace-pre-wrap bg-[#F8F7F2] p-4 rounded-2xl border border-[#E5E2D9]">
