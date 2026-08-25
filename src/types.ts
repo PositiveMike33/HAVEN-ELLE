@@ -250,3 +250,17 @@ export interface WellnessDailyEntry {
   discreetNote?: string; // Anonymized, non-compromising brief personal anchor
   createdAt: string;
 }
+
+export interface SubstituteAgent {
+  id: 'psy_substitute' | 'legal_substitute';
+  name: string;
+  title: string;
+  roleDescription: string;
+  specialties: string[];
+  avatarIcon: string;
+  accentColor: string;
+  statusBadge: string;
+  systemPrompt: string;
+  initialGreeting: string;
+  recommendedPrompts: { label: string; text: string }[];
+}

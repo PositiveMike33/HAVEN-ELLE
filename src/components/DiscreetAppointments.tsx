@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { 
   Calendar, Video, Clock, User, ShieldCheck, Plus, 
-  ExternalLink, CheckCircle, Lock, CalendarCheck 
+  ExternalLink, CheckCircle, Lock, CalendarCheck, Bot 
 } from 'lucide-react';
 import { DiscreetAppointment } from '../types';
 import { StorageService } from '../utils/storage';
+import { SubstituteConsultationAgents } from './SubstituteConsultationAgents';
 
 interface DiscreetAppointmentsProps {
   appointments: DiscreetAppointment[];
@@ -72,50 +73,85 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
         </div>
       </div>
 
+      {/* Substitute AI Relaying Agents (24/7 immediate assistance while waiting for human practitioners) */}
+      <SubstituteConsultationAgents />
+
       {/* Appointment Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {appointments.map((apt) => (
-          <div
-            key={apt.id}
-            className="bg-[#FFFFFF] rounded-2xl border border-[#E5E2D9] p-5 shadow-xs flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-semibold text-[#5A5A40] bg-[#E5EAD9] px-2.5 py-0.5 rounded-full border border-[#CED6C1]">
-                  {apt.role}
-                </span>
-                <span className="text-xs font-bold text-[#5A5A40] flex items-center gap-1">
-                  <CheckCircle className="w-3.5 h-3.5 text-[#8A9A5B]" /> Confirmé
-                </span>
-              </div>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-bold text-[#3E3B39] font-serif-natural flex items-center gap-2">
+            <CalendarCheck className="w-5 h-5 text-[#8A9A5B]" />
+            Vos Téléconsultations Officielles Programmées
+          </h3>
+          <span className="text-xs text-[#8E8B82]">
+            {appointments.length} rendez-vous enregistré(s)
+          </span>
+        </div>
 
-              <h3 className="text-sm font-bold text-[#3E3B39] font-serif-natural mt-1">{apt.professionalName}</h3>
-              
-              <div className="p-3 bg-[#F8F7F2] rounded-xl border border-[#E5E2D9] my-3 space-y-1 text-xs text-[#5A5A40]">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-[#8A9A5B]" />
-                  <span>{apt.date} à {apt.time}</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#8E8B82] text-[11px]">
-                  <Lock className="w-3.5 h-3.5 text-[#8E8B82]" />
-                  <span>Intitulé discret calendrier : <em>"{apt.discreetTitle}"</em></span>
-                </div>
-              </div>
+        {appointments.length === 0 ? (
+          <div className="bg-[#FFFFFF] rounded-2xl border border-[#E5E2D9] p-8 text-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#F8F7F2] text-[#5A5A40] flex items-center justify-center mx-auto">
+              <Calendar className="w-6 h-6 text-[#8E8B82]" />
             </div>
-
-            <div className="pt-2 border-t border-[#E5E2D9] flex items-center justify-between">
-              <a
-                href={apt.meetLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2 bg-[#5A5A40] hover:bg-[#4a4a35] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors"
-              >
-                <Video className="w-4 h-4" /> Rejoindre la Consultation Meet
-              </a>
-            </div>
+            <h4 className="font-bold text-sm text-[#3E3B39]">Aucune consultation planifiée pour l'instant</h4>
+            <p className="text-xs text-[#8E8B82] max-w-md mx-auto">
+              Vous pouvez échanger immédiatement avec Dr. Éléonore ou Me Clara ci-dessus, ou planifier un rendez-vous discret avec un professionnel titulaire.
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="px-4 py-2 bg-[#5A5A40] hover:bg-[#4a4a35] text-white rounded-xl text-xs font-bold transition-colors inline-flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4" /> Planifier un Rendez-vous
+            </button>
           </div>
-        ))}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {appointments.map((apt) => (
+              <div
+                key={apt.id}
+                className="bg-[#FFFFFF] rounded-2xl border border-[#E5E2D9] p-5 shadow-xs flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] font-semibold text-[#5A5A40] bg-[#E5EAD9] px-2.5 py-0.5 rounded-full border border-[#CED6C1]">
+                      {apt.role}
+                    </span>
+                    <span className="text-xs font-bold text-[#5A5A40] flex items-center gap-1">
+                      <CheckCircle className="w-3.5 h-3.5 text-[#8A9A5B]" /> Confirmé
+                    </span>
+                  </div>
+
+                  <h4 className="text-sm font-bold text-[#3E3B39] font-serif-natural mt-1">{apt.professionalName}</h4>
+                  
+                  <div className="p-3 bg-[#F8F7F2] rounded-xl border border-[#E5E2D9] my-3 space-y-1 text-xs text-[#5A5A40]">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-3.5 h-3.5 text-[#8A9A5B]" />
+                      <span>{apt.date} à {apt.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[#8E8B82] text-[11px]">
+                      <Lock className="w-3.5 h-3.5 text-[#8E8B82]" />
+                      <span>Intitulé discret calendrier : <em>"{apt.discreetTitle}"</em></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-[#E5E2D9] flex items-center justify-between">
+                  <a
+                    href={apt.meetLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2 bg-[#5A5A40] hover:bg-[#4a4a35] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  >
+                    <Video className="w-4 h-4" /> Rejoindre la Consultation Meet
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
 
       {/* Add Modal */}
       {showModal && (
