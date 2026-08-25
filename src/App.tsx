@@ -10,12 +10,14 @@ import { LegalAdvisorSearch } from './components/LegalAdvisorSearch';
 import { EvidenceLocker } from './components/EvidenceLocker';
 import { TherapeuticRelaxation } from './components/TherapeuticRelaxation';
 import { DiscreetAppointments } from './components/DiscreetAppointments';
+import { UpcomingAppointmentsWidget } from './components/UpcomingAppointmentsWidget';
 import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
 import { BackgroundMusicVideo } from './components/BackgroundMusicVideo';
 import { StorageService } from './utils/storage';
 import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment, UserAssessmentProfile } from './types';
 import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
+import { initAuth, getAccessToken, googleSignIn } from './utils/auth';
 
 export default function App() {
   const [isCamouflageActive, setIsCamouflageActive] = useState(false);
@@ -29,6 +31,9 @@ export default function App() {
   const [assessmentProfile, setAssessmentProfile] = useState<UserAssessmentProfile>(() => {
     return StorageService.getAssessmentProfile();
   });
+  
+  // Auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // App Data State
   const [contacts, setContacts] = useState<TrustedContact[]>([]);
@@ -47,6 +52,13 @@ export default function App() {
     if (!StorageService.isOnboardingCompleted()) {
       setShowOnboarding(true);
     }
+
+    // Initialize Auth
+    const unsubscribe = initAuth(
+      () => setIsAuthenticated(true),
+      () => setIsAuthenticated(false)
+    );
+    return () => unsubscribe();
   }, []);
 
   // Sync night mode class with document body and initialize opacity variables
@@ -135,6 +147,14 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 md:py-8">
+        {/* Upcoming Appointments Widget (Visible on all tabs except appointments itself) */}
+        {activeTab !== 'appointments' && appointments.length > 0 && (
+          <UpcomingAppointmentsWidget
+            appointments={appointments}
+            onNavigateToAppointments={() => setActiveTab('appointments')}
+          />
+        )}
+
         {activeTab === 'contacts' && (
           <TrustedContactsManager
             contacts={contacts}

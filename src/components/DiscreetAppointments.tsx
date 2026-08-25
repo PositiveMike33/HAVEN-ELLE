@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { 
   Calendar, Video, Clock, User, ShieldCheck, Plus, 
-  ExternalLink, CheckCircle, Lock, CalendarCheck, Bot 
+  ExternalLink, CheckCircle, Lock, CalendarCheck, Bot, Loader2, AlertCircle, RefreshCw
 } from 'lucide-react';
 import { DiscreetAppointment } from '../types';
 import { StorageService } from '../utils/storage';
 import { SubstituteConsultationAgents } from './SubstituteConsultationAgents';
+import { createGoogleCalendarEvent } from '../utils/googleWorkspace';
+import { GoogleCalendarModal } from './GoogleCalendarModal';
 
 interface DiscreetAppointmentsProps {
   appointments: DiscreetAppointment[];
@@ -17,6 +19,9 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
   onUpdateAppointments,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showImportCalendarModal, setShowImportCalendarModal] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     professionalName: 'Dr. Sophie Laurent',
     role: 'Psychologue' as 'Psychologue' | 'Avocate' | 'Assistante Sociale' | 'Médecin Légiste',
@@ -25,23 +30,42 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
     discreetTitle: 'Rendez-vous Bilan Santé',
   });
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newApt: DiscreetAppointment = {
-      id: `apt-${Date.now().toString(36)}`,
-      professionalName: formData.professionalName,
-      role: formData.role,
-      date: formData.date,
-      time: formData.time,
-      discreetTitle: formData.discreetTitle,
-      meetLink: `https://meet.google.com/hvn-${Math.random().toString(36).substring(2, 6)}`,
-      status: 'CONFIRMED',
-    };
+    setIsCreating(true);
+    setError(null);
+    try {
+      const startDateTime = new Date(`${formData.date}T${formData.time}:00`);
+      const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour duration
+      
+      const createdEvent = await createGoogleCalendarEvent(
+        formData.discreetTitle,
+        `Consultation avec ${formData.professionalName} (${formData.role})`,
+        startDateTime.toISOString(),
+        endDateTime.toISOString()
+      );
 
-    const updated = [newApt, ...appointments];
-    onUpdateAppointments(updated);
-    StorageService.saveAppointments(updated);
-    setShowModal(false);
+      const newApt: DiscreetAppointment = {
+        id: createdEvent.id || `apt-${Date.now().toString(36)}`,
+        professionalName: formData.professionalName,
+        role: formData.role,
+        date: formData.date,
+        time: formData.time,
+        discreetTitle: formData.discreetTitle,
+        meetLink: createdEvent.hangoutLink || `https://meet.google.com/hvn-${Math.random().toString(36).substring(2, 6)}`,
+        status: 'CONFIRMED',
+      };
+
+      const updated = [newApt, ...appointments];
+      onUpdateAppointments(updated);
+      StorageService.saveAppointments(updated);
+      setShowModal(false);
+    } catch (err: any) {
+      console.error(err);
+      setError('Impossible de synchroniser avec Google Agenda. Vérifiez vos autorisations.');
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
@@ -63,13 +87,22 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-4 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 self-start sm:self-auto"
-          >
-            <Plus className="w-4 h-4" />
-            Planifier une Consultation
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => setShowImportCalendarModal(true)}
+              className="px-4 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Importer (Google Calendar)
+            </button>
+            <button
+              onClick={() => setShowModal(true)}
+              className="px-4 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              Planifier une Consultation
+            </button>
+          </div>
         </div>
       </div>
 
@@ -163,12 +196,20 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
             </p>
 
             <form onSubmit={handleCreate} className="space-y-3">
+              {error && (
+                <div className="p-3 bg-[#F5E6E0] border border-[#A64D4D]/30 text-[#A64D4D] rounded-xl text-xs flex items-start gap-2 mb-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <p>{error}</p>
+                </div>
+              )}
+
               <div>
                 <label className="text-xs font-semibold text-[#5A5A40] block mb-1">Spécialiste / Rôle</label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
                   className="w-full px-3 py-2 text-xs rounded-xl border border-[#E5E2D9] text-[#3E3B39] bg-white focus:outline-none focus:ring-2 focus:ring-[#8A9A5B]/30"
+                  disabled={isCreating}
                 >
                   <option value="Psychologue">Psychologue (Soutien & Traumatisme)</option>
                   <option value="Avocate">Avocate (Conseil juridique & Plainte)</option>
@@ -228,21 +269,41 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-[#5A5A40] hover:bg-[#F5F2ED] rounded-xl"
+                  disabled={isCreating}
+                  className="px-4 py-2 text-xs font-semibold text-[#5A5A40] hover:bg-[#F5F2ED] rounded-xl disabled:opacity-50"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#5A5A40] hover:bg-[#4a4a35] rounded-xl shadow-xs"
+                  disabled={isCreating}
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#5A5A40] hover:bg-[#4a4a35] rounded-xl shadow-xs disabled:opacity-50 flex items-center gap-2"
                 >
-                  Confirmer le RDV
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Création...
+                    </>
+                  ) : (
+                    'Confirmer le RDV'
+                  )}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+      
+      {/* Import Modal */}
+      <GoogleCalendarModal
+        isOpen={showImportCalendarModal}
+        onClose={() => setShowImportCalendarModal(false)}
+        onEventsImported={(imported) => {
+          const updated = [...imported, ...appointments];
+          onUpdateAppointments(updated);
+          StorageService.saveAppointments(updated);
+        }}
+      />
     </div>
   );
 };

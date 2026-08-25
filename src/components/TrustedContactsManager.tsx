@@ -6,6 +6,7 @@ import {
 import { TrustedContact, AlertTier, NotifyChannel, EmergencyAlert } from '../types';
 import { StorageService } from '../utils/storage';
 import { AlertTriggerModal } from './AlertTriggerModal';
+import { GoogleContactsModal } from './GoogleContactsModal';
 
 interface TrustedContactsManagerProps {
   contacts: TrustedContact[];
@@ -21,6 +22,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
   onAlertDispatched,
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showImportGoogleContacts, setShowImportGoogleContacts] = useState(false);
   const [editingContact, setEditingContact] = useState<TrustedContact | null>(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [alertMode, setAlertMode] = useState<'emergency_sos' | 'secret_code' | 'check_in'>('emergency_sos');
@@ -412,15 +414,24 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
           ))}
         </div>
 
-        {/* Add Contact Button */}
-        <button
-          id="add-new-contact-btn"
-          onClick={handleOpenAdd}
-          className="px-4 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5 self-start sm:self-auto"
-        >
-          <UserPlus className="w-4 h-4" />
-          Ajouter un Contact Sûr
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => setShowImportGoogleContacts(true)}
+            className="px-4 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5"
+          >
+            <Users className="w-4 h-4" />
+            Importer Google Contacts
+          </button>
+          {/* Add Contact Button */}
+          <button
+            id="add-new-contact-btn"
+            onClick={handleOpenAdd}
+            className="px-4 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5"
+          >
+            <UserPlus className="w-4 h-4" />
+            Ajouter un Contact Sûr
+          </button>
+        </div>
       </div>
 
       {/* Contacts Grid */}
@@ -792,6 +803,18 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
           showToast('Alerte consignée avec succès.');
         }}
         preselectedMode={alertMode}
+      />
+
+      {/* Google Contacts Import Modal */}
+      <GoogleContactsModal
+        isOpen={showImportGoogleContacts}
+        onClose={() => setShowImportGoogleContacts(false)}
+        onContactsImported={(imported) => {
+          const updated = [...imported, ...contacts];
+          onUpdateContacts(updated);
+          StorageService.saveContacts(updated);
+          showToast(`${imported.length} contact(s) Google importé(s) avec succès.`);
+        }}
       />
     </div>
   );
