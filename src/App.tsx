@@ -3,12 +3,8 @@ import { Header } from './components/Header';
 import { CamouflageApp } from './components/CamouflageApp';
 import { TrustedContactsManager } from './components/TrustedContactsManager';
 import { AlertTriggerModal } from './components/AlertTriggerModal';
-import { GeminiCrisisChat } from './components/GeminiCrisisChat';
-import { HighThinkingSafetyPlan } from './components/HighThinkingSafetyPlan';
-import { SheltersMapDirectory } from './components/SheltersMapDirectory';
-import { LegalAdvisorSearch } from './components/LegalAdvisorSearch';
-import { EvidenceLocker } from './components/EvidenceLocker';
-import { TherapeuticRelaxation } from './components/TherapeuticRelaxation';
+import { SoutienBienEtre } from './components/SoutienBienEtre';
+import { JusticeDossier } from './components/JusticeDossier';
 import { DiscreetAppointments } from './components/DiscreetAppointments';
 import { UpcomingAppointmentsWidget } from './components/UpcomingAppointmentsWidget';
 import { OnboardingModal } from './components/OnboardingModal';
@@ -164,28 +160,17 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'chat' && <GeminiCrisisChat />}
+        {activeTab === 'wellness' && <SoutienBienEtre isNightMode={isNightMode} />}
 
-        {activeTab === 'safety_plan' && (
-          <HighThinkingSafetyPlan
-            onNavigateToRelaxation={() => setActiveTab('relaxation')}
+        {activeTab === 'justice' && (
+          <JusticeDossier
+            incidents={incidents}
+            onUpdateIncidents={setIncidents}
+            onNavigateToRelaxation={() => setActiveTab('wellness')}
             onNavigateToContacts={() => setActiveTab('contacts')}
             onOpenDetailedAssessment={() => setShowAssessmentModal(true)}
           />
         )}
-
-        {activeTab === 'shelters' && <SheltersMapDirectory />}
-
-        {activeTab === 'legal' && <LegalAdvisorSearch />}
-
-        {activeTab === 'evidence' && (
-          <EvidenceLocker
-            incidents={incidents}
-            onUpdateIncidents={setIncidents}
-          />
-        )}
-
-        {activeTab === 'relaxation' && <TherapeuticRelaxation isNightMode={isNightMode} />}
 
         {activeTab === 'appointments' && (
           <DiscreetAppointments

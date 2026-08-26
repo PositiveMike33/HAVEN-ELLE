@@ -65,12 +65,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   const navItems = [
     { id: 'contacts', label: 'Contacts de Confiance', icon: Users, badge: contactsCount > 0 ? `${contactsCount}` : undefined },
-    { id: 'chat', label: 'Intelligence Thérapeutique', icon: MessageCircle },
-    { id: 'safety_plan', label: 'Plan de Sûreté', icon: Sparkles },
-    { id: 'shelters', label: 'Refuges & Soins', icon: Compass },
-    { id: 'legal', label: 'Droits & Lois', icon: Scale },
-    { id: 'evidence', label: 'Coffre de Preuves', icon: FolderLock },
-    { id: 'relaxation', label: 'Respiration & Art', icon: Heart },
+    { id: 'wellness', label: 'Soutien & Bien-être', icon: Heart },
+    { id: 'justice', label: 'Dossier Justice', icon: Scale },
     { id: 'appointments', label: 'Téléconsultations', icon: Video },
   ];
 
