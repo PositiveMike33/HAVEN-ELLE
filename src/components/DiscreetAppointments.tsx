@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { 
   Calendar, Video, Clock, User, ShieldCheck, Plus, 
-  ExternalLink, CheckCircle, Lock, CalendarCheck, Bot, Loader2, AlertCircle, RefreshCw
+  ExternalLink, CheckCircle, Lock, CalendarCheck, Bot, Loader2, AlertCircle, RefreshCw, Download
 } from 'lucide-react';
 import { DiscreetAppointment } from '../types';
 import { StorageService } from '../utils/storage';
 import { SubstituteConsultationAgents } from './SubstituteConsultationAgents';
 import { createGoogleCalendarEvent } from '../utils/googleWorkspace';
 import { GoogleCalendarModal } from './GoogleCalendarModal';
+import { ExportEncryptedViewerModal } from './ExportEncryptedViewerModal';
 
 interface DiscreetAppointmentsProps {
   appointments: DiscreetAppointment[];
@@ -20,6 +21,7 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showImportCalendarModal, setShowImportCalendarModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -116,9 +118,21 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
             <CalendarCheck className="w-5 h-5 text-[#8A9A5B]" />
             Vos Téléconsultations Officielles Programmées
           </h3>
-          <span className="text-xs text-[#8E8B82]">
-            {appointments.length} rendez-vous enregistré(s)
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[#8E8B82]">
+              {appointments.length} rendez-vous enregistré(s)
+            </span>
+            {appointments.length > 0 && (
+              <button
+                onClick={() => setShowExportModal(true)}
+                className="px-3 py-1.5 bg-[#F5F2ED] hover:bg-[#E5E2D9] text-[#5A5A40] border border-[#E5E2D9] rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                title="Exporter une archive cryptée hors ligne"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Exporter
+              </button>
+            )}
+          </div>
         </div>
 
         {appointments.length === 0 ? (
@@ -303,6 +317,13 @@ export const DiscreetAppointments: React.FC<DiscreetAppointmentsProps> = ({
           onUpdateAppointments(updated);
           StorageService.saveAppointments(updated);
         }}
+      />
+
+      {/* Export Encrypted Archive Modal */}
+      <ExportEncryptedViewerModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        appointments={appointments}
       />
     </div>
   );
