@@ -23,10 +23,13 @@ import {
   Sliders,
   Maximize2,
   RotateCcw,
-  Repeat
+  Repeat,
+  FileSpreadsheet
 } from 'lucide-react';
 import { StorageService } from '../utils/storage';
 import { UserAssessmentProfile } from '../types';
+import { googleSignIn, initAuth } from '../utils/firebaseAuth';
+import { createGoogleForm } from '../utils/workspaceApi';
 
 interface MainScreenVideoAndQuestionsProps {
   onPlanGenerated?: () => void;
@@ -37,58 +40,11 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
   onPlanGenerated,
   onOpenDetailedAssessment,
 }) => {
-  const [globalPlaying, setGlobalPlaying] = useState(true);
-  const [globalMuted, setGlobalMuted] = useState(false);
-  const [globalVolume, setGlobalVolume] = useState(50);
-  const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 210 });
+  const [profile, setProfile] = useState<UserAssessmentProfile>(() => StorageService.getAssessmentProfile());
   const [activeStep, setActiveStep] = useState<number>(1);
   const [isSaved, setIsSaved] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Listen to the single unified audio stream state
-  useEffect(() => {
-    const handleStateChanged = (e: Event) => {
-      const customEvent = e as CustomEvent<{
-        isPlaying: boolean;
-        isMuted: boolean;
-        volume?: number;
-        trackProgress?: { currentTime: number; duration: number };
-      }>;
-      if (customEvent.detail) {
-        setGlobalPlaying(customEvent.detail.isPlaying);
-        setGlobalMuted(customEvent.detail.isMuted);
-        if (typeof customEvent.detail.volume === 'number') {
-          setGlobalVolume(customEvent.detail.volume);
-        }
-        if (customEvent.detail.trackProgress) {
-          setTrackProgress(customEvent.detail.trackProgress);
-        }
-      }
-    };
-    window.addEventListener('haven-audio-state-changed', handleStateChanged);
-    return () => window.removeEventListener('haven-audio-state-changed', handleStateChanged);
-  }, []);
-
-  const toggleGlobalAudioPlay = () => {
-    window.dispatchEvent(new CustomEvent('haven-audio-toggle-play'));
-  };
-
-  const toggleGlobalAudioMute = () => {
-    window.dispatchEvent(new CustomEvent('haven-audio-toggle-mute'));
-  };
-
-  const restartGlobalAudio = () => {
-    window.dispatchEvent(new CustomEvent('haven-audio-restart'));
-  };
-
-  const formatTrackTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Assessment Form Data state synced with storage
-  const [profile, setProfile] = useState<UserAssessmentProfile>(() => StorageService.getAssessmentProfile());
   const [livingSituation, setLivingSituation] = useState(
     profile?.personalInfo?.livingSituation || 'Cohabitation sous le même toit'
   );
@@ -112,6 +68,35 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
   const [primaryGoal, setPrimaryGoal] = useState<string>(
     'Préparer un départ sécurisé et préserver mes droits'
   );
+  const [needsAuth, setNeedsAuth] = useState(true);
+  const [isCreatingForm, setIsCreatingForm] = useState(false);
+
+  useEffect(() => {
+    initAuth(
+      () => setNeedsAuth(false),
+      () => setNeedsAuth(true)
+    );
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      await googleSignIn();
+      setNeedsAuth(false);
+    } catch (err) {
+      console.error('Erreur lors de la connexion Google', err);
+    }
+  };
+
+  const handleCreateGoogleForm = async () => {
+    setIsCreatingForm(true);
+    const formUrl = await createGoogleForm('Dossier d\'Évaluation Sécurisé - Haven', 'Questions de Sûreté & Autonomie');
+    setIsCreatingForm(false);
+    if (formUrl) {
+      window.open(formUrl, '_blank');
+    } else {
+      alert('Erreur lors de la création du Google Form.');
+    }
+  };
 
   const riskOptions = [
     'Menaces de violences ou escalade de tension',
@@ -167,129 +152,12 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
   return (
     <div id="main-screen-video-questions-hub" className="space-y-6">
-      {/* 2-Column Responsive Screen: Video Screen on Left / Questionnaire on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* Left Column: Official Clip Video Screen (5/12 on LG) */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
-          <div className="bg-[#1E1E1E] text-white rounded-3xl border border-white/10 overflow-hidden shadow-xl">
-            {/* Screen Header Bar */}
-            <div className="px-4 py-3 bg-[#2A2A2A] border-b border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#A64D4D] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[#E5EAD9] flex items-center gap-1.5">
-                  <Tv className="w-3.5 h-3.5 text-[#8A9A5B]" />
-                  Écran Clip Vidéo Officiel
-                </span>
-              </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#8A9A5B]/30 text-[#E5EAD9] font-medium border border-[#8A9A5B]/40">
-                Lecture en boucle
-              </span>
-            </div>
-
-            {/* Main Video Frame (16:9) - Visual playback synced with master audio */}
-            <div className="relative w-full aspect-video bg-black overflow-hidden group">
-              <iframe
-                id="main-screen-youtube-player"
-                src="https://www.youtube-nocookie.com/embed/hgHwXM7GYuk?autoplay=1&mute=1&loop=1&playlist=hgHwXM7GYuk&controls=1&showinfo=0&rel=0&modestbranding=1"
-                title="Theory of a Deadman - History of Violence"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full border-0"
-              />
-            </div>
-
-            {/* Video Meta & Master Sound Controller */}
-            <div className="p-4 bg-[#242424] border-t border-white/5 space-y-3">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h3 className="text-sm font-bold text-white leading-snug">
-                    Theory of a Deadman — « History of Violence »
-                  </h3>
-                  <p className="text-xs text-[#CED6C1] mt-0.5 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#8A9A5B] inline-block" />
-                    Son unique continu (actif sur tous les onglets)
-                  </p>
-                </div>
-                
-                {/* Global Audio Controls */}
-                <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10 shrink-0">
-                  <button
-                    type="button"
-                    onClick={restartGlobalAudio}
-                    className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                    title="Recommencer la vidéo & le son depuis le début"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={toggleGlobalAudioPlay}
-                    className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                    title={globalPlaying ? 'Mettre en pause la musique' : 'Démarrer la musique'}
-                  >
-                    {globalPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={toggleGlobalAudioMute}
-                    className={`p-1.5 rounded-lg transition-colors ${
-                      globalMuted ? 'bg-[#A64D4D]/40 text-[#ffaaaa]' : 'bg-white/10 hover:bg-white/20 text-white'
-                    }`}
-                    title={globalMuted ? 'Activer le son' : 'Couper le son'}
-                  >
-                    {globalMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#8A9A5B]" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Status Note ensuring zero cacophony and clear looping */}
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#E5EAD9] leading-relaxed flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5">
-                  <Repeat className="w-3 h-3 text-[#8A9A5B]" />
-                  <span>
-                    {globalMuted ? 'Audio en sourdine' : `Lecture audio (${globalVolume}%) & vidéo complète en boucle`}
-                  </span>
-                </span>
-                <span className="text-[10px] text-[#CED6C1] bg-white/10 px-2 py-0.5 rounded-md font-mono">
-                  {formatTrackTime(trackProgress.currentTime)} / {formatTrackTime(trackProgress.duration)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Support / Safety Pin Box */}
-          <div className="bg-[#FFFFFF]/90 backdrop-blur-md rounded-2xl border border-[#E5E2D9] p-4 shadow-xs flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-[#3E3B39]">Protection & Confidentialité</h4>
-                <p className="text-[11px] text-[#8E8B82]">Vos réponses restent chiffrées localement</p>
-              </div>
-            </div>
-            {onOpenDetailedAssessment && (
-              <button
-                type="button"
-                onClick={onOpenDetailedAssessment}
-                className="px-3 py-1.5 rounded-xl bg-[#5A5A40] hover:bg-[#484833] text-white text-xs font-medium transition-colors shrink-0 flex items-center gap-1"
-              >
-                <span>Bilan complet</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Primary Questions Assessment Form (7/12 on LG) */}
-        <div className="lg:col-span-7">
-          <div className="bg-[#FFFFFF]/95 backdrop-blur-md rounded-3xl border border-[#CED6C1] p-6 shadow-md space-y-6">
-            
-            {/* Form Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E5E2D9]">
+      {/* Centered Assessment Form */}
+      <div className="max-w-4xl mx-auto w-full">
+        <div className="bg-[#FFFFFF]/95 backdrop-blur-md rounded-3xl border border-[#CED6C1] p-6 shadow-md space-y-6">
+          
+          {/* Form Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E5E2D9]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center shadow-2xs">
                   <Brain className="w-5 h-5" />
@@ -604,6 +472,31 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   </button>
                 </div>
 
+                <div className="pt-4 border-t border-[#E5E2D9] flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="text-xs text-[#5A5A40]">
+                    <span className="font-bold block">Alternative sécurisée :</span>
+                    Générez ce formulaire sur Google Forms pour le partager avec votre avocate ou assistance sociale.
+                  </div>
+                  {needsAuth ? (
+                    <button
+                      onClick={handleLogin}
+                      className="px-4 py-2 bg-[#4285F4] hover:bg-[#3367D6] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap"
+                    >
+                      <User className="w-4 h-4" />
+                      Connexion Google
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCreateGoogleForm}
+                      disabled={isCreatingForm}
+                      className="px-4 py-2 bg-[#34A853] hover:bg-[#2c8f46] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap disabled:opacity-50"
+                    >
+                      {isCreatingForm ? <RefreshCw className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
+                      Exporter vers Google Forms
+                    </button>
+                  )}
+                </div>
+
                 {isSaved && (
                   <div className="p-3 rounded-xl bg-[#E5EAD9] text-[#5A5A40] text-xs font-semibold flex items-center gap-2 animate-in fade-in">
                     <CheckCircle2 className="w-4 h-4 text-[#8A9A5B]" />
@@ -615,7 +508,6 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           </div>
         </div>
 
-      </div>
     </div>
   );
 };

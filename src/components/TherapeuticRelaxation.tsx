@@ -1,13 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, Sparkles, Wind, Play, Pause, RefreshCw, 
-  Image as ImageIcon, Video, Volume2, UserCheck, Check 
+  Image as ImageIcon, Video, Volume2, UserCheck, Check, Music, Activity, CalendarPlus
 } from 'lucide-react';
 import { WellnessCalendarTracker } from './WellnessCalendarTracker';
+import { googleSignIn, initAuth } from '../utils/firebaseAuth';
+import { createCalendarEvent } from '../utils/workspaceApi';
 
 interface TherapeuticRelaxationProps {
   isNightMode?: boolean;
 }
+
+const SOLFEGGIO_FREQS = [
+  { freq: 174, label: '174 Hz' },
+  { freq: 285, label: '285 Hz' },
+  { freq: 369, label: '369 Hz' },
+  { freq: 432, label: '432 Hz' },
+  { freq: 528, label: '528 Hz' },
+  { freq: 639, label: '639 Hz' },
+  { freq: 741, label: '741 Hz' },
+  { freq: 852, label: '852 Hz' },
+  { freq: 963, label: '963 Hz' },
+];
 
 export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ isNightMode = false }) => {
   // Breathing Coach State (4-7-8 or 5-5 cardiac coherence)
@@ -17,10 +31,112 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
   const [totalCycles, setTotalCycles] = useState(0);
   const breathingSectionRef = useRef<HTMLDivElement>(null);
 
+  // Pause the background song automatically when this tab is opened
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('haven-audio-pause'));
+  }, []);
+
+  // Solfeggio Audio State
+  const [activeFreq, setActiveFreq] = useState<number | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const oscRef = useRef<OscillatorNode | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (oscRef.current) oscRef.current.stop();
+      if (audioCtxRef.current) audioCtxRef.current.close();
+    };
+  }, []);
+
+  const toggleFrequency = (freq: number) => {
+    if (activeFreq === freq) {
+      // Stop
+      if (oscRef.current) {
+        oscRef.current.stop();
+        oscRef.current = null;
+      }
+      setActiveFreq(null);
+    } else {
+      // Start or change
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      if (audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume();
+      }
+      
+      if (oscRef.current) {
+        oscRef.current.frequency.setTargetAtTime(freq, audioCtxRef.current.currentTime, 0.1);
+      } else {
+        const osc = audioCtxRef.current.createOscillator();
+        const gain = audioCtxRef.current.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        
+        // Very soft volume for relaxation
+        gain.gain.value = 0.1;
+        
+        osc.connect(gain);
+        gain.connect(audioCtxRef.current.destination);
+        
+        osc.start();
+        oscRef.current = osc;
+        gainRef.current = gain;
+      }
+      setActiveFreq(freq);
+    }
+  };
+
   // Avatar & Art Therapy State
   const [avatarPrompt, setAvatarPrompt] = useState('Portrait aquarelle apaisant, profil doux abstrait en tons lavande et or');
   const [generatedAvatar, setGeneratedAvatar] = useState<string | null>(null);
   const [loadingAvatar, setLoadingAvatar] = useState(false);
+
+  // Auth State for Calendar
+  const [needsAuth, setNeedsAuth] = useState(true);
+  const [isScheduling, setIsScheduling] = useState(false);
+
+  useEffect(() => {
+    initAuth(
+      () => setNeedsAuth(false),
+      () => setNeedsAuth(true)
+    );
+  }, []);
+
+  const handleScheduleBreathing = async () => {
+    if (needsAuth) {
+      try {
+        await googleSignIn();
+        setNeedsAuth(false);
+      } catch (err) {
+        console.error('Erreur de connexion', err);
+        return;
+      }
+    }
+    
+    setIsScheduling(true);
+    const start = new Date();
+    start.setMinutes(start.getMinutes() + 15);
+    const end = new Date(start);
+    end.setMinutes(end.getMinutes() + 15);
+
+    const link = await createCalendarEvent(
+      'Séance de Cohérence Cardiaque - Haven',
+      'Une séance de 15 minutes de respiration 4-7-8 pour apaiser le système nerveux.',
+      start.toISOString(),
+      end.toISOString()
+    );
+
+    setIsScheduling(false);
+    if (link) {
+      alert('Séance planifiée sur Google Calendar avec succès !');
+      window.open(link, '_blank');
+    } else {
+      alert('Erreur lors de la planification.');
+    }
+  };
 
   // Calming Video State (Veo 3.1)
   const [videoActive, setVideoActive] = useState(false);
@@ -105,7 +221,7 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
               En situation de choc, d'angoisse ou de stress aigu, la respiration rythmée active instantanément le système nerveux parasympathique pour apaiser le rythme cardiaque et les tremblements.
             </p>
 
-            <div className="mt-5 flex items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center gap-3">
               <button
                 onClick={() => {
                   setBreathingActive(!breathingActive);
@@ -120,9 +236,42 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
                 {breathingActive ? 'Suspendre la séance' : 'Démarrer la Respiration'}
               </button>
 
-              <span className="text-xs text-[#CED6C1]">
+              <button
+                onClick={handleScheduleBreathing}
+                disabled={isScheduling}
+                className="px-4 py-3 bg-[#333333] hover:bg-[#1a1a1a] border border-[#CED6C1]/20 text-[#E5EAD9] text-xs font-semibold rounded-2xl shadow-md transition-colors flex items-center justify-center gap-2"
+              >
+                {isScheduling ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CalendarPlus className="w-4 h-4" />}
+                Planifier une séance
+              </button>
+
+              <span className="text-xs text-[#CED6C1] ml-2">
                 Cycles accomplis : <strong>{totalCycles}</strong>
               </span>
+            </div>
+
+            {/* Solfeggio Frequencies Menu */}
+            <div className="mt-6 pt-5 border-t border-white/10">
+              <h3 className="text-xs font-bold text-[#E5EAD9] mb-3 flex items-center gap-1.5 uppercase tracking-wider">
+                <Music className="w-4 h-4" />
+                Fréquences de guérison (Solfeggio)
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {SOLFEGGIO_FREQS.map((f) => (
+                  <button
+                    key={f.freq}
+                    onClick={() => toggleFrequency(f.freq)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border ${
+                      activeFreq === f.freq
+                        ? 'bg-[#E5EAD9] text-[#3E3B39] border-[#E5EAD9] shadow-sm'
+                        : 'bg-white/5 text-[#CED6C1] border-white/10 hover:bg-white/10'
+                    }`}
+                  >
+                    {activeFreq === f.freq ? <Activity className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                    {f.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

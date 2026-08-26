@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, X, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
-import { fetchGoogleContacts } from '../utils/googleWorkspace';
+import { getGoogleContacts } from '../utils/workspaceApi';
 import { TrustedContact } from '../types';
 
 interface GoogleContactsModalProps {
@@ -29,7 +29,7 @@ export const GoogleContactsModal: React.FC<GoogleContactsModalProps> = ({
     setIsLoading(true);
     setError(null);
     try {
-      const connections = await fetchGoogleContacts();
+      const connections = await getGoogleContacts();
       setGoogleContacts(connections);
     } catch (err: any) {
       console.error(err);

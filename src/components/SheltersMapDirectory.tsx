@@ -4,6 +4,7 @@ import {
   ExternalLink, Building, HeartPulse, Shield, Compass, Check 
 } from 'lucide-react';
 import { ShelterResource } from '../types';
+import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 export const SheltersMapDirectory: React.FC = () => {
   const [city, setCity] = useState('');
@@ -46,6 +47,8 @@ export const SheltersMapDirectory: React.FC = () => {
       services: ["Avocates gratuites", "Dossier ordonnance de protection", "Aide au relogement"],
     },
   ]);
+  const [mapCenter, setMapCenter] = useState({ lat: 48.8566, lng: 2.3522 });
+  const [mapKey, setMapKey] = useState((import.meta as any).env.VITE_GOOGLE_MAPS_API_KEY || '');
 
   const searchShelters = async () => {
     if (!city.trim() && !navigator.geolocation) return;
@@ -120,6 +123,36 @@ export const SheltersMapDirectory: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Google Map Section */}
+      {mapKey ? (
+        <div className="w-full h-80 rounded-2xl overflow-hidden shadow-xs border border-[#E5E2D9]">
+          <APIProvider apiKey={mapKey}>
+            <Map
+              defaultZoom={13}
+              defaultCenter={mapCenter}
+              mapId="DEMO_MAP_ID"
+            >
+              <AdvancedMarker position={{ lat: 48.8600, lng: 2.3522 }}>
+                <Pin background={'#8A9A5B'} borderColor={'#5A5A40'} glyphColor={'#fff'} />
+              </AdvancedMarker>
+              <AdvancedMarker position={{ lat: 48.8520, lng: 2.3422 }}>
+                <Pin background={'#A64D4D'} borderColor={'#5A5A40'} glyphColor={'#fff'} />
+              </AdvancedMarker>
+              <AdvancedMarker position={{ lat: 48.8580, lng: 2.3622 }}>
+                <Pin background={'#4285F4'} borderColor={'#3367D6'} glyphColor={'#fff'} />
+              </AdvancedMarker>
+            </Map>
+          </APIProvider>
+        </div>
+      ) : (
+        <div className="w-full h-40 bg-[#F8F7F2] rounded-2xl border border-[#E5E2D9] flex flex-col items-center justify-center p-4 text-center">
+          <MapPin className="w-8 h-8 text-[#8A9A5B] mb-2" />
+          <p className="text-xs text-[#5A5A40] font-medium max-w-md">
+            Pour afficher la carte interactive, veuillez configurer la clé d'API Google Maps Platform (VITE_GOOGLE_MAPS_API_KEY).
+          </p>
+        </div>
+      )}
 
       {/* Resource Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

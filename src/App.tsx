@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CamouflageApp } from './components/CamouflageApp';
-import { TrustedContactsManager } from './components/TrustedContactsManager';
+import { ContactsEtConsultations } from './components/ContactsEtConsultations';
 import { AlertTriggerModal } from './components/AlertTriggerModal';
 import { SoutienBienEtre } from './components/SoutienBienEtre';
 import { JusticeDossier } from './components/JusticeDossier';
-import { DiscreetAppointments } from './components/DiscreetAppointments';
 import { UpcomingAppointmentsWidget } from './components/UpcomingAppointmentsWidget';
 import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
@@ -20,7 +19,8 @@ export default function App() {
   const [isNightMode, setIsNightMode] = useState<boolean>(() => {
     return StorageService.isNightMode();
   });
-  const [activeTab, setActiveTab] = useState('contacts');
+  const [activeTab, setActiveTab] = useState('network');
+  const [networkSubTab, setNetworkSubTab] = useState<'contacts' | 'appointments'>('contacts');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showAssessmentModal, setShowAssessmentModal] = useState(false);
@@ -144,19 +144,26 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 md:py-8">
         {/* Upcoming Appointments Widget (Visible on all tabs except appointments itself) */}
-        {activeTab !== 'appointments' && appointments.length > 0 && (
+        {!(activeTab === 'network' && networkSubTab === 'appointments') && appointments.length > 0 && (
           <UpcomingAppointmentsWidget
             appointments={appointments}
-            onNavigateToAppointments={() => setActiveTab('appointments')}
+            onNavigateToAppointments={() => {
+              setActiveTab('network');
+              setNetworkSubTab('appointments');
+            }}
           />
         )}
 
-        {activeTab === 'contacts' && (
-          <TrustedContactsManager
+        {activeTab === 'network' && (
+          <ContactsEtConsultations
             contacts={contacts}
             onUpdateContacts={setContacts}
             alerts={alerts}
             onAlertDispatched={handleAlertDispatched}
+            appointments={appointments}
+            onUpdateAppointments={setAppointments}
+            requestedSubTab={networkSubTab}
+            onSubTabChange={setNetworkSubTab}
           />
         )}
 
@@ -167,15 +174,11 @@ export default function App() {
             incidents={incidents}
             onUpdateIncidents={setIncidents}
             onNavigateToRelaxation={() => setActiveTab('wellness')}
-            onNavigateToContacts={() => setActiveTab('contacts')}
+            onNavigateToContacts={() => {
+              setActiveTab('network');
+              setNetworkSubTab('contacts');
+            }}
             onOpenDetailedAssessment={() => setShowAssessmentModal(true)}
-          />
-        )}
-
-        {activeTab === 'appointments' && (
-          <DiscreetAppointments
-            appointments={appointments}
-            onUpdateAppointments={setAppointments}
           />
         )}
       </main>
@@ -207,7 +210,16 @@ export default function App() {
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
         onNavigateToTab={(tab) => {
-          setActiveTab(tab);
+          if (tab === 'contacts') {
+            setActiveTab('network');
+            setNetworkSubTab('contacts');
+          } else if (tab === 'safety_plan') {
+            setActiveTab('justice');
+          } else if (tab === 'chat') {
+            setActiveTab('wellness');
+          } else {
+            setActiveTab(tab);
+          }
           setShowOnboarding(false);
         }}
         onOpenAssessment={() => {

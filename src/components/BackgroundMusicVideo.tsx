@@ -192,6 +192,12 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     const handleGlobalTogglePlay = () => {
       togglePlayPause();
     };
+    const handleGlobalPause = () => {
+      setIsPlaying(false);
+      if (playerRef.current && typeof playerRef.current.pauseVideo === 'function') {
+        playerRef.current.pauseVideo();
+      }
+    };
     const handleGlobalToggleMute = () => {
       toggleMute();
     };
@@ -221,6 +227,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     };
 
     window.addEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
+    window.addEventListener('haven-audio-pause', handleGlobalPause);
     window.addEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
     window.addEventListener('haven-audio-restart', handleGlobalRestart);
     window.addEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);
@@ -230,6 +237,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
 
     return () => {
       window.removeEventListener('haven-audio-toggle-play', handleGlobalTogglePlay);
+      window.removeEventListener('haven-audio-pause', handleGlobalPause);
       window.removeEventListener('haven-audio-toggle-mute', handleGlobalToggleMute);
       window.removeEventListener('haven-audio-restart', handleGlobalRestart);
       window.removeEventListener('haven-audio-set-opacity', handleGlobalSetOpacity);

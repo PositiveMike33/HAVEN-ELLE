@@ -1,0 +1,1 @@
+sed -i 's/onClick={() => setShowImportGoogleContacts(true)}/onClick={async () => { if (needsAuth) { try { await googleSignIn(); setShowImportGoogleContacts(true); } catch (e) { console.error(e); } } else { setShowImportGoogleContacts(true); } }}/g' src/components/TrustedContactsManager.tsx
