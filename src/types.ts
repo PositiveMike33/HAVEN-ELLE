@@ -122,12 +122,14 @@ export interface DetailedSafetyPlan {
 }
 
 export interface CompanionMemoryProfile {
-  relationshipLevel: number; // 1 to 5
+  relationshipLevel: number; // 1 to 100
+  validatedLevel: number; // 1 to 100 - The level strictly confirmed by answering the healing question
   relationshipTitle: string; // e.g. "Sanctuaire Initial", "Alliée de Confiance", "Bouclier & Force"
   interactionCount: number;
   firstMetDate: string;
   lastInteractionDate: string;
   resiliencePoints: number;
+  validatedQuestions?: Record<number, { date: string; reflection: string; answer?: string }>;
   userContext: {
     preferredName?: string;
     situationBrief?: string;

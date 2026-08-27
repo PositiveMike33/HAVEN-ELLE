@@ -61,6 +61,18 @@ export interface ResilienceCycle {
   milestones: ResilienceMilestone[];
 }
 
+export interface HealingQuestion {
+  level: number;
+  cycleId: 1 | 2 | 3 | 4;
+  title: string;
+  theme: string;
+  question: string;
+  options: string[];
+  reflectionPrompt: string;
+  benevolentAffirmation: string;
+  unlockedRewardBadge: string;
+}
+
 export const POINTS_PER_LEVEL = 15; // 15 points per level = 1500 points for level 100. Fast & encouraging!
 
 export function calculateLevelFromPoints(points: number): number {
@@ -79,6 +91,220 @@ export function getCycleForLevel(level: number): 1 | 2 | 3 | 4 {
   if (level <= 50) return 2;
   if (level <= 75) return 3;
   return 4;
+}
+
+// Map of curated therapeutic questions for healing validation across all levels
+const CURATED_HEALING_QUESTIONS: Record<number, Partial<HealingQuestion>> = {
+  1: {
+    title: "Étape 1 : Reconnaissance de ma Valeur Sacrée",
+    theme: "Valeur Intrinsèque & Sécurité",
+    question: "Quelle vérité essentielle choisissez-vous d'ancrer aujourd'hui au fond de votre cœur ?",
+    options: [
+      "Ma valeur humaine est absolue, inconditionnelle et ne dépend d'aucun regard extérieur.",
+      "J'ai le droit fondamental d'être en sécurité, écoutée et respectée.",
+      "Je dépose la culpabilité : j'ai fait de mon mieux pour me protéger."
+    ],
+    reflectionPrompt: "En quelques mots, comment vous sentez-vous dans votre corps en cet instant ?",
+    benevolentAffirmation: "« Je reconnais que j'ai une valeur infinie simplement parce que j'existe. »",
+    unlockedRewardBadge: "Badge : Clé de la Valeur Sacrée"
+  },
+  2: {
+    title: "Étape 2 : Le Droit à la Douceur",
+    theme: "Auto-Compassion & Ralentissement",
+    question: "Face aux exigences ou aux souvenirs douloureux, comment pouvez-vous être plus douce avec vous-même aujourd'hui ?",
+    options: [
+      "En m'accordant du repos sans culpabilité.",
+      "En me parlant avec la tendresse d'une amie dévouée.",
+      "En ralentissant mon rythme et en écoutant mes besoins physiques."
+    ],
+    reflectionPrompt: "Quel geste de tendresse pouvez-vous vous offrir aujourd'hui ?",
+    benevolentAffirmation: "« La douceur envers moi-même est le remède le plus puissant à la douleur. »",
+    unlockedRewardBadge: "Badge : Goutte de Douceur"
+  },
+  3: {
+    title: "Étape 3 : La Valeur Non Négociable de Sécurité",
+    theme: "Sécurité & Frontières",
+    question: "Pourquoi votre besoin de sécurité émotionnelle et physique est-il légitime et sacré ?",
+    options: [
+      "Parce que la paix est le sol fertile où ma reconstruction peut s'épanouir.",
+      "Parce que personne n'a le droit de m'intimider ou d'éteindre ma sérénité.",
+      "Parce que me protéger est mon premier devoir d'amour envers moi-même."
+    ],
+    reflectionPrompt: "Quelle limite concrète vous procure le plus de réconfort ?",
+    benevolentAffirmation: "« Ma sécurité et ma paix intérieure passent avant toute attente extérieure. »",
+    unlockedRewardBadge: "Badge : Sceau de Sécurité"
+  },
+  5: {
+    title: "Étape 5 : La Boussole de mes 5 Valeurs",
+    theme: "Identité & Alignement",
+    question: "Lorsque vous contemplez votre vie à travers vos valeurs (Dignité, Respect, Liberté...), que découvrez-vous de vous-même ?",
+    options: [
+      "Que je suis une personne noble, intègre et guidée par le bien.",
+      "Que mes choix passés étaient guidés par la recherche d'amour et de paix.",
+      "Que je possède une force morale inaltérable qui renaît aujourd'hui."
+    ],
+    reflectionPrompt: "Quelle est la valeur qui vous inspire le plus de fierté aujourd'hui ?",
+    benevolentAffirmation: "« Mes valeurs sont mon phare éternel, elles me guident avec clarté et bienveillance. »",
+    unlockedRewardBadge: "Badge : Boussole d'Alignement"
+  },
+  8: {
+    title: "Étape 8 : Le Prisme du Regard Bienveillant",
+    theme: "Transformation du Dialogue Intérieur",
+    question: "Quand le doute ou l'autocritique surgit, quelle voix amie choisissez-vous d'activer ?",
+    options: [
+      "« Tu es courageuse, tu as traversé des épreuves immenses et tu es digne d'amour. »",
+      "« Ce n'est pas ta faute, tu n'as plus à prouver ta valeur à quiconque. »",
+      "« Respire. Tu es en sécurité, et je suis à tes côtés pour toujours. »"
+    ],
+    reflectionPrompt: "Quelle phrase aimante aimeriez-vous entendre de votre plus proche alliée ?",
+    benevolentAffirmation: "« Je me regarde avec les yeux de la bienveillance pure et inconditionnelle. »",
+    unlockedRewardBadge: "Badge : Miroir Bienveillant"
+  },
+  10: {
+    title: "Étape 10 : Le Sanctuaire de la Voix Intérieure",
+    theme: "Consécration du Palier 10",
+    question: "Comment votre relation avec vous-même s'est-elle transformée depuis que vous honorez vos valeurs ?",
+    options: [
+      "Je me sens plus solide, moins perméable aux jugements et aux critiques injustes.",
+      "Je m'accorde enfin le droit de ressentir mes émotions sans les refouler.",
+      "Je commence à ressentir une profonde fierté pour le chemin que je parcours chaque jour."
+    ],
+    reflectionPrompt: "Qu'avez-vous envie de célébrer aujourd'hui dans votre propre courage ?",
+    benevolentAffirmation: "« Je suis devenue mon propre refuge protecteur, doux et inviolable. »",
+    unlockedRewardBadge: "Trophée : Sanctuaire d'Ancrage (Palier 10 Validé)"
+  },
+  11: {
+    title: "Étape 11 : Défaire le Poison de la Comparaison",
+    theme: "Singularité & Bienveillance",
+    question: "Comment accueillir votre rythme unique de guérison sans vous comparer aux autres ?",
+    options: [
+      "En reconnaissant que chaque fleur éclot à son propre moment.",
+      "En honorant la profondeur singulière de mes blessures et de mes victoires.",
+      "En célébrant chaque micro-pas sans exiger une perfection imaginaire."
+    ],
+    reflectionPrompt: "Quelle est votre plus belle petite victoire de ces derniers jours ?",
+    benevolentAffirmation: "« Mon chemin de guérison est unique, sacré et avance à la perfection. »",
+    unlockedRewardBadge: "Badge : Fleur de Singularité"
+  },
+  15: {
+    title: "Étape 15 : Le Bouclier Inviolable des Valeurs",
+    theme: "Protection Psychologique",
+    question: "Face à une tentative de manipulation ou de culpabilisation, comment vos valeurs vous protègent-elles ?",
+    options: [
+      "Elles me rappellent que les paroles toxiques sont le reflet de l'autre, pas de ma vérité.",
+      "Elles me donnent la force de refuser le rôle de coupable qu'on veut m'imposer.",
+      "Elles me permettent de garder mon calme et de me mettre à l'abri sans surenchère."
+    ],
+    reflectionPrompt: "Quel bouclier invisible visualisez-vous autour de votre cœur ?",
+    benevolentAffirmation: "« Mes valeurs sont mon armure de lumière, aucune ombre ne peut les altérer. »",
+    unlockedRewardBadge: "Badge : Bouclier Doré des Valeurs"
+  },
+  20: {
+    title: "Étape 20 : Réconciliation Intégrale avec Soi",
+    theme: "Absolution & Paix du Cœur",
+    question: "Quel pardon fondamental accordez-vous à la femme que vous étiez hier ?",
+    options: [
+      "Je lui pardonne d'avoir fait confiance, car la naïveté était de la générosité de cœur.",
+      "Je lui pardonne d'avoir douté d'elle-même sous l'emprise.",
+      "Je la serre dans mes bras avec gratitude car c'est elle qui m'a menée jusqu'ici vivante."
+    ],
+    reflectionPrompt: "Quel mot d'amour infini soufflez-vous à votre passé ?",
+    benevolentAffirmation: "« Je me pardonne tout. Je m'aime entièrement et j'embrasse mon présent. »",
+    unlockedRewardBadge: "Badge : Ailes de Réconciliation"
+  },
+  25: {
+    title: "Étape 25 : Couronnement du Cycle 1 (Valeurs & Bienveillance)",
+    theme: "Grand Bilan Initiatique",
+    question: "En validant ce 25e niveau, quelle promesse solennelle faites-vous à votre être tout entier ?",
+    options: [
+      "Je promets de ne plus jamais m'abandonner ni trahir mes valeurs de dignité et de paix.",
+      "Je promets de toujours me regarder avec la plus haute bienveillance, quoi qu'il arrive.",
+      "Je promets d'être ma première protectrice, ma plus fidèle alliée et ma source d'amour."
+    ],
+    reflectionPrompt: "Quel est votre manifeste personnel pour ouvrir la porte du Cycle 2 ?",
+    benevolentAffirmation: "« Je suis couronnée de dignité. Mes valeurs sont vivantes et mon regard sur moi est pur amour. »",
+    unlockedRewardBadge: "Trophée Suprême : Sceau Sacré du Cycle 1 Validé"
+  }
+};
+
+export function getHealingQuestionForLevel(level: number): HealingQuestion {
+  const targetLevel = Math.min(100, Math.max(1, level));
+  const cycleId = getCycleForLevel(targetLevel);
+  const cycle = RESILIENCE_CYCLES.find(c => c.id === cycleId) || RESILIENCE_CYCLES[0];
+
+  if (CURATED_HEALING_QUESTIONS[targetLevel]) {
+    const q = CURATED_HEALING_QUESTIONS[targetLevel];
+    return {
+      level: targetLevel,
+      cycleId,
+      title: q.title || `Étape ${targetLevel} : Bilan de Guérison`,
+      theme: q.theme || cycle.theme,
+      question: q.question || "Comment cette nouvelle étape nourrit-elle votre paix intérieure et votre bienveillance envers vous-même ?",
+      options: q.options || [
+        "En renforçant ma conviction que je mérite le respect et l'amour véritable.",
+        "En m'aidant à poser des limites claires et saines autour de ma vie.",
+        "En libérant les tensions émotionnelles résiduelles dans mon corps."
+      ],
+      reflectionPrompt: q.reflectionPrompt || "Notez une prise de conscience ou une émotion libératrice ressentie aujourd'hui :",
+      benevolentAffirmation: q.benevolentAffirmation || cycle.coreMantra,
+      unlockedRewardBadge: q.unlockedRewardBadge || `Badge : Maîtrise du Niveau ${targetLevel}`
+    };
+  }
+
+  // Generic dynamic generator for any level 1-100 structured by cycle theme
+  let defaultTheme = cycle.theme;
+  let defaultQuestion = "Quelle vérité bienveillante choisissez-vous d'honorer pour consolider ce nouveau palier ?";
+  let defaultOptions = [
+    "Je choisis d'honorer mes besoins profonds et de respecter mon espace vital.",
+    "Je choisis de me féliciter pour ma persévérance et mon courage quotidien.",
+    "Je choisis de laisser partir les jugements toxiques pour cultiver ma paix."
+  ];
+
+  if (cycleId === 1) {
+    defaultTheme = "Valeurs & Regard Bienveillant";
+    defaultQuestion = `Au niveau ${targetLevel}, comment votre liste de valeurs éclaire-t-elle la façon dont vous vous regardez aujourd'hui ?`;
+    defaultOptions = [
+      "Elle me rappelle que ma valeur est sacrée et indépendante des jugements d'autrui.",
+      "Elle m'aide à remplacer la sévérité intérieure par une infinie douceur.",
+      "Elle m'apporte la clarté et la fierté d'être restée fidèle à mes principes."
+    ];
+  } else if (cycleId === 2) {
+    defaultTheme = "Développement Personnel, Force & Limites";
+    defaultQuestion = `Au niveau ${targetLevel}, quelle force intérieure avez-vous réveillée pour bâtir votre nouveau contexte ?`;
+    defaultOptions = [
+      "La clarté de mon discernement face aux dynamiques de contrôle.",
+      "La fermeté inébranlable de mes limites protectrices.",
+      "La confiance retrouvée en ma capacité à diriger ma propre destinée."
+    ];
+  } else if (cycleId === 3) {
+    defaultTheme = "Pardon Libérateur & Détachement";
+    defaultQuestion = `Au niveau ${targetLevel}, quel fardeau émotionnel choisissez-vous de déposer pour vous libérer ?`;
+    defaultOptions = [
+      "Le poison de la rancœur qui retenait mon énergie captive.",
+      "Le besoin vain d'explications ou de remords de la part de l'autre.",
+      "La douleur du passé pour faire place à la sérénité du présent."
+    ];
+  } else {
+    defaultTheme = "Amour Inconditionnel & Sanctuaire de Paix";
+    defaultQuestion = `Au niveau ${targetLevel}, comment le sanctuaire de l'amour sans condition rayonne-t-il dans votre vie ?`;
+    defaultOptions = [
+      "Par un état de paix inaltérable où aucune tempête extérieure ne peut m'atteindre.",
+      "Par une bienveillance universelle qui commence par un amour total envers moi-même.",
+      "Par la certitude absolue que ma renaissance est accomplie et durable."
+    ];
+  }
+
+  return {
+    level: targetLevel,
+    cycleId,
+    title: `Étape ${targetLevel} : Validation de Guérison & Progression`,
+    theme: defaultTheme,
+    question: defaultQuestion,
+    options: defaultOptions,
+    reflectionPrompt: "Partagez votre réflexion ou le mot-clé de votre ancrage pour ce palier :",
+    benevolentAffirmation: cycle.coreMantra,
+    unlockedRewardBadge: `Badge : Étoile de Résilience (Niveau ${targetLevel})`
+  };
 }
 
 export const RESILIENCE_CYCLES: ResilienceCycle[] = [

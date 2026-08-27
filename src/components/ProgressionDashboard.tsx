@@ -29,6 +29,8 @@ import {
 } from '../data/resilience100Levels';
 import { CompanionMemoryService } from '../utils/companionMemory';
 import { ValuesAndBenevolenceBuilder } from './ValuesAndBenevolenceBuilder';
+import { HealingLevelQuestionCard } from './HealingLevelQuestionCard';
+import { CompanionMemoryProfile } from '../types';
 
 interface ProgressionDashboardProps {
   resiliencePoints: number;
@@ -39,7 +41,14 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
   resiliencePoints,
   onPointsEarned 
 }) => {
-  const currentLevel = calculateLevelFromPoints(resiliencePoints);
+  const profile = CompanionMemoryService.getProfile();
+  const pointsLevel = calculateLevelFromPoints(resiliencePoints);
+  const validatedLevel = profile.validatedLevel ?? 10;
+  
+  // The effective official level strictly cannot exceed validatedLevel!
+  const currentLevel = Math.min(validatedLevel, pointsLevel);
+  const isValidationPending = pointsLevel > validatedLevel;
+  
   const currentCycleId = getCycleForLevel(currentLevel);
   const [selectedCycleId, setSelectedCycleId] = useState<1 | 2 | 3 | 4>(currentCycleId);
   const [rewardToast, setRewardToast] = useState<{ message: string; points: number } | null>(null);
@@ -70,6 +79,12 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
     setTimeout(() => {
       setRewardToast(null);
     }, 4000);
+  };
+
+  const handleLevelValidated = (updatedProfile: CompanionMemoryProfile) => {
+    if (onPointsEarned) {
+      onPointsEarned(updatedProfile.resiliencePoints);
+    }
   };
 
   return (
@@ -177,6 +192,13 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           </span>
         </div>
       </div>
+
+      {/* QUESTION DE GUÉRISON ET DE VALIDATION DU NIVEAU (STRICT REQUIREMENT) */}
+      <HealingLevelQuestionCard 
+        currentValidatedLevel={validatedLevel}
+        resiliencePoints={resiliencePoints}
+        onLevelValidated={handleLevelValidated}
+      />
 
       {/* Quick Positive Actions: Easy points to encourage without stress */}
       <div>

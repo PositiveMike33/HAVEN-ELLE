@@ -244,7 +244,12 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'wellness' && <SoutienBienEtre isNightMode={isNightMode} />}
+        {activeTab === 'wellness' && (
+          <SoutienBienEtre 
+            isNightMode={isNightMode} 
+            onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
+          />
+        )}
 
         {activeTab === 'justice' && (
           <JusticeDossier

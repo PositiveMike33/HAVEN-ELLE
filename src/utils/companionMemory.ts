@@ -5,11 +5,17 @@ const COMPANION_STORAGE_KEY = 'haven_companion_evolution_v2';
 
 export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
   relationshipLevel: 10, // Level 10 / 100 (140 points)
+  validatedLevel: 10, // Validated up to level 10
   relationshipTitle: "Cycle 1 : Se construire une liste de valeurs pour se voir avec la plus grande bienveillance",
   interactionCount: 3,
   firstMetDate: '2026-08-18',
   lastInteractionDate: new Date().toISOString().split('T')[0],
   resiliencePoints: 140,
+  validatedQuestions: {
+    1: { date: '2026-08-18', reflection: 'Ma valeur humaine est sacrée et inconditionnelle.', answer: 'Reconnaissance de ma Valeur Sacrée' },
+    5: { date: '2026-08-20', reflection: 'Mes valeurs cardinales guident mes choix avec dignité.', answer: 'La Boussole de mes 5 Valeurs' },
+    10: { date: '2026-08-22', reflection: 'Je deviens mon propre sanctuaire protecteur et bienveillant.', answer: 'Le Sanctuaire de la Voix Intérieure' }
+  },
   userContext: {
     preferredName: 'Amie',
     situationBrief: 'Recherche de mise en sécurité active et préparation d\'un plan d\'émancipation serein.',
@@ -61,10 +67,16 @@ export const CompanionMemoryService = {
         return INITIAL_COMPANION_PROFILE;
       }
       const parsed = JSON.parse(data);
-      // Ensure level calculation is accurate based on 100-level system
-      const currentLevel = calculateLevelFromPoints(parsed.resiliencePoints || 0);
-      parsed.relationshipLevel = currentLevel;
-      parsed.relationshipTitle = getRelationshipTitleForLevel(currentLevel);
+      // Ensure level calculation respects validatedLevel constraint
+      const pointsLevel = calculateLevelFromPoints(parsed.resiliencePoints || 0);
+      const validatedLevel = typeof parsed.validatedLevel === 'number' ? parsed.validatedLevel : Math.min(10, pointsLevel);
+      
+      // Effective level cannot exceed validatedLevel!
+      const effectiveLevel = Math.min(validatedLevel, pointsLevel);
+      
+      parsed.validatedLevel = validatedLevel;
+      parsed.relationshipLevel = effectiveLevel;
+      parsed.relationshipTitle = getRelationshipTitleForLevel(effectiveLevel);
       return parsed;
     } catch {
       return INITIAL_COMPANION_PROFILE;
@@ -72,17 +84,25 @@ export const CompanionMemoryService = {
   },
 
   saveProfile(profile: CompanionMemoryProfile): void {
-    const currentLevel = calculateLevelFromPoints(profile.resiliencePoints || 0);
-    profile.relationshipLevel = currentLevel;
-    profile.relationshipTitle = getRelationshipTitleForLevel(currentLevel);
+    const pointsLevel = calculateLevelFromPoints(profile.resiliencePoints || 0);
+    const validatedLevel = typeof profile.validatedLevel === 'number' ? profile.validatedLevel : Math.min(10, pointsLevel);
+    const effectiveLevel = Math.min(validatedLevel, pointsLevel);
+    
+    profile.validatedLevel = validatedLevel;
+    profile.relationshipLevel = effectiveLevel;
+    profile.relationshipTitle = getRelationshipTitleForLevel(effectiveLevel);
     localStorage.setItem(COMPANION_STORAGE_KEY, JSON.stringify(profile));
   },
 
   addResiliencePoints(pointsToAdd: number, victoryLabel?: string): CompanionMemoryProfile {
     const profile = this.getProfile();
     const updatedPoints = Math.min(1500, profile.resiliencePoints + pointsToAdd);
-    const newLevel = calculateLevelFromPoints(updatedPoints);
-    const newTitle = getRelationshipTitleForLevel(newLevel);
+    const pointsLevel = calculateLevelFromPoints(updatedPoints);
+    const validatedLevel = profile.validatedLevel ?? 10;
+    
+    // Effective level is strictly bounded by validatedLevel
+    const effectiveLevel = Math.min(validatedLevel, pointsLevel);
+    const newTitle = getRelationshipTitleForLevel(effectiveLevel);
 
     const keyVictories = victoryLabel 
       ? [...new Set([victoryLabel, ...(profile.userContext.keyVictories || [])])].slice(0, 12)
@@ -91,7 +111,8 @@ export const CompanionMemoryService = {
     const updatedProfile: CompanionMemoryProfile = {
       ...profile,
       resiliencePoints: updatedPoints,
-      relationshipLevel: newLevel,
+      validatedLevel,
+      relationshipLevel: effectiveLevel,
       relationshipTitle: newTitle,
       userContext: {
         ...profile.userContext,
@@ -102,6 +123,64 @@ export const CompanionMemoryService = {
     this.saveProfile(updatedProfile);
     window.dispatchEvent(new CustomEvent('haven-resilience-updated', { detail: updatedProfile }));
     return updatedProfile;
+  },
+
+  validateLevelQuestion(levelToValidate: number, reflection: string, selectedOption?: string): CompanionMemoryProfile {
+    const profile = this.getProfile();
+    const today = new Date().toISOString().split('T')[0];
+    const newValidatedLevel = Math.max(profile.validatedLevel || 1, levelToValidate);
+    
+    // Award +25 bonus resilience points for therapeutic healing question validation
+    const updatedPoints = Math.min(1500, profile.resiliencePoints + 25);
+    const pointsLevel = calculateLevelFromPoints(updatedPoints);
+    const effectiveLevel = Math.min(newValidatedLevel, pointsLevel);
+    const newTitle = getRelationshipTitleForLevel(effectiveLevel);
+
+    const validatedQuestions = {
+      ...(profile.validatedQuestions || {}),
+      [levelToValidate]: {
+        date: today,
+        reflection,
+        answer: selectedOption
+      }
+    };
+
+    const victoryLabel = `Étape de Guérison Niveau ${levelToValidate} validée avec succès`;
+    const keyVictories = [...new Set([victoryLabel, ...(profile.userContext.keyVictories || [])])].slice(0, 12);
+
+    const updatedProfile: CompanionMemoryProfile = {
+      ...profile,
+      resiliencePoints: updatedPoints,
+      validatedLevel: newValidatedLevel,
+      relationshipLevel: effectiveLevel,
+      relationshipTitle: newTitle,
+      validatedQuestions,
+      userContext: {
+        ...profile.userContext,
+        keyVictories,
+      }
+    };
+
+    this.saveProfile(updatedProfile);
+    window.dispatchEvent(new CustomEvent('haven-resilience-updated', { detail: updatedProfile }));
+    return updatedProfile;
+  },
+
+  isLevelValidationPending(profile?: CompanionMemoryProfile): boolean {
+    const p = profile || this.getProfile();
+    const pointsLevel = calculateLevelFromPoints(p.resiliencePoints || 0);
+    const validatedLevel = p.validatedLevel ?? 10;
+    return pointsLevel > validatedLevel;
+  },
+
+  getPendingValidationLevel(profile?: CompanionMemoryProfile): number | null {
+    const p = profile || this.getProfile();
+    const pointsLevel = calculateLevelFromPoints(p.resiliencePoints || 0);
+    const validatedLevel = p.validatedLevel ?? 10;
+    if (pointsLevel > validatedLevel) {
+      return validatedLevel + 1;
+    }
+    return null;
   },
 
   recordInteraction(topic: string, emotionalTone: string, keyTakeaway: string, noteFromHaven?: string): CompanionMemoryProfile {

@@ -29,6 +29,7 @@ import {
 import { QuickLocationShare } from './QuickLocationShare';
 import { UiOpacityControl } from './UiOpacityControl';
 import { calculateLevelFromPoints, getCycleForLevel, RESILIENCE_CYCLES } from '../data/resilience100Levels';
+import { CompanionMemoryService } from '../utils/companionMemory';
 
 interface HeaderProps {
   activeTab: string;
@@ -100,7 +101,10 @@ export const Header: React.FC<HeaderProps> = ({
   
   const navItems = [];
   
-  const userLevel = calculateLevelFromPoints(resiliencePoints);
+  const companionProf = CompanionMemoryService.getProfile();
+  const currentPts = typeof resiliencePoints === 'number' ? resiliencePoints : companionProf.resiliencePoints;
+  const userLevel = companionProf.relationshipLevel || calculateLevelFromPoints(currentPts);
+  const isPendingValidation = CompanionMemoryService.isLevelValidationPending(companionProf);
   const userCycleId = getCycleForLevel(userLevel);
   const userCycle = RESILIENCE_CYCLES.find(c => c.id === userCycleId) || RESILIENCE_CYCLES[0];
   
@@ -108,17 +112,17 @@ export const Header: React.FC<HeaderProps> = ({
   navItems.push({ id: 'evaluation', label: 'Bilan & Questions', icon: ClipboardList });
 
   // Dès qu'on a un peu de points (niveau 2+)
-  if (resiliencePoints >= 20) {
+  if (currentPts >= 20) {
     navItems.push({ id: 'wellness', label: 'Soutien & Apprentissage', icon: Heart });
   }
   
   // Niveau 3+
-  if (resiliencePoints >= 50) {
+  if (currentPts >= 50) {
     navItems.push({ id: 'network', label: 'Réseau de Secours', icon: Users, badge: contactsCount > 0 ? `${contactsCount}` : undefined });
   }
 
   // Niveau 4+
-  if (resiliencePoints >= 100) {
+  if (currentPts >= 100) {
     navItems.push({ id: 'justice', label: 'Dossier Justice', icon: Scale });
   }
 
@@ -149,10 +153,13 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => onSelectTab('evaluation')}
             className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 ${userCycle.badgeBg} ${userCycle.badgeBorder} ${userCycle.badgeText} shadow-2xs`}
-            title={`Niveau ${userLevel}/100 - ${userCycle.subtitle}`}
+            title={`Niveau validé ${userLevel}/100 (${currentPts} pts) - ${userCycle.subtitle}${isPendingValidation ? ' • Question de palier débloquée !' : ''}`}
           >
             <Trophy className="w-3.5 h-3.5 text-[#385117]" />
             <span>Niveau {userLevel}/100</span>
+            {isPendingValidation && (
+              <span className="w-2 h-2 rounded-full bg-[#9FE870] animate-ping inline-block ml-0.5" />
+            )}
             <span className="hidden md:inline font-normal text-[11px] opacity-90">• Cycle {userCycleId}</span>
           </button>
 
