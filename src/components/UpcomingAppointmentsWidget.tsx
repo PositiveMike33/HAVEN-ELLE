@@ -26,14 +26,14 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
   if (upcoming.length === 0) return null;
 
   return (
-    <div className="mb-6 bg-white/80 backdrop-blur-md rounded-2xl border border-[#E5E2D9] p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+    <div className="mb-6 bg-white rounded-2xl border-2 border-[#CBD5E1] p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
       <div className="flex items-center gap-3 shrink-0">
-        <div className="w-10 h-10 rounded-2xl bg-[#E5EAD9] flex items-center justify-center text-[#5A5A40]">
+        <div className="w-10 h-10 rounded-2xl bg-[#DCFCE7] border-2 border-[#86EFAC] flex items-center justify-center text-[#14532D]">
           <Calendar className="w-5 h-5" />
         </div>
         <div>
-          <h3 className="text-sm font-bold text-[#3E3B39]">Prochains Rendez-vous</h3>
-          <p className="text-[11px] text-[#8E8B82]">Synchronisés & Sécurisés</p>
+          <h3 className="text-sm font-black text-black">Prochains Rendez-vous</h3>
+          <p className="text-xs font-bold text-black">Synchronisés & Sécurisés</p>
         </div>
       </div>
 
@@ -44,11 +44,11 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
           const dateStr = isToday ? "Aujourd'hui" : aptDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
           
           return (
-            <div key={apt.id} className="flex-1 min-w-0 bg-[#F8F7F2] rounded-xl p-2.5 border border-[#E5E2D9] flex items-center justify-between gap-2 hover:border-[#CED6C1] transition-colors">
+            <div key={apt.id} className="flex-1 min-w-0 bg-[#F8FAFC] rounded-xl p-2.5 border-2 border-[#CBD5E1] flex items-center justify-between gap-2 hover:border-[#15803D] transition-colors">
               <div className="min-w-0">
-                <p className="text-xs font-bold text-[#3E3B39] truncate">{apt.discreetTitle}</p>
-                <div className="flex items-center gap-1.5 mt-0.5 text-[10px] font-semibold text-[#8E8B82]">
-                  <span className={`flex items-center gap-1 ${isToday ? 'text-[#8A9A5B]' : ''}`}>
+                <p className="text-xs font-black text-black truncate">{apt.discreetTitle}</p>
+                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] font-bold text-black">
+                  <span className={`flex items-center gap-1 ${isToday ? 'text-[#15803D] font-black' : 'text-black font-bold'}`}>
                     <Clock className="w-3 h-3" />
                     {dateStr} à {apt.time}
                   </span>
@@ -58,7 +58,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
                 href={apt.meetLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white hover:bg-[#E5EAD9] text-[#5A5A40] border border-[#E5E2D9] hover:border-[#CED6C1] flex items-center justify-center transition-all shrink-0 shadow-2xs"
+                className="w-8 h-8 rounded-lg bg-white hover:bg-[#DCFCE7] text-black hover:text-[#14532D] border-2 border-[#CBD5E1] hover:border-[#86EFAC] flex items-center justify-center transition-all shrink-0 shadow-2xs"
                 title="Rejoindre la téléconsultation"
               >
                 <Video className="w-4 h-4" />
@@ -70,10 +70,10 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 
       <button
         onClick={onNavigateToAppointments}
-        className="shrink-0 flex items-center justify-center w-8 h-8 rounded-xl hover:bg-[#F5F2ED] text-[#8E8B82] transition-colors"
+        className="shrink-0 flex items-center justify-center w-8 h-8 rounded-xl hover:bg-[#F1F5F9] text-black border-2 border-[#CBD5E1] transition-colors cursor-pointer"
         title="Gérer les rendez-vous"
       >
-        <ChevronRight className="w-5 h-5" />
+        <ChevronRight className="w-5 h-5 stroke-[3]" />
       </button>
     </div>
   );

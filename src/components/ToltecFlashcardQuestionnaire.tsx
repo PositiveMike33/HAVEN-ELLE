@@ -87,7 +87,7 @@ export const TOLTEC_FLASHCARD_QUESTIONS: ToltecFlashcardItem[] = [
       }
     ],
     scientificGrowthLesson: 'La neuroplasticité montre que le dialogue intérieur bienveillant reprogramme les circuits de résilience (cortex préfrontal) et réduit la sécrétion de cortisol de plus de 30%.',
-    toltecMantra: '« Ma parole envers moi-même est un sanctuaire d’amour inconditionnel et de vérité sereine. »'
+    toltecMantra: '« Les lèvres de la sagesse restent closes, excepté aux oreilles de la Raison. » — Le Kybalion'
   },
 
   // --- ACCORD 2 : NE RIEN PRENDRE PERSONNELLEMENT ---
@@ -431,23 +431,23 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
         {/* Card Body */}
         <div className="p-6 md:p-8 space-y-6">
           {/* Real-World Scenario Box */}
-          <div className="bg-[#FEFCE8] border-2 border-[#FDE047] p-5 rounded-2xl space-y-2">
+          <div className="bg-[#FEFCE8] border-2 border-[#EAB308] p-5 rounded-2xl space-y-2 shadow-2xs">
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#854D0E]">
               <Flame className="w-4 h-4 text-[#D97706]" />
               Mise en Situation Réelle & Épreuve du « Non »
             </div>
-            <p className="text-sm sm:text-base text-[#0F172A] font-semibold leading-relaxed">
+            <p className="text-sm sm:text-base text-black font-black leading-relaxed">
               « {card.realWorldScenario} »
             </p>
           </div>
 
           {/* Prompt Question */}
           <div className="space-y-1">
-            <h4 className="text-base sm:text-lg font-black text-[#0F172A] flex items-center gap-2">
+            <h4 className="text-base sm:text-lg font-black text-black flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-[#15803D]" />
               {card.question}
             </h4>
-            <p className="text-xs text-[#475569] font-medium">
+            <p className="text-xs text-black font-black">
               Sélectionnez la posture qui vous inspire pour dévoiler la fiche pédagogique cachée.
             </p>
           </div>
@@ -464,9 +464,9 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                   className={`w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all flex items-start gap-3.5 cursor-pointer ${
                     isSelected
                       ? opt.isResilientToltec
-                        ? 'border-[#16A34A] bg-[#DCFCE7] text-[#14532D] shadow-sm ring-2 ring-[#16A34A]/30 font-bold'
-                        : 'border-[#D97706] bg-[#FEF3C7] text-[#78350F] shadow-sm ring-2 ring-[#D97706]/30 font-bold'
-                      : 'border-[#CBD5E1] bg-white text-[#0F172A] hover:bg-[#F8FAFC] hover:border-[#94A3B8]'
+                        ? 'border-[#15803D] bg-[#DCFCE7] text-[#14532D] shadow-sm ring-2 ring-[#15803D]/40 font-bold'
+                        : 'border-[#D97706] bg-[#FEF3C7] text-[#78350F] shadow-sm ring-2 ring-[#D97706]/40 font-bold'
+                      : 'border-[#CBD5E1] bg-white text-[#0F172A] hover:bg-[#F8FAFC] hover:border-[#64748B]'
                   }`}
                 >
                   <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center shrink-0 text-sm font-black transition-all ${
@@ -479,7 +479,7 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                     {opt.id}
                   </div>
                   <div className="flex-1">
-                    <span className="text-xs sm:text-sm font-semibold leading-relaxed block text-inherit">
+                    <span className="text-xs sm:text-sm font-bold leading-relaxed block text-inherit">
                       {opt.text}
                     </span>
                   </div>
@@ -490,7 +490,7 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
 
           {/* REVEALED CARD (Unveiled when an option is selected) */}
           {isAnswerRevealed && selectedOption && (
-            <div className={`p-5 md:p-6 rounded-2xl border-2 space-y-4 animate-in fade-in zoom-in duration-300 ${
+            <div className={`p-5 md:p-6 rounded-2xl border-2 space-y-4 shadow-sm animate-in fade-in zoom-in duration-300 ${
               selectedOption.isResilientToltec
                 ? 'bg-[#F0FDF4] border-2 border-[#16A34A]'
                 : 'bg-[#FFFBEB] border-2 border-[#F59E0B]'
@@ -515,24 +515,26 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                   </h5>
                 </div>
 
-                <div className="text-xs font-mono font-black px-3.5 py-1.5 bg-white rounded-xl border-2 border-[#CBD5E1] text-[#15803D] shrink-0">
+                <div className="text-xs font-mono font-black px-3.5 py-1.5 bg-white rounded-xl border-2 border-[#CBD5E1] text-[#15803D] shrink-0 shadow-2xs">
                   +{selectedOption.isResilientToltec ? '30' : '20'} pts
                 </div>
               </div>
 
               {/* Analysis Text */}
-              <p className="text-sm sm:text-base text-[#0F172A] font-medium leading-relaxed bg-white/80 p-4 rounded-xl border border-inherit/40">
-                {selectedOption.revealedAnalysis}
-              </p>
+              <div className="bg-white p-4.5 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs">
+                <p className="text-sm sm:text-base text-black font-bold leading-relaxed">
+                  {selectedOption.revealedAnalysis}
+                </p>
+              </div>
 
               {/* Special Growth Mindset Box if Less Optimal / Mistake */}
               {selectedOption.growthMindsetForMistake && (
-                <div className="bg-[#FFFBEB] border-2 border-[#F59E0B] p-4 rounded-xl space-y-1.5">
-                  <div className="text-xs font-black text-[#92400E] flex items-center gap-1.5">
+                <div className="bg-[#FEF3C7] border-2 border-[#D97706] p-4 rounded-xl space-y-1.5 shadow-2xs">
+                  <div className="text-xs font-black text-[#78350F] flex items-center gap-1.5">
                     <Lightbulb className="w-4 h-4 text-[#D97706]" />
                     L’Échec & le « Non » comme Enseignement Sain (Mentalité de Croissance)
                   </div>
-                  <p className="text-xs sm:text-sm text-[#78350F] font-semibold leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#78350F] font-bold leading-relaxed">
                     {selectedOption.growthMindsetForMistake}
                   </p>
                 </div>
@@ -541,20 +543,20 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
               {/* Somatic Shift Prompt */}
               <div className="bg-white border-2 border-[#86EFAC] p-4 rounded-xl flex items-center gap-3 shadow-2xs">
                 <Heart className="w-5 h-5 text-[#15803D] shrink-0" />
-                <p className="text-xs sm:text-sm font-semibold text-[#14532D] leading-relaxed">
+                <p className="text-xs sm:text-sm font-bold text-[#14532D] leading-relaxed">
                   <strong>Ancrage Somatique :</strong> {selectedOption.somaticShiftPrompt}
                 </p>
               </div>
 
               {/* Scientific Note & Mantra */}
-              <div className="pt-2 border-t-2 border-[#CBD5E1]/60 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
+              <div className="pt-2 border-t-2 border-[#CBD5E1] grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
                 <div className="bg-white p-4 rounded-xl border-2 border-[#86EFAC] shadow-2xs">
                   <span className="font-black text-[#15803D] block mb-1 text-xs uppercase tracking-wider">🧠 Fait Scientifique :</span>
-                  <span className="text-[#0F172A] font-medium leading-relaxed block">{card.scientificGrowthLesson}</span>
+                  <span className="text-[#0F172A] font-semibold leading-relaxed block">{card.scientificGrowthLesson}</span>
                 </div>
                 <div className="bg-[#FEFCE8] p-4 rounded-xl border-2 border-[#EAB308] shadow-2xs">
-                  <span className="font-black text-[#854D0E] block mb-1 text-xs uppercase tracking-wider">📜 Mantra de Souveraineté :</span>
-                  <span className="italic text-[#713F12] font-serif font-bold text-sm sm:text-base leading-relaxed block">{card.toltecMantra}</span>
+                  <span className="font-black text-[#854D0E] block mb-1 text-xs uppercase tracking-wider">📜 Mantra & Enseignement Sacré :</span>
+                  <span className="italic text-black font-serif font-black text-sm sm:text-base leading-relaxed block">{card.toltecMantra}</span>
                 </div>
               </div>
             </div>

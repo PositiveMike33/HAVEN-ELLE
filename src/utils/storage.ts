@@ -317,30 +317,22 @@ export const StorageService = {
         return INITIAL_CONTACTS;
       }
       const parsed: TrustedContact[] = JSON.parse(data);
-      // Migrate any old default contact name and details
-      const updated = parsed.map((c) => {
-        if (c.id === 'tc-1' || c.name.toLowerCase().includes('clara') || c.email.includes('clara') || c.phone.includes('12 34 56 78')) {
-          return {
-            ...c,
-            name: 'Michael Gauthier Guillet',
-            relationship: 'Ami de confiance',
-            phone: '438-543-2555',
-            email: 'mikegauthierguillet@gmail.com',
-            secretCodeWord: 'Mamadou',
-            notes: 'Possède un double de mes clés et connaît ma situation.',
-          };
-        }
-        return c;
-      });
-      localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(updated));
-      return updated;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+      return INITIAL_CONTACTS;
     } catch {
       return INITIAL_CONTACTS;
     }
   },
 
   saveContacts(contacts: TrustedContact[]): void {
-    localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
+    try {
+      localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
+      window.dispatchEvent(new CustomEvent('haven-contacts-updated', { detail: contacts }));
+    } catch (e) {
+      console.error('Failed to save contacts', e);
+    }
   },
 
   getAlerts(): EmergencyAlert[] {

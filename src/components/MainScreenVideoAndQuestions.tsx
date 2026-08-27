@@ -292,40 +292,40 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
     <div id="main-screen-video-questions-hub" className="space-y-6">
       {/* Primary 10-Question Form Card */}
       <div className="max-w-4xl mx-auto w-full">
-        <div className="bg-white rounded-3xl border-2 border-[#CED6C1] p-5 sm:p-7 shadow-md space-y-6">
+        <div className="bg-white rounded-3xl border-2 border-[#CBD5E1] p-5 sm:p-7 shadow-sm space-y-6">
           
           {/* Header & Quick Intro */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-[#E5E2D9]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-[#E2E8F0]">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#E5EED6] text-[#385117] border-2 border-[#B8CCA2] flex items-center justify-center shadow-xs shrink-0">
-                <Brain className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-2xl bg-[#DCFCE7] text-[#14532D] border-2 border-[#86EFAC] flex items-center justify-center shadow-xs shrink-0 font-black">
+                <Brain className="w-6 h-6 text-[#15803D]" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#385117]">
+                  <span className="text-xs font-black uppercase tracking-wider text-[#15803D]">
                     Page Prioritaire • Formulaire d'Entrée
                   </span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#E5EED6] text-[#385117] border border-[#B8CCA2]">
+                  <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-[#14532D] border-2 border-[#86EFAC]">
                     10 Questions
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-[#1F201C] mt-0.5">
+                <h2 className="text-xl sm:text-2xl font-black text-[#0F172A] mt-0.5 font-serif">
                   Questionnaire de Sûreté & Reconstruction
                 </h2>
               </div>
             </div>
 
             {/* Answered Counter & Progress */}
-            <div className="flex items-center gap-3 self-end sm:self-center bg-[#F4F2EB] px-3.5 py-2 rounded-2xl border-2 border-[#D5D0C2]">
+            <div className="flex items-center gap-3 self-end sm:self-center bg-[#F8FAFC] px-4 py-2.5 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs">
               <div className="text-right">
-                <div className="text-xs font-extrabold text-[#1F201C]">
+                <div className="text-xs font-black text-[#0F172A]">
                   {answeredCount} / 10 complétées
                 </div>
-                <div className="text-[10px] text-[#6A6860] font-semibold">
+                <div className="text-[11px] text-[#334155] font-bold">
                   Progression : {progressPercent}%
                 </div>
               </div>
-              <div className="w-9 h-9 rounded-full bg-white border-2 border-[#385117] flex items-center justify-center font-extrabold text-xs text-[#385117]">
+              <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#15803D] flex items-center justify-center font-black text-xs text-[#15803D] shadow-2xs">
                 {progressPercent}%
               </div>
             </div>
@@ -334,10 +334,10 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           {/* Stepper Grid (1 to 10 questions) */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-[#5C5952]">
+              <span className="text-xs font-bold text-[#334155]">
                 Sélectionnez une question pour y répondre ou la configurer :
               </span>
-              <span className="text-xs font-bold text-[#385117]">
+              <span className="text-xs font-black text-[#15803D]">
                 Question {activeQuestion} sur 10
               </span>
             </div>
@@ -355,25 +355,25 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     id={`intake-question-step-btn-${num}`}
                     type="button"
                     onClick={() => setActiveQuestion(num)}
-                    className={`relative py-2.5 px-1 rounded-xl font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 transition-all ${
+                    className={`relative py-2.5 px-1 rounded-xl font-black text-xs flex flex-col items-center justify-center gap-0.5 transition-all border-2 ${
                       isActive
-                        ? 'bg-[#385117] text-white shadow-md ring-2 ring-[#385117]/30 scale-105 z-10'
+                        ? 'bg-[#15803D] text-white border-[#15803D] shadow-md ring-2 ring-[#15803D]/40 scale-105 z-10'
                         : isAnswered
-                        ? 'bg-[#E7EEDB] border-2 border-[#A8BE90] text-[#22330E] hover:bg-[#DCE6CE]'
+                        ? 'bg-[#DCFCE7] border-[#86EFAC] text-[#14532D] hover:bg-[#BBF7D0]'
                         : isVeroConfigured
-                        ? 'bg-[#F2EADB] border-2 border-[#D6C4A2] text-[#5C451D] hover:bg-[#E8DCC8]'
-                        : 'bg-[#FAF9F5] border-2 border-[#D8D4C7] text-[#55524B] hover:bg-[#F0EEE6]'
+                        ? 'bg-[#FEF3C7] border-[#FCD34D] text-[#78350F] hover:bg-[#FDE68A]'
+                        : 'bg-[#F8FAFC] border-[#CBD5E1] text-[#0F172A] hover:bg-[#F1F5F9]'
                     }`}
                   >
                     <span className="text-xs font-black">Q{num}</span>
                     {isAnswered ? (
-                      <Check className="w-3 h-3 text-[#385117] stroke-[3]" />
+                      <Check className="w-3.5 h-3.5 text-[#15803D] stroke-[3]" />
                     ) : isVeroConfigured ? (
-                      <span className="w-2 h-2 rounded-full bg-[#8A5A1E]" />
+                      <span className="w-2 h-2 rounded-full bg-[#D97706]" />
                     ) : isVeroSlot ? (
-                      <span className="text-[9px] text-[#8C887E] font-medium">Libre</span>
+                      <span className="text-[9px] text-[#475569] font-bold">Libre</span>
                     ) : (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#A39E91]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#94A3B8]" />
                     )}
                   </button>
                 );
@@ -384,12 +384,12 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           {/* QUESTION 1: Situation de résidence */}
           {activeQuestion === 1 && (
             <div className="space-y-4 pt-2 animate-in fade-in duration-200">
-              <div className="bg-[#F8F7F2] p-4 rounded-2xl border-2 border-[#E5E2D9]">
-                <label className="block text-base font-extrabold text-[#1F201C] mb-1 flex items-center gap-2">
-                  <User className="w-5 h-5 text-[#385117]" />
+              <div className="bg-[#F8FAFC] p-5 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs">
+                <label className="block text-base font-black text-black mb-1 flex items-center gap-2">
+                  <User className="w-5 h-5 text-[#15803D]" />
                   1. Quelle est votre situation de résidence actuelle ?
                 </label>
-                <p className="text-xs text-[#5C5952] mb-3">
+                <p className="text-xs text-black font-bold mb-3">
                   Cette information permet d'adapter les recommandations de mise en sécurité et les protocoles de sortie discrète.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -405,13 +405,13 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                       onClick={() => updateState({ livingSituation: opt })}
                       className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all ${
                         intakeState.livingSituation === opt
-                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                          : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                          ? 'bg-[#DCFCE7] border-[#15803D] text-[#14532D] font-black shadow-xs ring-2 ring-[#15803D]/30'
+                          : 'bg-white border-[#CBD5E1] text-black font-black hover:bg-[#F1F5F9]'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span>{opt}</span>
-                        {intakeState.livingSituation === opt && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
+                        {intakeState.livingSituation === opt && <CheckCircle2 className="w-4 h-4 text-[#15803D]" />}
                       </div>
                     </button>
                   ))}
@@ -423,12 +423,12 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           {/* QUESTION 2: Enfants & Personnes à charge */}
           {activeQuestion === 2 && (
             <div className="space-y-4 pt-2 animate-in fade-in duration-200">
-              <div className="bg-[#F8F7F2] p-4 rounded-2xl border-2 border-[#E5E2D9]">
-                <label className="block text-base font-extrabold text-[#1F201C] mb-1 flex items-center gap-2">
-                  <Baby className="w-5 h-5 text-[#385117]" />
+              <div className="bg-[#F8FAFC] p-5 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs">
+                <label className="block text-base font-black text-black mb-1 flex items-center gap-2">
+                  <Baby className="w-5 h-5 text-[#15803D]" />
                   2. Y a-t-il des enfants à charge ou des mineurs dans le foyer ?
                 </label>
-                <p className="text-xs text-[#5C5952] mb-3">
+                <p className="text-xs text-black font-bold mb-3">
                   La présence d'enfants déclenche des mesures de protection juridique conjointe (JAF, ordonnance de protection).
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -437,12 +437,12 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     onClick={() => updateState({ hasChildren: false, childrenCount: 0 })}
                     className={`p-4 rounded-2xl border-2 text-left transition-all ${
                       !intakeState.hasChildren
-                        ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                        : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                        ? 'bg-[#DCFCE7] border-[#15803D] text-[#14532D] font-black shadow-xs ring-2 ring-[#15803D]/30'
+                        : 'bg-white border-[#CBD5E1] text-black font-black hover:bg-[#F1F5F9]'
                     }`}
                   >
-                    <div className="font-extrabold text-sm text-[#1F201C]">Non (Sans enfant)</div>
-                    <div className="text-xs text-[#4A4843] mt-0.5">Focus direct sur l'autonomie et le départ individuel</div>
+                    <div className="font-black text-sm text-black">Non (Sans enfant)</div>
+                    <div className="text-xs text-black font-bold mt-0.5">Focus direct sur l'autonomie et le départ individuel</div>
                   </button>
 
                   <button
@@ -450,18 +450,18 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     onClick={() => updateState({ hasChildren: true, childrenCount: Math.max(1, intakeState.childrenCount) })}
                     className={`p-4 rounded-2xl border-2 text-left transition-all ${
                       intakeState.hasChildren
-                        ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                        : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                        ? 'bg-[#DCFCE7] border-[#15803D] text-[#14532D] font-black shadow-xs ring-2 ring-[#15803D]/30'
+                        : 'bg-white border-[#CBD5E1] text-black font-black hover:bg-[#F1F5F9]'
                     }`}
                   >
-                    <div className="font-extrabold text-sm text-[#1F201C]">Oui (Avec enfant·s à charge)</div>
-                    <div className="text-xs text-[#4A4843] mt-0.5">Prise en compte des actes de naissance et garde d'urgence</div>
+                    <div className="font-black text-sm text-black">Oui (Avec enfant·s à charge)</div>
+                    <div className="text-xs text-black font-bold mt-0.5">Prise en compte des actes de naissance et garde d'urgence</div>
                   </button>
                 </div>
 
                 {intakeState.hasChildren && (
-                  <div className="mt-4 p-4 rounded-2xl bg-white border-2 border-[#CED6C1] flex items-center justify-between flex-wrap gap-3">
-                    <span className="text-xs text-[#1F201C] font-bold">
+                  <div className="mt-4 p-4 rounded-2xl bg-white border-2 border-[#CBD5E1] flex items-center justify-between flex-wrap gap-3 shadow-2xs">
+                    <span className="text-xs text-black font-black">
                       Précisez le nombre d'enfants concernés :
                     </span>
                     <div className="flex items-center gap-2">
@@ -470,10 +470,10 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                           key={num}
                           type="button"
                           onClick={() => updateState({ childrenCount: num })}
-                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all ${
+                          className={`w-9 h-9 rounded-xl text-xs font-black transition-all border-2 ${
                             intakeState.childrenCount === num
-                              ? 'bg-[#385117] text-white shadow-xs'
-                              : 'bg-[#F4F2EB] border-2 border-[#D8D4C7] text-[#2D2B27] hover:bg-[#E7EEDB]'
+                              ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                              : 'bg-[#F8FAFC] border-[#CBD5E1] text-black hover:bg-[#DCFCE7]'
                           }`}
                         >
                           {num}
@@ -489,12 +489,12 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           {/* QUESTION 3: Indicateurs de pression & facteurs de risques */}
           {activeQuestion === 3 && (
             <div className="space-y-4 pt-2 animate-in fade-in duration-200">
-              <div className="bg-[#F8F7F2] p-4 rounded-2xl border-2 border-[#E5E2D9]">
-                <label className="block text-base font-extrabold text-[#1F201C] mb-1 flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-[#A64D4D]" />
+              <div className="bg-[#F8FAFC] p-5 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs">
+                <label className="block text-base font-black text-black mb-1 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-[#DC2626]" />
                   3. Sélectionnez les indicateurs ou pressions constatés :
                 </label>
-                <p className="text-xs text-[#5C5952] mb-3">
+                <p className="text-xs text-black font-bold mb-3">
                   Cochez tous les éléments que vous observez ou subissez dans votre environnement quotidien.
                 </p>
 
@@ -506,15 +506,15 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                         key={risk}
                         type="button"
                         onClick={() => handleToggleRisk(risk)}
-                        className={`p-3 rounded-2xl border-2 text-left text-xs transition-all flex items-start gap-2.5 ${
+                        className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all flex items-start gap-2.5 ${
                           isSelected
-                            ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold ring-2 ring-[#385117]/25'
-                            : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                            ? 'bg-[#DCFCE7] border-[#15803D] text-[#14532D] font-black ring-2 ring-[#15803D]/30 shadow-xs'
+                            : 'bg-white border-[#CBD5E1] text-black font-black hover:bg-[#F1F5F9]'
                         }`}
                       >
                         <div
                           className={`w-4 h-4 rounded-md mt-0.5 shrink-0 flex items-center justify-center ${
-                            isSelected ? 'bg-[#385117] text-white' : 'border-2 border-[#9C9686] bg-white'
+                            isSelected ? 'bg-[#15803D] text-white' : 'border-2 border-[#64748B] bg-white'
                           }`}
                         >
                           {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -525,15 +525,15 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   })}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E5E2D9]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t-2 border-[#E2E8F0]">
                   <div>
-                    <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5">
+                    <label className="block text-xs font-black text-black mb-1.5">
                       Contrôle financier :
                     </label>
                     <select
                       value={intakeState.financialAutonomy}
                       onChange={(e) => updateState({ financialAutonomy: e.target.value })}
-                      className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
+                      className="w-full text-xs font-black p-3 rounded-xl border-2 border-[#CBD5E1] bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#15803D]"
                     >
                       <option value="Autonomie financière totale">Autonomie financière totale</option>
                       <option value="Autonomie financière partielle">Autonomie financière partielle</option>
@@ -542,13 +542,13 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   </div>
 
                   <div>
-                    <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5">
+                    <label className="block text-xs font-black text-black mb-1.5">
                       Niveau de surveillance tech :
                     </label>
                     <select
                       value={intakeState.surveillanceLevel}
                       onChange={(e) => updateState({ surveillanceLevel: e.target.value })}
-                      className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
+                      className="w-full text-xs font-black p-3 rounded-xl border-2 border-[#CBD5E1] bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#15803D]"
                     >
                       <option value="Pas de surveillance détectée">Pas de surveillance détectée</option>
                       <option value="Surveillance modérée">Surveillance modérée</option>
@@ -563,16 +563,16 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           {/* QUESTION 4: Comment décririez-vous une relation toxique ? */}
           {activeQuestion === 4 && (
             <div className="space-y-4 pt-2 animate-in fade-in duration-200">
-              <div className="bg-[#F8F7F2] p-4 sm:p-5 rounded-2xl border-2 border-[#E5E2D9] space-y-4">
+              <div className="bg-[#F8FAFC] p-5 rounded-2xl border-2 border-[#CBD5E1] space-y-4 shadow-2xs">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-extrabold text-[#385117] uppercase tracking-wider mb-1">
+                  <div className="flex items-center gap-2 text-xs font-black text-[#15803D] uppercase tracking-wider mb-1">
                     <HeartHandshake className="w-4 h-4" />
                     Question Thérapeutique Fondatrice
                   </div>
-                  <label className="block text-base sm:text-lg font-extrabold text-[#1F201C] mb-1">
+                  <label className="block text-base sm:text-lg font-black text-black mb-1">
                     4. Comment décririez-vous une relation toxique ou votre dynamique relationnelle actuelle ?
                   </label>
-                  <p className="text-xs text-[#5C5952] leading-relaxed">
+                  <p className="text-xs text-black font-bold leading-relaxed">
                     Une relation saine apporte sérénité, sécurité et respect mutuel. Une relation toxique ou dysfonctionnelle installe le doute, la peur constante, la dévalorisation et l'épuisement. Cochez les dynamiques qui résonnent avec votre vécu :
                   </p>
                 </div>
@@ -588,21 +588,21 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                         onClick={() => handleToggleToxicPattern(pat.label)}
                         className={`p-3.5 rounded-2xl border-2 text-left transition-all flex flex-col justify-between ${
                           isSelected
-                            ? 'bg-[#E7EEDB] border-[#385117] ring-2 ring-[#385117]/25 shadow-xs'
-                            : 'bg-white border-[#D8D4C7] hover:bg-[#F6F4EE]'
+                            ? 'bg-[#DCFCE7] border-[#15803D] ring-2 ring-[#15803D]/30 shadow-xs'
+                            : 'bg-white border-[#CBD5E1] hover:bg-[#F1F5F9]'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <div className="text-xs font-extrabold text-[#1F201C] flex items-center gap-2">
-                            <span className={`w-3.5 h-3.5 rounded-md flex items-center justify-center shrink-0 ${
-                              isSelected ? 'bg-[#385117] text-white' : 'border border-[#8E8A7E] bg-white'
+                          <div className="text-xs font-black text-black flex items-center gap-2">
+                            <span className={`w-4 h-4 rounded-md flex items-center justify-center shrink-0 ${
+                              isSelected ? 'bg-[#15803D] text-white' : 'border-2 border-[#64748B] bg-white'
                             }`}>
                               {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                             </span>
                             <span>{pat.label}</span>
                           </div>
                         </div>
-                        <p className="text-[11px] text-[#5C5952] font-medium leading-normal pl-5">
+                        <p className="text-xs text-black font-bold leading-normal pl-6">
                           {pat.desc}
                         </p>
                       </button>
@@ -612,8 +612,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
                 {/* Free text reflection */}
                 <div className="pt-2">
-                  <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5 flex items-center gap-1.5">
-                    <MessageSquareHeart className="w-4 h-4 text-[#385117]" />
+                  <label className="block text-xs font-black text-black mb-1.5 flex items-center gap-1.5">
+                    <MessageSquareHeart className="w-4 h-4 text-[#15803D]" />
                     <span>Décrivez avec vos propres mots ce que vous ressentez au quotidien (facultatif mais libérateur) :</span>
                   </label>
                   <textarea
@@ -621,7 +621,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     value={intakeState.toxicRelationshipDescription || ''}
                     onChange={(e) => updateState({ toxicRelationshipDescription: e.target.value })}
                     placeholder="Ex: J'ai l'impression de ne plus avoir le droit d'exprimer mes besoins sans déclencher un drame..."
-                    className="w-full text-xs p-3.5 rounded-2xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117] placeholder:text-[#9A968B]"
+                    className="w-full text-xs font-bold p-3.5 rounded-2xl border-2 border-[#CBD5E1] bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#15803D] placeholder:text-[#64748B]"
                   />
                 </div>
               </div>
@@ -643,28 +643,28 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
             return (
               <div className="space-y-4 pt-2 animate-in fade-in duration-200">
-                <div className="bg-[#F8F7F2] p-4 sm:p-5 rounded-2xl border-2 border-[#E5E2D9] space-y-4">
+                <div className="bg-[#F8FAFC] p-5 rounded-2xl border-2 border-[#CBD5E1] space-y-4 shadow-2xs">
                   
                   {/* Top Bar for Véro Question with Customize/Edit Button */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E2D9]">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-[#E2E8F0]">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                        <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full border-2 ${
                           veroQ.isConfigured 
-                            ? 'bg-[#E5EED6] text-[#385117] border-[#B8CCA2]' 
-                            : 'bg-[#F2EADB] text-[#8A5A1E] border-[#D6C4A2]'
+                            ? 'bg-[#DCFCE7] text-[#14532D] border-[#86EFAC]' 
+                            : 'bg-[#FEF3C7] text-[#78350F] border-[#FCD34D]'
                         }`}>
                           {veroQ.isConfigured ? '✓ Question de Véro configurée' : 'Espace libre pour Véro'}
                         </span>
-                        <span className="text-xs font-bold text-[#6A6860]">
+                        <span className="text-xs font-black text-black">
                           Slot #{qNum}
                         </span>
                       </div>
-                      <h3 className="text-base sm:text-lg font-extrabold text-[#1F201C] mt-1">
+                      <h3 className="text-base sm:text-lg font-black text-black mt-1 font-serif">
                         {veroQ.title}
                       </h3>
                       {veroQ.subtitle && (
-                        <p className="text-xs text-[#5C5952] mt-0.5">
+                        <p className="text-xs text-black font-bold mt-0.5">
                           {veroQ.subtitle}
                         </p>
                       )}
@@ -675,9 +675,9 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                       id={`edit-vero-question-${qNum}-btn`}
                       type="button"
                       onClick={() => handleOpenVeroEditor(qNum)}
-                      className="px-3.5 py-2 bg-white hover:bg-[#FAF9F5] text-[#385117] border-2 border-[#B8CCA2] rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors shrink-0"
+                      className="px-3.5 py-2 bg-white hover:bg-[#F8FAFC] text-[#14532D] border-2 border-[#15803D] rounded-xl text-xs font-black flex items-center gap-2 shadow-xs transition-colors shrink-0 cursor-pointer"
                     >
-                      <Edit3 className="w-3.5 h-3.5" />
+                      <Edit3 className="w-3.5 h-3.5 text-[#15803D]" />
                       <span>{veroQ.isConfigured ? 'Modifier la question de Véro' : 'Intégrer / Renommer cette question'}</span>
                     </button>
                   </div>
@@ -685,7 +685,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   {/* Rendering based on Question Type */}
                   {veroQ.questionType === 'multiple_choice' && (
                     <div className="space-y-2.5">
-                      <div className="text-xs font-bold text-[#1F201C] mb-1">
+                      <div className="text-xs font-black text-black mb-1">
                         Sélectionnez la réponse appropriée :
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -698,12 +698,12 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                               onClick={() => handleUpdateVeroAnswer(qNum, opt)}
                               className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all flex items-center justify-between ${
                                 isSelected
-                                  ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                                  : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                                  ? 'bg-[#DCFCE7] border-[#15803D] text-[#14532D] font-black shadow-xs ring-2 ring-[#15803D]/30'
+                                  : 'bg-white border-[#CBD5E1] text-black font-black hover:bg-[#F1F5F9]'
                               }`}
                             >
                               <span>{opt}</span>
-                              {isSelected && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
+                              {isSelected && <CheckCircle2 className="w-4 h-4 text-[#15803D]" />}
                             </button>
                           );
                         })}
@@ -713,7 +713,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
                   {veroQ.questionType === 'yes_no' && (
                     <div className="space-y-2.5">
-                      <div className="text-xs font-bold text-[#1F201C] mb-1">
+                      <div className="text-xs font-black text-black mb-1">
                         Votre réponse :
                       </div>
                       <div className="grid grid-cols-3 gap-3">
@@ -726,11 +726,11 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                               onClick={() => handleUpdateVeroAnswer(qNum, opt)}
                               className={`p-3.5 rounded-2xl border-2 text-center text-xs transition-all ${
                                 isSelected
-                                  ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                                  : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                                  ? 'bg-[#DCFCE7] border-[#15803D] text-[#14532D] font-black shadow-xs ring-2 ring-[#15803D]/30'
+                                  : 'bg-white border-[#CBD5E1] text-black font-black hover:bg-[#F1F5F9]'
                               }`}
                             >
-                              <div className="font-extrabold">{opt}</div>
+                              <div className="font-black">{opt}</div>
                             </button>
                           );
                         })}
@@ -740,7 +740,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
                   {veroQ.questionType === 'rating_scale' && (
                     <div className="space-y-3">
-                      <div className="text-xs font-bold text-[#1F201C]">
+                      <div className="text-xs font-black text-black">
                         Échelle d'évaluation (1 = Très faible, 5 = Très intense) :
                       </div>
                       <div className="grid grid-cols-5 gap-2">
@@ -751,10 +751,10 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                               key={val}
                               type="button"
                               onClick={() => handleUpdateVeroAnswer(qNum, val)}
-                              className={`py-3 rounded-2xl border-2 text-center font-extrabold text-sm transition-all ${
+                              className={`py-3 rounded-2xl border-2 text-center font-black text-sm transition-all ${
                                 isSelected
-                                  ? 'bg-[#385117] text-white border-[#385117] shadow-xs'
-                                  : 'bg-white border-[#D8D4C7] text-[#2D2B27] hover:bg-[#E7EEDB]'
+                                  ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                                  : 'bg-white border-[#CBD5E1] text-black hover:bg-[#DCFCE7]'
                               }`}
                             >
                               {val}
@@ -767,7 +767,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
                   {veroQ.questionType === 'text_reflection' && (
                     <div className="space-y-2">
-                      <label className="block text-xs font-bold text-[#1F201C]">
+                      <label className="block text-xs font-black text-black">
                         Votre réflexion ou réponse rédigée :
                       </label>
                       <textarea
@@ -775,14 +775,14 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                         value={(veroQ.userAnswer as string) || ''}
                         onChange={(e) => handleUpdateVeroAnswer(qNum, e.target.value)}
                         placeholder="Rédigez votre réponse ici..."
-                        className="w-full text-xs p-3.5 rounded-2xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117] placeholder:text-[#9A968B]"
+                        className="w-full text-xs font-bold p-3.5 rounded-2xl border-2 border-[#CBD5E1] bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#15803D] placeholder:text-[#64748B]"
                       />
                     </div>
                   )}
 
                   {/* Optional notes */}
                   <div className="pt-2">
-                    <label className="block text-[11px] font-bold text-[#5C5952] mb-1">
+                    <label className="block text-xs font-black text-black mb-1">
                       Remarque personnelle ou précision additionnelle (facultatif) :
                     </label>
                     <input
@@ -790,20 +790,20 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                       value={veroQ.userNote || ''}
                       onChange={(e) => handleUpdateVeroAnswer(qNum, veroQ.userAnswer || '', e.target.value)}
                       placeholder="Ajouter une note de contexte..."
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D5D0C2] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
+                      className="w-full text-xs font-bold p-2.5 rounded-xl border-2 border-[#CBD5E1] bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#15803D]"
                     />
                   </div>
 
                   {!veroQ.isConfigured && (
-                    <div className="p-3 rounded-xl bg-[#F4F2EB] border border-[#D5D0C2] flex items-center justify-between text-xs text-[#6A6860]">
+                    <div className="p-3 rounded-xl bg-[#FEF3C7] border-2 border-[#FCD34D] flex items-center justify-between text-xs text-[#78350F] shadow-2xs">
                       <div className="flex items-center gap-2">
-                        <Info className="w-4 h-4 text-[#8A5A1E]" />
-                        <span>Vous recevrez prochainement la question de Véro pour cet emplacement.</span>
+                        <Info className="w-4 h-4 text-[#D97706]" />
+                        <span className="font-black">Vous recevrez prochainement la question de Véro pour cet emplacement.</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleOpenVeroEditor(qNum)}
-                        className="text-xs font-extrabold text-[#385117] underline hover:text-[#24360F]"
+                        className="text-xs font-black text-[#14532D] underline hover:text-black cursor-pointer"
                       >
                         Configurer maintenant
                       </button>
@@ -815,15 +815,15 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           })()}
 
           {/* Stepper Navigation Buttons (Précédent / Suivant / Valider) */}
-          <div className="flex items-center justify-between pt-4 border-t-2 border-[#E5E2D9]">
+          <div className="flex items-center justify-between pt-4 border-t-2 border-[#E2E8F0]">
             <button
               id="intake-prev-question-btn"
               type="button"
               disabled={activeQuestion === 1}
               onClick={() => setActiveQuestion((prev) => Math.max(1, prev - 1))}
-              className="px-4 py-2.5 bg-white border-2 border-[#D8D4C7] hover:bg-[#F2EFE9] text-[#2D2B27] text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              className="px-4 py-2.5 bg-white border-2 border-[#CBD5E1] hover:bg-[#F1F5F9] text-[#0F172A] text-xs font-black rounded-xl flex items-center gap-1.5 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 stroke-[3]" />
               <span>Question précédente</span>
             </button>
 
@@ -833,10 +833,10 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   id="intake-next-question-btn"
                   type="button"
                   onClick={() => setActiveQuestion((prev) => Math.min(10, prev + 1))}
-                  className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
+                  className="px-5 py-2.5 bg-[#15803D] hover:bg-[#14532D] text-white text-xs font-black rounded-xl flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
                 >
                   <span>Question suivante (Q{activeQuestion + 1})</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 stroke-[3]" />
                 </button>
               ) : (
                 <button
@@ -844,7 +844,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   type="button"
                   onClick={handleSaveAndSubmit}
                   disabled={isGenerating}
-                  className="px-6 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[#15803D] hover:bg-[#14532D] text-white text-xs font-black rounded-xl flex items-center gap-2 shadow-md transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isGenerating ? (
                     <>
@@ -863,16 +863,16 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           </div>
 
           {/* Export & Google Form Integration */}
-          <div className="pt-3 border-t border-[#E5E2D9] flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-[#5C5952]">
-              <span className="font-extrabold text-[#1F201C]">Exportation sécurisée : </span>
+          <div className="pt-3 border-t-2 border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-[#334155] font-bold">
+              <span className="font-black text-[#0F172A]">Exportation sécurisée : </span>
               Partagez ou sauvegardez vos réponses confidentielles vers Google Forms / Drive.
             </div>
 
             {needsAuth ? (
               <button
                 onClick={handleLogin}
-                className="px-3.5 py-2 bg-[#4285F4] hover:bg-[#3367D6] text-white text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-xs"
+                className="px-3.5 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-black rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-xs cursor-pointer"
               >
                 <User className="w-3.5 h-3.5" />
                 Connexion Google
@@ -881,7 +881,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
               <button
                 onClick={handleCreateGoogleForm}
                 disabled={isCreatingForm}
-                className="px-3.5 py-2 bg-[#2D8E47] hover:bg-[#247339] text-white text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-xs disabled:opacity-50"
+                className="px-3.5 py-2 bg-[#15803D] hover:bg-[#14532D] text-white text-xs font-black rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-xs disabled:opacity-50 cursor-pointer"
               >
                 {isCreatingForm ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5" />}
                 Exporter vers Google Forms
@@ -890,8 +890,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
           </div>
 
           {isSaved && (
-            <div className="p-3.5 rounded-xl bg-[#E7EEDB] border-2 border-[#385117] text-[#121B0A] text-xs font-bold flex items-center gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-[#385117] shrink-0" />
+            <div className="p-3.5 rounded-xl bg-[#DCFCE7] border-2 border-[#86EFAC] text-[#14532D] text-xs font-black flex items-center gap-2 animate-in fade-in shadow-2xs">
+              <CheckCircle2 className="w-4 h-4 text-[#15803D] shrink-0" />
               <span>Vos 10 questions ont été enregistrées localement et votre protocole de sûreté a été actualisé (+25 points) !</span>
             </div>
           )}

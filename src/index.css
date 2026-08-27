@@ -73,20 +73,71 @@ header {
 .text-\[\#55524B\],
 .text-\[\#5C5952\],
 .text-\[\#6A6860\],
-.text-\[\#716E65\] {
+.text-\[\#716E65\],
+.text-\[\#475569\],
+.text-slate-700,
+.text-slate-600,
+.text-gray-700,
+.text-gray-600,
+.text-neutral-700,
+.text-neutral-600 {
   color: #0F172A !important;
 }
 
 .text-\[\#8E8B82\],
-.text-\[\#7A776F\] {
-  color: #334155 !important;
+.text-\[\#7A776F\],
+.text-\[\#8C887F\],
+.text-\[\#94A3B8\],
+.text-\[\#64748B\],
+.text-slate-500,
+.text-gray-500,
+.text-neutral-500,
+.text-stone-500,
+.text-stone-600 {
+  color: #1E293B !important;
+  font-weight: 600;
+}
+
+/* Force dark readable colors on neutral background surfaces */
+#haven-app-root:not(.night-mode) p,
+#haven-app-root:not(.night-mode) label,
+#haven-app-root:not(.night-mode) .text-muted-foreground {
+  color: #1E293B;
+}
+
+#haven-app-root:not(.night-mode) .bg-\[\#FAF9F5\],
+#haven-app-root:not(.night-mode) .bg-\[\#F8F7F2\],
+#haven-app-root:not(.night-mode) .bg-\[\#F5F2ED\],
+#haven-app-root:not(.night-mode) .bg-\[\#FAF8F2\],
+#haven-app-root:not(.night-mode) .bg-\[\#F0EDE4\],
+#haven-app-root:not(.night-mode) .bg-\[\#EBE7DC\] {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
 }
 
 /* Crisp Green Accents */
 .text-\[\#385117\],
 .text-\[\#2E4313\],
-.text-\[\#18210E\] {
+.text-\[\#18210E\],
+.text-\[\#2D450C\],
+.text-\[\#15803D\],
+.text-\[\#14532D\] {
   color: #14532D !important;
+}
+
+/* Prevent pale text on pale background globally */
+p, span, h1, h2, h3, h4, h5, h6, label, div {
+  text-rendering: optimizeLegibility;
+}
+
+/* High contrast inputs and textareas */
+input, textarea, select {
+  color: #0F172A !important;
+  font-weight: 600;
+}
+input::placeholder, textarea::placeholder {
+  color: #475569 !important;
+  font-weight: 500;
 }
 
 /* Crisp High-Contrast Night Mode (When Activated) */

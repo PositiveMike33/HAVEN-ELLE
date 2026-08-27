@@ -119,24 +119,24 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
   return (
     <div id="healing-level-question-gate" className={`rounded-3xl border-2 overflow-hidden shadow-sm transition-all ${
       isValidationPending 
-        ? 'border-[#506B26] bg-gradient-to-br from-[#F4F9EC] to-[#E9F3DC]' 
-        : 'border-[#D0CABE] bg-white'
+        ? 'border-[#15803D] bg-white' 
+        : 'border-[#CBD5E1] bg-white'
     } ${className}`}>
       
       {/* Top Banner Alert when Validation is Pending */}
       {isValidationPending && (
-        <div className="bg-[#385117] text-white px-6 py-3 flex flex-wrap items-center justify-between gap-3 shadow-inner">
+        <div className="bg-[#15803D] text-white px-6 py-3 flex flex-wrap items-center justify-between gap-3 shadow-inner">
           <div className="flex items-center gap-2.5">
             <span className="flex h-3 w-3 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#9FE870]"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#86EFAC]"></span>
             </span>
-            <div className="text-xs sm:text-sm font-bold tracking-wide">
+            <div className="text-xs sm:text-sm font-black tracking-wide">
               🌟 Étape de Guérison Débloquée : Vos points vous permettent de passer au <span className="underline decoration-wavy">Niveau {pointsLevel}</span> !
             </div>
           </div>
-          <div className="text-xs bg-white/20 text-white font-semibold px-3 py-1 rounded-full border border-white/30 flex items-center gap-1">
-            <Lock className="w-3 h-3" /> Question requise pour valider
+          <div className="text-xs bg-white/20 text-white font-bold px-3 py-1 rounded-full border border-white/30 flex items-center gap-1">
+            <Lock className="w-3.5 h-3.5" /> Question requise pour valider
           </div>
         </div>
       )}
@@ -144,53 +144,53 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
       {/* Main Question Card Body */}
       <div className="p-6 md:p-8 space-y-6">
         {/* Header & Level Info */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#D5D0C2]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-[#E2E8F0]">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className={`text-xs font-extrabold px-3 py-1 rounded-full border ${cycle.badgeBg} ${cycle.badgeBorder} ${cycle.badgeText}`}>
+              <span className={`text-xs font-black px-3 py-1 rounded-full border-2 ${cycle.badgeBg} ${cycle.badgeBorder} ${cycle.badgeText}`}>
                 {cycle.tag} • Cycle {cycleId}
               </span>
-              <span className="text-xs font-bold text-[#403E3A] flex items-center gap-1 bg-[#F5F2ED] px-2.5 py-1 rounded-full border border-[#E0DDD5]">
-                <HelpCircle className="w-3.5 h-3.5 text-[#385117]" />
+              <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1 bg-[#F8FAFC] px-2.5 py-1 rounded-full border-2 border-[#CBD5E1]">
+                <HelpCircle className="w-3.5 h-3.5 text-[#15803D]" />
                 Question de Guérison du Niveau {selectedLevel}
               </span>
               {alreadyAnswered ? (
-                <span className="text-xs font-bold text-[#2D5A1E] bg-[#E2F0D9] px-2.5 py-1 rounded-full border border-[#B5DBA3] flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#385117]" />
+                <span className="text-xs font-black text-[#14532D] bg-[#DCFCE7] px-2.5 py-1 rounded-full border-2 border-[#86EFAC] flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" />
                   Palier validé
                 </span>
               ) : selectedLevel > currentValidatedLevel ? (
-                <span className="text-xs font-bold text-[#8A5A1E] bg-[#FFF4E5] px-2.5 py-1 rounded-full border border-[#FFD8A8] flex items-center gap-1">
+                <span className="text-xs font-black text-[#78350F] bg-[#FEF3C7] px-2.5 py-1 rounded-full border-2 border-[#FCD34D] flex items-center gap-1">
                   <Lock className="w-3.5 h-3.5 text-[#D97706]" />
                   En attente de réponse
                 </span>
               ) : null}
             </div>
-            <h3 className="text-xl md:text-2xl font-serif font-bold text-[#1F201C] pt-1">
+            <h3 className="text-xl md:text-2xl font-serif font-black text-[#0F172A] pt-1">
               {questionData.title}
             </h3>
-            <p className="text-xs font-semibold text-[#5A5852]">
-              Thématique : <span className="text-[#385117] font-bold">{questionData.theme}</span>
+            <p className="text-xs font-bold text-[#334155]">
+              Thématique : <span className="text-[#15803D] font-black">{questionData.theme}</span>
             </p>
           </div>
 
           {/* Level Switcher Micro-Pills */}
-          <div className="flex items-center gap-1.5 self-start sm:self-auto bg-[#F4F2EB] p-1 rounded-2xl border border-[#D5D0C2]">
+          <div className="flex items-center gap-1.5 self-start sm:self-auto bg-[#F8FAFC] p-1 rounded-2xl border-2 border-[#CBD5E1]">
             <button
               onClick={() => setSelectedLevel(Math.max(1, selectedLevel - 1))}
               disabled={selectedLevel <= 1}
-              className="px-2.5 py-1 rounded-xl text-xs font-bold text-[#5A5852] hover:bg-white disabled:opacity-30 transition-all"
+              className="px-2.5 py-1 rounded-xl text-xs font-black text-[#0F172A] hover:bg-white disabled:opacity-30 transition-all"
               title="Niveau précédent"
             >
               ←
             </button>
-            <span className="text-xs font-mono font-bold px-2 text-[#1F201C]">
+            <span className="text-xs font-mono font-black px-2 text-[#0F172A]">
               Niveau {selectedLevel} / 111
             </span>
             <button
               onClick={() => setSelectedLevel(Math.min(111, selectedLevel + 1))}
               disabled={selectedLevel >= Math.min(111, Math.max(pointsLevel, currentValidatedLevel + 1))}
-              className="px-2.5 py-1 rounded-xl text-xs font-bold text-[#5A5852] hover:bg-white disabled:opacity-30 transition-all"
+              className="px-2.5 py-1 rounded-xl text-xs font-black text-[#0F172A] hover:bg-white disabled:opacity-30 transition-all"
               title="Niveau suivant"
             >
               →
@@ -200,28 +200,28 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
 
         {/* Celebration Toast */}
         {celebrationMessage && (
-          <div className="bg-[#E5EED6] border-2 border-[#506B26] p-4 rounded-2xl flex items-center gap-3 shadow-md animate-in fade-in zoom-in duration-300">
-            <div className="w-10 h-10 rounded-full bg-[#385117] text-white flex items-center justify-center font-bold shrink-0">
+          <div className="bg-[#DCFCE7] border-2 border-[#15803D] p-4 rounded-2xl flex items-center gap-3 shadow-md animate-in fade-in zoom-in duration-300">
+            <div className="w-10 h-10 rounded-full bg-[#15803D] text-white flex items-center justify-center font-bold shrink-0">
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-extrabold text-[#18210E]">{celebrationMessage}</h4>
-              <p className="text-xs text-[#385117] font-medium">Votre niveau officiel a été augmenté avec bienveillance.</p>
+              <h4 className="text-sm font-black text-[#14532D]">{celebrationMessage}</h4>
+              <p className="text-xs text-[#15803D] font-bold">Votre niveau officiel a été augmenté avec bienveillance.</p>
             </div>
           </div>
         )}
 
         {/* The Question Box */}
-        <div className="bg-white/95 rounded-2xl p-5 md:p-6 border-2 border-[#D0CABE] shadow-xs space-y-4">
+        <div className="bg-white rounded-2xl p-5 md:p-6 border-2 border-[#CBD5E1] shadow-2xs space-y-4">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#E5EED6] text-[#385117] flex items-center justify-center font-bold shrink-0 border border-[#CED6C1]">
-              <MessageSquareHeart className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl bg-[#DCFCE7] text-[#14532D] flex items-center justify-center font-bold shrink-0 border border-[#86EFAC]">
+              <MessageSquareHeart className="w-4 h-4 text-[#15803D]" />
             </div>
             <div>
-              <h4 className="text-base md:text-lg font-bold text-[#1F201C] leading-snug">
+              <h4 className="text-base md:text-lg font-black text-[#0F172A] leading-snug">
                 {questionData.question}
               </h4>
-              <p className="text-xs text-[#6A6860] mt-1 italic">
+              <p className="text-xs text-[#334155] font-semibold mt-1 italic">
                 Règle éthique HAVEN-ELLE : Chaque niveau requiert votre réflexion sincère pour garantir que votre guérison avance à votre propre rythme.
               </p>
             </div>
@@ -240,30 +240,30 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
                   key={idx}
                   type="button"
                   onClick={() => handleSelectOption(option)}
-                  className={`w-full text-left p-3.5 rounded-2xl border-2 transition-all flex items-start gap-3 cursor-pointer ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3 cursor-pointer ${
                     isChecked
-                      ? 'border-[#506B26] bg-[#F2F7EB] text-[#18210E] shadow-xs font-semibold'
-                      : 'border-[#E0DDD5] bg-[#FAF9F5] text-[#403E3A] hover:bg-[#F5F2ED] hover:border-[#CED6C1]'
+                      ? 'border-[#15803D] bg-[#DCFCE7] text-[#14532D] shadow-xs font-bold'
+                      : 'border-[#CBD5E1] bg-white text-[#0F172A] hover:bg-[#F8FAFC] hover:border-[#64748B]'
                   }`}
                 >
-                  <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center shrink-0 text-xs font-bold transition-all ${
+                  <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center shrink-0 text-xs font-black transition-all ${
                     isChecked 
-                      ? 'border-[#506B26] bg-[#385117] text-white shadow-2xs' 
-                      : 'border-[#CED6C1] bg-white text-[#5A5852]'
+                      ? 'border-[#15803D] bg-[#15803D] text-white shadow-2xs' 
+                      : 'border-[#CBD5E1] bg-[#F1F5F9] text-[#0F172A]'
                   }`}>
                     {letter}
                   </div>
                   <div className="flex-1 space-y-1">
-                    <span className="text-xs sm:text-sm leading-relaxed block">{option}</span>
+                    <span className="text-xs sm:text-sm font-bold leading-relaxed block">{option}</span>
                     {isChecked && isWrongOption && (
-                      <span className="text-[11px] font-medium text-[#B45309] block flex items-center gap-1">
+                      <span className="text-xs font-bold text-[#78350F] block flex items-center gap-1">
                         <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#D97706]" />
                         🌱 Apprentissage sain : Piège cognitif ou fausse croyance (L'erreur est un tuteur de résilience vers la vérité)
                       </span>
                     )}
                     {isChecked && isCorrectOption && (
-                      <span className="text-[11px] font-bold text-[#2D5A1E] block flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-[#385117]" />
+                      <span className="text-xs font-black text-[#14532D] block flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-[#15803D]" />
                         ✨ Réponse constructive et souveraine : Ancrage toltèque de vérité et de paix
                       </span>
                     )}
@@ -275,19 +275,19 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
 
           {/* Validation Error / Gentle Guidance Alert */}
           {validationError && (
-            <div className="bg-[#FFFBEB] border-2 border-[#F59E0B] p-4 rounded-2xl flex items-start gap-3 text-xs sm:text-sm text-[#92400E] animate-in fade-in duration-200">
+            <div className="bg-[#FEF3C7] border-2 border-[#D97706] p-4 rounded-2xl flex items-start gap-3 text-xs sm:text-sm text-[#78350F] animate-in fade-in duration-200 shadow-2xs">
               <AlertCircle className="w-5 h-5 text-[#D97706] shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <div className="font-bold text-[#78350F]">Conseil d'Alignement Éthique HAVEN-ELLE</div>
-                <p className="leading-relaxed">{validationError}</p>
+                <div className="font-black text-[#78350F]">Conseil d'Alignement Éthique HAVEN-ELLE</div>
+                <p className="leading-relaxed font-bold">{validationError}</p>
               </div>
             </div>
           )}
 
           {/* Custom Reflection Text Area */}
           <div className="pt-2">
-            <label className="block text-xs font-bold text-[#403E3A] mb-1.5 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#385117]" />
+            <label className="block text-xs font-black text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#15803D]" />
               {questionData.reflectionPrompt}
             </label>
             <textarea
@@ -295,35 +295,35 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
               value={customReflection}
               onChange={(e) => setCustomReflection(e.target.value)}
               placeholder={alreadyAnswered?.reflection ? `Votre réflexion enregistrée : "${alreadyAnswered.reflection}"` : "Exprimez librement vos ressentis ou vos intentions bienveillantes..."}
-              className="w-full p-3 bg-[#FAF9F5] border-2 border-[#D5D0C2] rounded-xl text-xs sm:text-sm text-[#1F201C] focus:bg-white focus:border-[#506B26] focus:outline-none transition-all placeholder:text-[#9A968D]"
+              className="w-full p-3 bg-white border-2 border-[#CBD5E1] rounded-xl text-xs sm:text-sm font-semibold text-[#0F172A] focus:border-[#15803D] focus:ring-2 focus:ring-[#15803D] focus:outline-none transition-all placeholder:text-[#64748B]"
             />
           </div>
 
           {/* Benevolent Affirmation Box */}
-          <div className="bg-[#FAF8F2] border border-[#E5E2D9] p-3.5 rounded-xl flex items-center gap-3">
-            <Heart className="w-4 h-4 text-[#385117] shrink-0" />
-            <p className="text-xs font-serif italic text-[#385117] leading-relaxed">
+          <div className="bg-[#F8FAFC] border-2 border-[#CBD5E1] p-3.5 rounded-xl flex items-center gap-3 shadow-2xs">
+            <Heart className="w-4 h-4 text-[#15803D] shrink-0" />
+            <p className="text-xs font-serif italic text-[#14532D] font-bold leading-relaxed">
               {questionData.benevolentAffirmation}
             </p>
           </div>
 
           {/* Action Footer */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-[#E5E2D9]">
-            <div className="text-xs font-bold text-[#403E3A] flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-[#385117]" />
-              Récompense : <span className="text-[#385117]">{questionData.unlockedRewardBadge} (+25 pts)</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t-2 border-[#E2E8F0]">
+            <div className="text-xs font-black text-[#0F172A] flex items-center gap-1.5">
+              <Award className="w-4 h-4 text-[#15803D]" />
+              Récompense : <span className="text-[#14532D] font-black">{questionData.unlockedRewardBadge} (+25 pts)</span>
             </div>
 
             {alreadyAnswered ? (
-              <div className="text-xs font-bold text-[#2D5A1E] bg-[#EAF3DE] border border-[#506B26] px-4 py-2 rounded-xl flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" /> Palier Validé le {alreadyAnswered.date}
+              <div className="text-xs font-black text-[#14532D] bg-[#DCFCE7] border-2 border-[#86EFAC] px-4 py-2 rounded-xl flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#15803D]" /> Palier Validé le {alreadyAnswered.date}
               </div>
             ) : (
               <button
                 type="button"
                 onClick={handleValidate}
                 disabled={isSubmitting || (!selectedOption && !customReflection.trim())}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#385117] hover:bg-[#283B10] disabled:bg-[#A39E93] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#15803D] hover:bg-[#14532D] disabled:bg-[#94A3B8] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isSubmitting ? (
                   <>Validation en cours...</>

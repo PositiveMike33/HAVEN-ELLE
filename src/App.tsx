@@ -94,11 +94,21 @@ export default function App() {
         setCompanionProfile(CompanionMemoryService.getProfile());
       }
     };
+    const handleContactsUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setContacts(customEvent.detail);
+      } else {
+        setContacts(StorageService.getContacts());
+      }
+    };
     window.addEventListener('haven-resilience-updated', handleResilienceUpdate);
+    window.addEventListener('haven-contacts-updated', handleContactsUpdate);
 
     return () => {
       unsubscribe();
       window.removeEventListener('haven-resilience-updated', handleResilienceUpdate);
+      window.removeEventListener('haven-contacts-updated', handleContactsUpdate);
     };
   }, []);
 
@@ -161,6 +171,11 @@ export default function App() {
 
   const handleAlertDispatched = (newAlert: EmergencyAlert) => {
     setAlerts((prev) => [newAlert, ...prev]);
+  };
+
+  const handleUpdateContacts = (updatedContacts: TrustedContact[]) => {
+    setContacts(updatedContacts);
+    StorageService.saveContacts(updatedContacts);
   };
 
   // If Camouflage Mode is Active, render the disguised recipe/weather application
@@ -311,7 +326,7 @@ export default function App() {
             ) : (
               <ContactsEtConsultations
                 contacts={contacts}
-                onUpdateContacts={setContacts}
+                onUpdateContacts={handleUpdateContacts}
                 alerts={alerts}
                 onAlertDispatched={handleAlertDispatched}
                 appointments={appointments}

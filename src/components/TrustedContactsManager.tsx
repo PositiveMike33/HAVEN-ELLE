@@ -163,11 +163,14 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
     StorageService.saveContacts(updated);
   };
 
+  const primaryContact = contacts.find((c) => c.tier === 'primary_sos' && c.isActive && c.phone) || contacts.find((c) => c.phone) || contacts[0];
+
   const handleQuickSilentSms = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    const targetNumber = '1-438-543-2555';
-    const cleanNumber = '14385432555';
-    const secretPass = 'Mamadou';
+    const targetContactName = primaryContact ? primaryContact.name : 'Contact Prioritaire';
+    const targetNumber = primaryContact?.phone ? primaryContact.phone : '1-438-543-2555';
+    const cleanNumber = targetNumber.replace(/[^\d+]/g, '') || '14385432555';
+    const secretPass = primaryContact?.secretCodeWord ? primaryContact.secretCodeWord : 'Mamadou';
 
     const dispatchAndOpenSms = (lat?: number, lng?: number, accuracy?: number) => {
       const mapsUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : 'Localisation GPS en cours de transmission';
@@ -181,10 +184,10 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
         status: 'DISPATCHED',
         recipients: [
           {
-            name: 'Michael Gauthier Guillet (Contact Prioritaire)',
+            name: `${targetContactName} (Contact Prioritaire)`,
             phone: targetNumber,
-            email: 'mikegauthierguillet@gmail.com',
-            tier: 'primary_sos',
+            email: primaryContact?.email || 'mikegauthierguillet@gmail.com',
+            tier: primaryContact?.tier || 'primary_sos',
           },
         ],
         location: lat && lng ? {
@@ -203,7 +206,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contacts: [{ name: 'Michael Gauthier Guillet', phone: targetNumber, tier: 'primary_sos' }],
+            contacts: [{ name: targetContactName, phone: targetNumber, tier: 'primary_sos' }],
             message: bodyText,
             location: alertPayload.location,
             mode: 'silent_beacon',
@@ -214,7 +217,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
 
       StorageService.saveAlert(alertPayload);
       onAlertDispatched(alertPayload);
-      showToast(`SMS silencieux préparé pour le ${targetNumber} avec géolocalisation et mot secret : ${secretPass}`);
+      showToast(`SMS silencieux préparé pour ${targetContactName} (${targetNumber}) avec géolocalisation.`);
 
       // Open SMS app on user device
       const smsUri = `sms:${cleanNumber}?body=${encodeURIComponent(bodyText)}`;
@@ -451,15 +454,17 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
 
           <a
             id="quick-silent-sms-btn"
-            href="sms:14385432555?body=ALERTE%20SILENCIEUSE%20-%20Mot%20de%20passe%20secret%20%3A%20Mamadou.%20Besoin%20d%27assistance%20imm%C3%A9diate."
+            href={`sms:${primaryContact?.phone ? primaryContact.phone.replace(/[^\d+]/g, '') : '14385432555'}?body=${encodeURIComponent(`ALERTE SILENCIEUSE - Mot de passe secret : ${primaryContact?.secretCodeWord || 'Mamadou'}. Besoin d'assistance immédiate.`)}`}
             onClick={handleQuickSilentSms}
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors cursor-pointer"
-            title="Envoyer SMS Silencieux au 1-438-543-2555 avec géolocalisation automatique et mot secret Mamadou"
+            title={`Envoyer SMS Silencieux à ${primaryContact ? primaryContact.name : 'Contact Prioritaire'} (${primaryContact?.phone || '1-438-543-2555'})`}
           >
             <div className="w-8 h-7 rounded-lg bg-[#8A9A5B]/40 text-white flex items-center justify-center font-bold text-xs">SMS</div>
             <div>
-              <span className="font-bold block text-white">SMS Silencieux (438)</span>
-              <span className="text-[10px] text-[#E5EAD9]">1-438-543-2555 • Mamadou</span>
+              <span className="font-bold block text-white">SMS Silencieux</span>
+              <span className="text-[10px] text-[#E5EAD9] truncate max-w-[130px] block">
+                {primaryContact ? `${primaryContact.name.split(' ')[0]} • ${primaryContact.phone || 'SOS'}` : '1-438-543-2555 • Mamadou'}
+              </span>
             </div>
           </a>
 
@@ -556,6 +561,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
                 tierInfo={tierInfo}
                 onToggleActive={handleToggleActive}
                 onDelete={handleDelete}
+                onEditFull={handleOpenEdit}
                 onSave={(updated) => {
                   const newContacts = contacts.map(c => c.id === updated.id ? updated : c);
                   onUpdateContacts(newContacts);
@@ -834,23 +840,39 @@ const ContactCard: React.FC<{
   tierInfo: { label: string; bg: string };
   onToggleActive: (id: string) => void;
   onDelete: (id: string) => void;
+  onEditFull?: (contact: TrustedContact) => void;
   onSave: (updatedContact: TrustedContact) => void;
-}> = ({ contact, tierInfo, onToggleActive, onDelete, onSave }) => {
+}> = ({ contact, tierInfo, onToggleActive, onDelete, onEditFull, onSave }) => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editForm, setEditForm] = React.useState({
     name: contact.name,
     relationship: contact.relationship,
     phone: contact.phone || '',
     email: contact.email || '',
+    secretCodeWord: contact.secretCodeWord || '',
+    notes: contact.notes || '',
   });
+
+  React.useEffect(() => {
+    setEditForm({
+      name: contact.name,
+      relationship: contact.relationship,
+      phone: contact.phone || '',
+      email: contact.email || '',
+      secretCodeWord: contact.secretCodeWord || '',
+      notes: contact.notes || '',
+    });
+  }, [contact]);
 
   const handleSave = () => {
     onSave({
       ...contact,
-      name: editForm.name,
-      relationship: editForm.relationship,
-      phone: editForm.phone,
-      email: editForm.email,
+      name: editForm.name.trim() || contact.name,
+      relationship: editForm.relationship.trim() || contact.relationship,
+      phone: editForm.phone.trim(),
+      email: editForm.email.trim(),
+      secretCodeWord: editForm.secretCodeWord.trim(),
+      notes: editForm.notes.trim(),
     });
     setIsEditing(false);
   };
@@ -865,62 +887,90 @@ const ContactCard: React.FC<{
     >
       {isEditing ? (
         <div className="space-y-3 mb-3">
-          <input
-            type="text"
-            value={editForm.name}
-            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-            className="w-full text-sm font-bold text-[#3E3B39] p-2 rounded-lg border border-[#CED6C1] focus:outline-none focus:ring-1 focus:ring-[#8A9A5B]"
-            placeholder="Nom du contact"
-          />
-          <input
-            type="text"
-            value={editForm.relationship}
-            onChange={(e) => setEditForm({ ...editForm, relationship: e.target.value })}
-            className="w-full text-xs text-[#8E8B82] p-2 rounded-lg border border-[#CED6C1] focus:outline-none focus:ring-1 focus:ring-[#8A9A5B]"
-            placeholder="Relation (ex: Sœur, Avocate)"
-          />
+          <div>
+            <label className="text-[11px] font-black text-black uppercase tracking-wider block mb-1">Nom & Prénom</label>
+            <input
+              type="text"
+              value={editForm.name}
+              onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+              className="w-full text-sm font-bold text-black p-2 rounded-lg border-2 border-[#CED6C1] focus:outline-none focus:ring-2 focus:ring-[#8A9A5B] bg-white"
+              placeholder="Nom du contact"
+            />
+          </div>
+          <div>
+            <label className="text-[11px] font-black text-black uppercase tracking-wider block mb-1">Rôle / Relation</label>
+            <input
+              type="text"
+              value={editForm.relationship}
+              onChange={(e) => setEditForm({ ...editForm, relationship: e.target.value })}
+              className="w-full text-xs font-bold text-black p-2 rounded-lg border-2 border-[#CED6C1] focus:outline-none focus:ring-2 focus:ring-[#8A9A5B] bg-white"
+              placeholder="Relation (ex: Ami de confiance, Sœur, Avocat)"
+            />
+          </div>
         </div>
       ) : (
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center font-bold text-sm">
+            <div className="w-10 h-10 rounded-xl bg-[#E5EAD9] text-black flex items-center justify-center font-black text-base border border-[#CED6C1]">
               {contact.name.charAt(0)}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#3E3B39] flex items-center gap-2">
+              <h4 className="text-sm font-black text-black flex items-center gap-2">
                 {contact.name}
                 {contact.isActive && (
-                  <span className="w-2 h-2 rounded-full bg-[#8A9A5B]" title="Contact Actif" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#8A9A5B]" title="Contact Actif" />
                 )}
               </h4>
-              <p className="text-xs text-[#8E8B82]">{contact.relationship}</p>
+              <p className="text-xs font-bold text-[#5A5A40]">{contact.relationship}</p>
             </div>
           </div>
-          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${tierInfo.bg}`}>
+          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${tierInfo.bg}`}>
             {tierInfo.label}
           </span>
         </div>
       )}
 
-      <div className="space-y-1.5 text-xs text-[#3E3B39] bg-[#F8F7F2] p-3 rounded-xl border border-[#E5E2D9] mb-3">
+      <div className="space-y-2 text-xs text-black bg-[#F8F7F2] p-3 rounded-xl border border-[#E5E2D9] mb-3">
         {isEditing ? (
           <>
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-[#8E8B82] uppercase">Téléphone</label>
+              <label className="text-[11px] font-black text-black uppercase tracking-wider">Numéro de téléphone</label>
               <input
                 type="tel"
                 value={editForm.phone}
                 onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                className="w-full p-1.5 rounded border border-[#CED6C1] text-xs focus:outline-none focus:ring-1 focus:ring-[#8A9A5B]"
+                className="w-full p-2 rounded-lg border-2 border-[#CED6C1] text-xs font-bold text-black focus:outline-none focus:ring-2 focus:ring-[#8A9A5B] bg-white"
+                placeholder="ex: 438-543-2555"
               />
             </div>
             <div className="flex flex-col gap-1 mt-2">
-              <label className="text-[10px] font-bold text-[#8E8B82] uppercase">Email</label>
+              <label className="text-[11px] font-black text-black uppercase tracking-wider">Email sécurisé</label>
               <input
                 type="email"
                 value={editForm.email}
                 onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                className="w-full p-1.5 rounded border border-[#CED6C1] text-xs focus:outline-none focus:ring-1 focus:ring-[#8A9A5B]"
+                className="w-full p-2 rounded-lg border-2 border-[#CED6C1] text-xs font-bold text-black focus:outline-none focus:ring-2 focus:ring-[#8A9A5B] bg-white"
+                placeholder="email@example.com"
+              />
+            </div>
+            <div className="flex flex-col gap-1 mt-2">
+              <label className="text-[11px] font-black text-black uppercase tracking-wider">Mot de passe secret d'alerte</label>
+              <input
+                type="text"
+                value={editForm.secretCodeWord}
+                onChange={(e) => setEditForm({ ...editForm, secretCodeWord: e.target.value })}
+                className="w-full p-2 rounded-lg border-2 border-[#CED6C1] text-xs font-bold text-black focus:outline-none focus:ring-2 focus:ring-[#8A9A5B] bg-white"
+                placeholder="ex: Mamadou"
+              />
+            </div>
+            <div className="flex flex-col gap-1 mt-2">
+              <label className="text-[11px] font-black text-black uppercase tracking-wider">Notes & Consignes d'urgence</label>
+              <textarea
+                rows={2}
+                value={editForm.notes}
+                onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                className="w-full p-2 rounded-lg border-2 border-[#CED6C1] text-xs font-bold text-black focus:outline-none focus:ring-2 focus:ring-[#8A9A5B] bg-white"
+                placeholder="Consignes particulières..."
               />
             </div>
           </>
@@ -928,36 +978,36 @@ const ContactCard: React.FC<{
           <>
             {contact.phone && (
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-[#8E8B82]">
+                <span className="flex items-center gap-1.5 text-[#5A5A40] font-bold">
                   <Phone className="w-3.5 h-3.5 text-[#8A9A5B]" /> Téléphone :
                 </span>
-                <a href={`tel:${contact.phone}`} className="font-mono text-[#3E3B39] font-medium hover:underline">
+                <a href={`tel:${contact.phone}`} className="font-mono text-black font-black hover:underline">
                   {contact.phone}
                 </a>
               </div>
             )}
             {contact.email && (
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-[#8E8B82]">
+                <span className="flex items-center gap-1.5 text-[#5A5A40] font-bold">
                   <Mail className="w-3.5 h-3.5 text-[#8A9A5B]" /> Email :
                 </span>
-                <a href={`mailto:${contact.email}`} className="font-mono text-[#3E3B39] font-medium truncate max-w-[180px] hover:underline">
+                <a href={`mailto:${contact.email}`} className="font-mono text-black font-bold truncate max-w-[180px] hover:underline">
                   {contact.email}
                 </a>
               </div>
             )}
             {contact.secretCodeWord && (
               <div className="flex items-center justify-between pt-1 border-t border-[#E5E2D9]">
-                <span className="flex items-center gap-1.5 text-[#5A5A40] font-medium">
+                <span className="flex items-center gap-1.5 text-black font-bold">
                   <Key className="w-3.5 h-3.5 text-[#8A9A5B]" /> Mot de code secret :
                 </span>
-                <span className="font-bold text-[#5A5A40] bg-[#E5EAD9] px-2 py-0.5 rounded-md text-[11px]">
+                <span className="font-black text-black bg-[#E5EAD9] px-2 py-0.5 rounded-md text-[11px] border border-[#CED6C1]">
                   "{contact.secretCodeWord}"
                 </span>
               </div>
             )}
             {contact.notes && (
-              <p className="text-[11px] text-[#8E8B82] pt-1 border-t border-[#E5E2D9] italic">
+              <p className="text-[11px] text-black font-bold pt-1 border-t border-[#E5E2D9] italic">
                 Note : {contact.notes}
               </p>
             )}
@@ -970,9 +1020,9 @@ const ContactCard: React.FC<{
           <button
             type="button"
             onClick={() => onToggleActive(contact.id)}
-            className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors ${
+            className={`text-xs font-bold px-2.5 py-1 rounded-lg border transition-colors ${
               contact.isActive
-                ? 'bg-[#E5EAD9] text-[#5A5A40] border-[#CED6C1] hover:bg-[#d8e0ca]'
+                ? 'bg-[#E5EAD9] text-black border-[#CED6C1] hover:bg-[#d8e0ca]'
                 : 'bg-[#F5F2ED] text-[#8E8B82] border-[#E5E2D9] hover:bg-[#eae6de]'
             }`}
           >
@@ -981,24 +1031,46 @@ const ContactCard: React.FC<{
         ) : (
           <div /> // Spacer
         )}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {isEditing ? (
-            <button
-              onClick={handleSave}
-              className="px-3 py-1.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
-            >
-              Sauvegarder
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-3 py-1.5 bg-white border border-[#CED6C1] hover:bg-[#F5F2ED] text-black rounded-lg text-xs font-bold transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="px-4 py-1.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-lg text-xs font-black transition-colors shadow-sm"
+              >
+                Sauvegarder
+              </button>
+            </>
           ) : (
             <>
               <button
+                type="button"
                 onClick={() => setIsEditing(true)}
-                className="px-3 py-1.5 bg-[#F8F7F2] border border-[#E5E2D9] hover:bg-[#E5EAD9] text-[#5A5A40] rounded-lg text-xs font-bold transition-colors"
-                title="Modifier / Renommer"
+                className="px-3 py-1.5 bg-white border-2 border-[#CED6C1] hover:bg-[#E5EAD9] text-black rounded-lg text-xs font-black transition-colors shadow-2xs"
+                title="Modifier directement"
               >
                 Modifier
               </button>
+              {onEditFull && (
+                <button
+                  type="button"
+                  onClick={() => onEditFull(contact)}
+                  className="px-2.5 py-1.5 bg-[#F5F2ED] border border-[#E5E2D9] hover:bg-[#E5EAD9] text-[#5A5A40] rounded-lg text-xs font-bold transition-colors"
+                  title="Options avancées (alerte, canaux)"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                </button>
+              )}
               <button
+                type="button"
                 onClick={() => onDelete(contact.id)}
                 className="p-1.5 text-[#8E8B82] hover:text-[#A64D4D] hover:bg-[#F5E6E0] rounded-lg transition-colors"
                 title="Supprimer"

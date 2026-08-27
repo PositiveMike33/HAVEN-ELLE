@@ -287,31 +287,31 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
       {activeDashboardView === 'overview' && (
         <>
           {/* Main Status Banner: Current Level & Micro Progress */}
-          <div className="bg-gradient-to-br from-[#F8F7F4] to-[#ECE9DF] p-6 rounded-3xl border-2 border-[#D0CABE] shadow-xs">
+          <div className="bg-[#F8FAFC] p-6 rounded-3xl border-2 border-[#CBD5E1] shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl font-extrabold text-[#1F201C]">
+                  <span className="text-2xl md:text-3xl font-black text-[#0F172A]">
                     Niveau {currentLevel}
                   </span>
-                  <span className="text-sm font-bold text-[#6A6860]">sur 111</span>
-                  <span className={`text-xs font-extrabold px-3 py-1 rounded-full border ${activeCycle.badgeBg} ${activeCycle.badgeBorder} ${activeCycle.badgeText}`}>
+                  <span className="text-sm font-black text-[#475569]">sur 111</span>
+                  <span className={`text-xs font-black px-3 py-1 rounded-full border-2 ${activeCycle.badgeBg} ${activeCycle.badgeBorder} ${activeCycle.badgeText}`}>
                     {activeCycle.title} : {activeCycle.tag}
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-[#385117] mt-1 italic">
+                <p className="text-sm font-bold text-[#15803D] mt-1 italic">
                   {activeCycle.subtitle}
                 </p>
               </div>
 
               <div className="text-left sm:text-right">
                 {currentLevel < 111 ? (
-                  <div className="text-xs font-bold text-[#403E3A]">
-                    Plus que <strong className="text-[#385117] font-extrabold">{POINTS_PER_LEVEL - pointsInCurrentLevel} pts</strong> pour atteindre le <span className="font-extrabold text-[#1F201C]">Niveau {currentLevel + 1}</span>
+                  <div className="text-xs font-bold text-[#334155]">
+                    Plus que <strong className="text-[#15803D] font-black">{POINTS_PER_LEVEL - pointsInCurrentLevel} pts</strong> pour atteindre le <span className="font-black text-[#0F172A]">Niveau {currentLevel + 1}</span>
                   </div>
                 ) : (
-                  <div className="text-sm font-extrabold text-[#065F46] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#059669] flex items-center gap-1 shadow-xs">
-                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                  <div className="text-sm font-black text-[#14532D] bg-[#DCFCE7] px-3.5 py-1 rounded-full border-2 border-[#86EFAC] flex items-center gap-1 shadow-xs">
+                    <Star className="w-4 h-4 text-[#D97706] fill-[#D97706]" />
                     👑 Trophée Suprême [ÉVEILLÉ] Débloqué
                   </div>
                 )}
@@ -320,32 +320,32 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
 
             {/* Level Progress Bar (15 points cycle) */}
             <div className="space-y-1.5 mb-4">
-              <div className="flex justify-between text-xs font-bold text-[#4A4742]">
+              <div className="flex justify-between text-xs font-black text-[#0F172A]">
                 <span>Progression du Niveau {currentLevel}</span>
                 <span>{percentToNextLevel}% ({pointsInCurrentLevel}/{POINTS_PER_LEVEL} pts)</span>
               </div>
-              <div className="h-4 w-full bg-[#DDD8CC] rounded-full overflow-hidden p-0.5 border border-[#C5BFB0]">
+              <div className="h-4 w-full bg-[#E2E8F0] rounded-full overflow-hidden p-0.5 border-2 border-[#CBD5E1]">
                 <div 
-                  className="h-full bg-gradient-to-r from-[#4F6927] to-[#718E38] rounded-full transition-all duration-700 ease-out shadow-xs"
+                  className="h-full bg-gradient-to-r from-[#15803D] to-[#22C55E] rounded-full transition-all duration-700 ease-out shadow-xs"
                   style={{ width: `${percentToNextLevel}%` }}
                 />
               </div>
             </div>
 
             {/* Global Progress Bar (1665 points) */}
-            <div className="pt-2 border-t border-[#D5D0C2] flex items-center justify-between text-xs text-[#5C5952]">
-              <span className="font-medium">
-                Progression Globale (111 Niveaux) : <strong className="text-[#1F201C] font-bold">{globalProgress}%</strong>
+            <div className="pt-3 border-t-2 border-[#E2E8F0] flex items-center justify-between text-xs text-[#334155] font-bold">
+              <span className="font-semibold">
+                Progression Globale (111 Niveaux) : <strong className="text-[#0F172A] font-black">{globalProgress}%</strong>
               </span>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setActiveDashboardView('roadmap100')}
-                  className="text-xs font-bold text-[#385117] hover:underline flex items-center gap-1"
+                  className="text-xs font-black text-[#15803D] hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
                   Consulter les 111 questions
                 </button>
-                <span className="font-mono font-bold text-[#385117]">
+                <span className="font-mono font-black text-[#15803D]">
                   {resiliencePoints} / 1665 pts totaux
                 </span>
               </div>
@@ -363,11 +363,11 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="text-base font-bold text-[#1F201C] flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-[#385117]" />
+                <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#15803D]" />
                   Micro-Récompenses Rapides & Exercices Bienveillants
                 </h3>
-                <p className="text-xs text-[#5C5952]">
+                <p className="text-xs text-[#334155] font-bold">
                   Gagnez des points rapidement pour franchir vos étapes en toute légèreté.
                 </p>
               </div>
@@ -380,27 +380,27 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
                   <button
                     key={action.id}
                     onClick={() => handleExecuteQuickAction(action)}
-                    className="group text-left p-4 rounded-2xl bg-[#F8F7F4] hover:bg-[#E5EED6] border-2 border-[#D5D0C2] hover:border-[#506B26] transition-all flex flex-col justify-between shadow-xs hover:shadow-md cursor-pointer"
+                    className="group text-left p-4 rounded-2xl bg-white hover:bg-[#F0FDF4] border-2 border-[#CBD5E1] hover:border-[#15803D] transition-all flex flex-col justify-between shadow-xs hover:shadow-md cursor-pointer"
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <div className="w-9 h-9 rounded-xl bg-white group-hover:bg-[#385117] text-[#385117] group-hover:text-white flex items-center justify-center border border-[#D5D0C2] group-hover:border-[#385117] transition-colors">
+                      <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] group-hover:bg-[#15803D] text-[#14532D] group-hover:text-white flex items-center justify-center border-2 border-[#86EFAC] group-hover:border-[#15803D] transition-colors">
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-mono font-extrabold bg-white text-[#385117] border border-[#CED6C1] group-hover:bg-[#385117] group-hover:text-white transition-colors">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-mono font-black bg-[#F8FAFC] text-[#15803D] border-2 border-[#CBD5E1] group-hover:bg-[#15803D] group-hover:text-white transition-colors">
                         +{action.points} pts
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-[#1F201C] group-hover:text-[#18210E]">
+                      <h4 className="text-sm font-black text-[#0F172A] group-hover:text-[#14532D]">
                         {action.title}
                       </h4>
-                      <p className="text-xs text-[#5C5952] mt-0.5 group-hover:text-[#323928]">
+                      <p className="text-xs text-[#334155] font-semibold mt-0.5">
                         {action.subtitle}
                       </p>
                     </div>
-                    <div className="mt-3 pt-2 border-t border-[#E5E2D9] group-hover:border-[#8DA765]/40 flex items-center justify-between text-[11px] font-bold text-[#385117]">
+                    <div className="mt-3 pt-2 border-t-2 border-[#E2E8F0] group-hover:border-[#86EFAC] flex items-center justify-between text-[11px] font-black text-[#15803D]">
                       <span>Activer l'exercice</span>
-                      <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                      <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform stroke-[3]" />
                     </div>
                   </button>
                 );
@@ -409,37 +409,37 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           </div>
 
           {/* Quick Access Card to the 100 Questions Book */}
-          <div className="p-6 rounded-3xl bg-gradient-to-r from-[#FAF8F2] to-[#F1EDE2] border-2 border-[#D5D0C2] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xs">
+          <div className="p-6 rounded-3xl bg-[#F8FAFC] border-2 border-[#CBD5E1] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xs">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#385117] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-12 h-12 rounded-2xl bg-[#15803D] text-white flex items-center justify-center shrink-0 shadow-xs">
                 <BookOpen className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-base md:text-lg font-bold text-[#1F201C]">
+                <h4 className="text-base md:text-lg font-black text-[#0F172A]">
                   Le Grand Livre des 111 Questions & Réponses
                 </h4>
-                <p className="text-xs md:text-sm text-[#5C5952] mt-0.5 max-w-2xl">
+                <p className="text-xs md:text-sm text-[#334155] font-semibold mt-0.5 max-w-2xl">
                   Parcourez la carte complète de vos 111 étapes dont les 11 Arcanes Secrets du Kybalion. Relisez vos réflexions et découvrez les paliers futurs.
                 </p>
               </div>
             </div>
             <button
               onClick={() => setActiveDashboardView('roadmap100')}
-              className="px-5 py-3 rounded-xl bg-[#385117] hover:bg-[#2D450C] text-white text-xs md:text-sm font-bold transition-all shadow-xs flex items-center gap-2 shrink-0"
+              className="px-5 py-3 rounded-xl bg-[#15803D] hover:bg-[#14532D] text-white text-xs md:text-sm font-black transition-all shadow-xs flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <span>Ouvrir la liste des 111 questions</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 stroke-[3]" />
             </button>
           </div>
 
           {/* The 5 Resilience Cycles Tabs */}
           <div>
             <div className="mb-4">
-              <h3 className="text-lg font-serif font-bold text-[#1F201C] flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#385117]" />
+              <h3 className="text-lg font-serif font-black text-[#0F172A] flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-[#15803D]" />
                 Les 5 Cycles d'Ascension & Mystères du Kybalion (111 Niveaux)
               </h3>
-              <p className="text-xs text-[#5C5952]">
+              <p className="text-xs text-[#334155] font-bold">
                 Explorez les 4 grands piliers de résilience et le Cycle Secret Bonus de Haute Maîtrise Hermétique.
               </p>
             </div>
@@ -457,45 +457,45 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
                   <button
                     key={cycle.id}
                     onClick={() => setSelectedCycleId(cycle.id)}
-                    className={`p-4 rounded-2xl text-left border-2 transition-all flex flex-col justify-between relative overflow-hidden ${
+                    className={`p-4 rounded-2xl text-left border-2 transition-all flex flex-col justify-between relative overflow-hidden cursor-pointer ${
                       isSelected
-                        ? `${cycle.badgeBg} ${cycle.badgeBorder} shadow-md ring-2 ring-[#385117]/20`
+                        ? `${cycle.badgeBg} ${cycle.badgeBorder} shadow-md ring-2 ring-[#15803D]/40 font-bold`
                         : isUnlocked
-                          ? 'bg-white border-[#D0CABE] hover:border-[#8DA765] hover:bg-[#FAF9F6]'
-                          : 'bg-[#F4F2EB] border-[#DDD8CC] opacity-80'
+                          ? 'bg-white border-[#CBD5E1] hover:border-[#15803D] hover:bg-[#F8FAFC]'
+                          : 'bg-[#F1F5F9] border-[#CBD5E1] opacity-75'
                     }`}
                   >
                     {isCompleted && (
-                      <span className="absolute top-2 right-2 text-xs font-bold text-[#385117] flex items-center gap-1 bg-white/80 px-2 py-0.5 rounded-full border border-[#506B26]/30">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#385117]" /> Validé
+                      <span className="absolute top-2 right-2 text-xs font-black text-[#15803D] flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border-2 border-[#86EFAC]">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" /> Validé
                       </span>
                     )}
                     {isCurrent && !isCompleted && (
-                      <span className="absolute top-2 right-2 text-xs font-bold text-[#385117] flex items-center gap-1 bg-white/90 px-2 py-0.5 rounded-full border border-[#385117]">
-                        <span className="w-2 h-2 rounded-full bg-[#385117] animate-pulse" /> En cours
+                      <span className="absolute top-2 right-2 text-xs font-black text-[#15803D] flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border-2 border-[#15803D]">
+                        <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" /> En cours
                       </span>
                     )}
 
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                          isSelected ? 'bg-[#385117] text-white' : 'bg-[#E5EED6] text-[#385117]'
+                          isSelected ? 'bg-[#15803D] text-white' : 'bg-[#DCFCE7] text-[#14532D]'
                         }`}>
                           <Icon className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-mono font-extrabold text-[#4A4742]">
+                        <span className="text-xs font-mono font-black text-[#0F172A]">
                           Niv. {cycle.minLevel}-{cycle.maxLevel}
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-[#1F201C] line-clamp-1">
+                      <h4 className="text-sm font-black text-[#0F172A] line-clamp-1">
                         Cycle {cycle.id}
                       </h4>
-                      <p className="text-xs font-semibold text-[#385117] mt-0.5 line-clamp-2">
+                      <p className="text-xs font-bold text-[#15803D] mt-0.5 line-clamp-2">
                         {cycle.subtitle}
                       </p>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-[#DDD8CC] text-[11px] font-medium text-[#5C5952]">
+                    <div className="mt-3 pt-2 border-t-2 border-[#E2E8F0] text-[11px] font-bold text-[#334155]">
                       {cycle.tag}
                     </div>
                   </button>
@@ -505,45 +505,45 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
 
             {/* Selected Cycle Focus Card */}
             <div className={`p-6 rounded-3xl border-2 ${selectedCycle.badgeBg} ${selectedCycle.badgeBorder} shadow-xs`}>
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-black/10">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b-2 border-black/10">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#385117] mb-1">
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#15803D] mb-1">
                     <span>Cycle {selectedCycle.id} • Niveaux {selectedCycle.minLevel} à {selectedCycle.maxLevel}</span>
                     <span>({selectedCycle.minPoints} à {selectedCycle.maxPoints} pts)</span>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-serif font-bold text-[#18210E]">
+                  <h3 className="text-xl md:text-2xl font-serif font-black text-[#0F172A]">
                     {selectedCycle.subtitle}
                   </h3>
-                  <p className="text-sm text-[#323928] font-medium mt-1">
+                  <p className="text-sm text-[#334155] font-bold mt-1">
                     {selectedCycle.description}
                   </p>
                 </div>
 
-                <div className="bg-white/90 p-4 rounded-2xl border border-black/10 max-w-sm shrink-0">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#385117] mb-1">
+                <div className="bg-white p-4 rounded-2xl border-2 border-[#CBD5E1] max-w-sm shrink-0 shadow-2xs">
+                  <div className="flex items-center gap-2 text-xs font-black text-[#15803D] mb-1">
                     <Info className="w-4 h-4" />
                     <span>Base Scientifique & Thérapeutique</span>
                   </div>
-                  <p className="text-xs text-[#403E3A] leading-relaxed">
+                  <p className="text-xs text-[#0F172A] font-semibold leading-relaxed">
                     {selectedCycle.scientificFoundation}
                   </p>
                 </div>
               </div>
 
               {/* Mantra of the Cycle */}
-              <div className="bg-white/80 p-4 rounded-2xl border border-black/10 mb-6 text-center">
-                <span className="text-xs font-extrabold text-[#385117] uppercase tracking-wider block mb-1">
+              <div className="bg-white p-4 rounded-2xl border-2 border-[#CBD5E1] mb-6 text-center shadow-2xs">
+                <span className="text-xs font-black text-[#15803D] uppercase tracking-wider block mb-1">
                   Mantra Thérapeutique du Cycle
                 </span>
-                <blockquote className="text-sm md:text-base font-serif italic text-[#1F201C] font-semibold">
+                <blockquote className="text-sm md:text-base font-serif italic text-[#0F172A] font-black">
                   {selectedCycle.coreMantra}
                 </blockquote>
               </div>
 
               {/* Milestones in this Cycle */}
               <div className="space-y-3">
-                <h4 className="text-sm font-extrabold uppercase tracking-wider text-[#18210E] mb-2 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-[#385117]" />
+                <h4 className="text-sm font-black uppercase tracking-wider text-[#0F172A] mb-2 flex items-center gap-2">
+                  <Award className="w-4 h-4 text-[#15803D]" />
                   Paliers Clés & Récompenses Déblocables (Cycle {selectedCycle.id})
                 </h4>
 
@@ -557,64 +557,64 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
                         key={milestone.level}
                         className={`p-4 rounded-2xl border-2 transition-all flex flex-col justify-between ${
                           isReached
-                            ? 'bg-white border-[#506B26] shadow-xs'
+                            ? 'bg-white border-[#15803D] shadow-xs'
                             : isNextInLine
-                              ? 'bg-white/95 border-[#385117] ring-1 ring-[#385117]'
-                              : 'bg-white/50 border-[#D0CABE]/60'
+                              ? 'bg-white border-[#15803D] ring-2 ring-[#15803D]/30'
+                              : 'bg-white/80 border-[#CBD5E1]'
                         }`}
                       >
                         <div>
                           <div className="flex items-center justify-between gap-2 mb-2">
                             <div className="flex items-center gap-2">
-                              <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                              <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black ${
                                 isReached
-                                  ? 'bg-[#385117] text-white'
+                                  ? 'bg-[#15803D] text-white'
                                   : isNextInLine
-                                    ? 'bg-[#E5EED6] text-[#385117] border border-[#385117]'
-                                    : 'bg-[#ECE9DF] text-[#6A6860]'
+                                    ? 'bg-[#DCFCE7] text-[#14532D] border-2 border-[#86EFAC]'
+                                    : 'bg-[#F1F5F9] text-[#475569]'
                               }`}>
                                 {milestone.level}
                               </span>
-                              <span className="text-xs font-mono font-bold text-[#5C5952]">
+                              <span className="text-xs font-mono font-black text-[#0F172A]">
                                 {milestone.points} pts
                               </span>
                             </div>
 
                             <div>
                               {isReached ? (
-                                <span className="inline-flex items-center gap-1 text-xs font-bold text-[#385117] bg-[#E5EED6] px-2 py-0.5 rounded-full border border-[#506B26]/30">
-                                  <CheckCircle2 className="w-3.5 h-3.5" /> Acquis
+                                <span className="inline-flex items-center gap-1 text-xs font-black text-[#14532D] bg-[#DCFCE7] px-2.5 py-0.5 rounded-full border-2 border-[#86EFAC]">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" /> Acquis
                                 </span>
                               ) : isNextInLine ? (
-                                <span className="inline-flex items-center gap-1 text-xs font-bold text-[#385117] bg-[#FAF9F6] px-2 py-0.5 rounded-full border border-[#385117]">
+                                <span className="inline-flex items-center gap-1 text-xs font-black text-[#14532D] bg-[#DCFCE7] px-2.5 py-0.5 rounded-full border-2 border-[#15803D]">
                                   <Unlock className="w-3.5 h-3.5" /> En approche
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 text-xs font-bold text-[#6A6860] bg-[#ECE9DF] px-2 py-0.5 rounded-full">
+                                <span className="inline-flex items-center gap-1 text-xs font-bold text-[#475569] bg-[#F1F5F9] px-2.5 py-0.5 rounded-full border border-[#CBD5E1]">
                                   <Lock className="w-3.5 h-3.5" /> À débloquer
                                 </span>
                               )}
                             </div>
                           </div>
 
-                          <h5 className="text-sm font-bold text-[#1F201C]">
+                          <h5 className="text-sm font-black text-[#0F172A]">
                             {milestone.title}
                           </h5>
-                          <p className="text-xs text-[#403E3A] mt-0.5 font-medium">
+                          <p className="text-xs text-[#334155] mt-0.5 font-bold">
                             {milestone.description}
                           </p>
 
-                          <div className="mt-3 p-2.5 rounded-xl bg-[#F8F7F4] border border-[#E5E2D9] text-xs space-y-1">
-                            <div className="font-semibold text-[#1F201C] flex items-center gap-1.5">
-                              <span className="text-[#385117]">🌱 Exercice :</span> {milestone.exercise}
+                          <div className="mt-3 p-2.5 rounded-xl bg-[#F8FAFC] border-2 border-[#CBD5E1] text-xs space-y-1">
+                            <div className="font-bold text-[#0F172A] flex items-center gap-1.5">
+                              <span className="text-[#15803D] font-black">🌱 Exercice :</span> {milestone.exercise}
                             </div>
-                            <div className="text-[#5C5952] text-[11px]">
+                            <div className="text-[#334155] text-[11px] font-semibold">
                               <strong>Effet :</strong> {milestone.benefit}
                             </div>
                           </div>
                         </div>
 
-                        <div className="mt-3 pt-2 border-t border-[#E5E2D9] flex items-center justify-between text-xs font-bold text-[#385117]">
+                        <div className="mt-3 pt-2 border-t-2 border-[#E2E8F0] flex items-center justify-between text-xs font-black text-[#15803D]">
                           <span className="truncate">🎁 {milestone.unlockedReward}</span>
                         </div>
                       </div>
