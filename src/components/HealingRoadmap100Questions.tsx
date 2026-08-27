@@ -56,7 +56,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
   const [peekLockedId, setPeekLockedId] = useState<number | null>(null);
 
   // Determine current active unlock level
-  const effectiveLevel = profile.validatedLevel ?? currentValidatedLevel ?? 10;
+  const effectiveLevel = typeof profile.validatedLevel === 'number' ? profile.validatedLevel : (currentValidatedLevel ?? 0);
   const nextUnlockableLevel = Math.min(111, effectiveLevel + 1);
 
   // Filter questions
@@ -68,8 +68,8 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
       }
 
       // Status Filter
-      const isValidated = (profile.validatedQuestions && !!profile.validatedQuestions[q.level]) || q.level <= effectiveLevel;
-      const isReadyToValidate = !isValidated && q.level === nextUnlockableLevel && resiliencePoints >= calculatePointsForLevel(q.level);
+      const isValidated = (profile.validatedQuestions && !!profile.validatedQuestions[q.level]) || (effectiveLevel > 0 && q.level <= effectiveLevel);
+      const isReadyToValidate = !isValidated && (q.level === nextUnlockableLevel || q.level === 1);
       const isLocked = !isValidated && !isReadyToValidate;
 
       if (statusFilter === 'validated' && !isValidated) return false;
@@ -92,7 +92,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
   }, [selectedCycleFilter, statusFilter, searchQuery, effectiveLevel, nextUnlockableLevel, resiliencePoints, profile.validatedQuestions]);
 
   // Statistics
-  const validatedCount = Object.keys(profile.validatedQuestions || {}).length || effectiveLevel;
+  const validatedCount = Object.keys(profile.validatedQuestions || {}).length;
   const progressPercent = Math.min(100, Math.round((validatedCount / 111) * 100));
 
   const toggleExpand = (level: number) => {

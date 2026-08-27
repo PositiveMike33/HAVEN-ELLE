@@ -18,7 +18,8 @@ import {
   Star,
   Wind,
   Compass,
-  ListOrdered
+  ListOrdered,
+  RotateCcw
 } from 'lucide-react';
 import { 
   RESILIENCE_CYCLES, 
@@ -47,15 +48,16 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
 }) => {
   const profile = CompanionMemoryService.getProfile();
   const pointsLevel = calculateLevelFromPoints(resiliencePoints);
-  const validatedLevel = profile.validatedLevel ?? 10;
+  const validatedLevel = typeof profile.validatedLevel === 'number' ? profile.validatedLevel : 0;
   
   // The effective official level strictly cannot exceed validatedLevel!
-  const currentLevel = Math.min(validatedLevel, pointsLevel);
+  const currentLevel = Math.max(1, Math.min(validatedLevel, pointsLevel));
   const isValidationPending = pointsLevel > validatedLevel;
   
   const currentCycleId = getCycleForLevel(currentLevel);
   const [selectedCycleId, setSelectedCycleId] = useState<1 | 2 | 3 | 4 | 5>(currentCycleId);
   const [rewardToast, setRewardToast] = useState<{ message: string; points: number } | null>(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   
   // Dashboard Sub-View: 'toltec_cards' | 'overview' | 'roadmap100' | 'values'
   const [activeDashboardView, setActiveDashboardView] = useState<'toltec_cards' | 'overview' | 'roadmap100' | 'values'>('toltec_cards');
@@ -73,6 +75,18 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
 
   // Global Progress to 111 levels
   const globalProgress = Math.min(100, Math.round((resiliencePoints / 1665) * 100));
+
+  const handleResetToLevelOne = () => {
+    CompanionMemoryService.resetToLevelOne();
+    if (onPointsEarned) {
+      onPointsEarned(0);
+    }
+    setShowResetConfirm(false);
+    setRewardToast({
+      message: 'Réinitialisation au Niveau 1 effectuée avec succès pour vos tests !',
+      points: 0,
+    });
+  };
 
   const handleExecuteQuickAction = (action: typeof QUICK_DAILY_ACTIONS[0]) => {
     const updated = CompanionMemoryService.addResiliencePoints(action.points, action.title);
@@ -139,6 +153,46 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
             <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#403E3A] mt-1">
               Points de Résilience
             </div>
+          </div>
+
+          {/* Reset to Level 1 button for Testing & Validation */}
+          <div className="relative">
+            <button
+              onClick={() => setShowResetConfirm(true)}
+              className="p-3 bg-[#F4F2EB] hover:bg-[#E5EAD9] text-[#6A6860] hover:text-[#385117] rounded-2xl border-2 border-[#D5D0C2] transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs"
+              title="Réinitialiser au Niveau 1 (Remise à zéro pour tester le parcours et remplir les 111 questions)"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span className="hidden sm:inline">Niveau 1</span>
+            </button>
+
+            {showResetConfirm && (
+              <div className="absolute right-0 top-full mt-2 w-72 p-4 bg-white rounded-2xl shadow-xl border-2 border-[#D5D0C2] z-50 animate-in fade-in zoom-in-95">
+                <div className="flex items-start gap-2">
+                  <RotateCcw className="w-5 h-5 text-[#8A5A1E] shrink-0 mt-0.5" />
+                  <div>
+                    <h5 className="text-xs font-bold text-[#1F201C]">Remise à zéro (Niveau 1) ?</h5>
+                    <p className="text-[11px] text-[#5C5952] mt-1 leading-snug">
+                      Voulez-vous remettre votre profil à <strong>0 point et Niveau 1</strong> pour remplir manuellement toutes les 111 questions de guérison ?
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-end gap-2 mt-3 pt-2 border-t border-[#E5E2D9]">
+                  <button
+                    onClick={() => setShowResetConfirm(false)}
+                    className="px-3 py-1 text-xs font-bold text-[#6A6860] hover:bg-[#F5F2ED] rounded-lg"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleResetToLevelOne}
+                    className="px-3 py-1 text-xs font-bold bg-[#8A5A1E] hover:bg-[#6D4717] text-white rounded-lg shadow-2xs"
+                  >
+                    Oui, recommencer à 1
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,21 +1,17 @@
 import { CompanionMemoryProfile, DetailedSafetyPlan } from '../types';
 import { calculateLevelFromPoints, getCycleForLevel, RESILIENCE_CYCLES } from '../data/resilience100Levels';
 
-const COMPANION_STORAGE_KEY = 'haven_companion_evolution_v2';
+const COMPANION_STORAGE_KEY = 'haven_companion_evolution_v3';
 
 export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
-  relationshipLevel: 10, // Level 10 / 100 (140 points)
-  validatedLevel: 10, // Validated up to level 10
+  relationshipLevel: 1, // Start cleanly at Level 1 / 111 (0 points)
+  validatedLevel: 0, // 0 questions validated initially - ready for Level 1 question
   relationshipTitle: "Cycle 1 : Se construire une liste de valeurs pour se voir avec la plus grande bienveillance",
-  interactionCount: 3,
-  firstMetDate: '2026-08-18',
+  interactionCount: 1,
+  firstMetDate: new Date().toISOString().split('T')[0],
   lastInteractionDate: new Date().toISOString().split('T')[0],
-  resiliencePoints: 140,
-  validatedQuestions: {
-    1: { date: '2026-08-18', reflection: 'Ma valeur humaine est sacrée et inconditionnelle.', answer: 'Reconnaissance de ma Valeur Sacrée' },
-    5: { date: '2026-08-20', reflection: 'Mes valeurs cardinales guident mes choix avec dignité.', answer: 'La Boussole de mes 5 Valeurs' },
-    10: { date: '2026-08-22', reflection: 'Je deviens mon propre sanctuaire protecteur et bienveillant.', answer: 'Le Sanctuaire de la Voix Intérieure' }
-  },
+  resiliencePoints: 0,
+  validatedQuestions: {},
   userContext: {
     preferredName: 'Amie',
     situationBrief: 'Recherche de mise en sécurité active et préparation d\'un plan d\'émancipation serein.',
@@ -25,29 +21,21 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
     lastEmotionalState: 'Déterminée mais vigilante',
     soothingAnchors: ['Respiration 4-7-8', 'Lumière du matin', 'Penser à la sécurité de mes enfants'],
     keyVictories: [
-      'Identification de 2 contacts de confiance prêts à réagir',
-      'Création du coffre de preuves chiffré',
-      'Apprentissage de la cohérence cardiaque anti-panique',
+      'Création de votre Sanctuaire de Résilience HAVEN-ELLE',
       'Entrée dans le Cycle 1 : Définition de sa liste de valeurs & Regard bienveillant'
     ],
     notesFromHaven: [
-      'Vous avez fait preuve d’un immense courage lors de notre première séance.',
+      'Bienvenue dans votre sanctuaire. Vous avancez pas à pas, à votre propre rythme.',
       'Votre réseau d’alerte est prêt, vos preuves sont protégées.',
       'Je veille sur vous sans interruption.',
     ],
   },
   conversationsHistory: [
     {
-      date: '2026-08-20',
-      topic: 'Préparation du sac de départ d\'urgence',
-      emotionalState: 'Inquiétude modérée',
-      keyTakeaway: 'Livret de famille et double des clés confiés à Michael Gauthier Guillet.',
-    },
-    {
-      date: '2026-08-22',
-      topic: 'Gestion de crise de panique',
-      emotionalState: 'Angoisse aiguë -> Apaisement',
-      keyTakeaway: 'Exercice 4-7-8 accompli avec succès (3 cycles).',
+      date: new Date().toISOString().split('T')[0],
+      topic: 'Accueil dans le Sanctuaire HAVEN-ELLE',
+      emotionalState: 'Départ du parcours',
+      keyTakeaway: 'Engagement envers soi-même et début du cheminement vers la résilience.',
     },
   ],
 };
@@ -55,7 +43,7 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
 function getRelationshipTitleForLevel(level: number): string {
   const cycleId = getCycleForLevel(level);
   const cycle = RESILIENCE_CYCLES.find(c => c.id === cycleId);
-  return cycle ? `${cycle.subtitle} (Niveau ${level}/100)` : `Niveau ${level}/100`;
+  return cycle ? `${cycle.subtitle} (Niveau ${level}/111)` : `Niveau ${level}/111`;
 }
 
 export const CompanionMemoryService = {
@@ -69,10 +57,10 @@ export const CompanionMemoryService = {
       const parsed = JSON.parse(data);
       // Ensure level calculation respects validatedLevel constraint
       const pointsLevel = calculateLevelFromPoints(parsed.resiliencePoints || 0);
-      const validatedLevel = typeof parsed.validatedLevel === 'number' ? parsed.validatedLevel : Math.min(10, pointsLevel);
+      const validatedLevel = typeof parsed.validatedLevel === 'number' ? parsed.validatedLevel : 0;
       
-      // Effective level cannot exceed validatedLevel!
-      const effectiveLevel = Math.min(validatedLevel, pointsLevel);
+      // Effective level cannot exceed validatedLevel + 1 or pointsLevel
+      const effectiveLevel = Math.max(1, Math.min(validatedLevel, pointsLevel));
       
       parsed.validatedLevel = validatedLevel;
       parsed.relationshipLevel = effectiveLevel;
@@ -85,8 +73,8 @@ export const CompanionMemoryService = {
 
   saveProfile(profile: CompanionMemoryProfile): void {
     const pointsLevel = calculateLevelFromPoints(profile.resiliencePoints || 0);
-    const validatedLevel = typeof profile.validatedLevel === 'number' ? profile.validatedLevel : Math.min(10, pointsLevel);
-    const effectiveLevel = Math.min(validatedLevel, pointsLevel);
+    const validatedLevel = typeof profile.validatedLevel === 'number' ? profile.validatedLevel : 0;
+    const effectiveLevel = Math.max(1, Math.min(validatedLevel, pointsLevel));
     
     profile.validatedLevel = validatedLevel;
     profile.relationshipLevel = effectiveLevel;
@@ -94,14 +82,20 @@ export const CompanionMemoryService = {
     localStorage.setItem(COMPANION_STORAGE_KEY, JSON.stringify(profile));
   },
 
+  resetToLevelOne(): CompanionMemoryProfile {
+    localStorage.setItem(COMPANION_STORAGE_KEY, JSON.stringify(INITIAL_COMPANION_PROFILE));
+    window.dispatchEvent(new CustomEvent('haven-resilience-updated', { detail: INITIAL_COMPANION_PROFILE }));
+    return INITIAL_COMPANION_PROFILE;
+  },
+
   addResiliencePoints(pointsToAdd: number, victoryLabel?: string): CompanionMemoryProfile {
     const profile = this.getProfile();
-    const updatedPoints = Math.min(1500, profile.resiliencePoints + pointsToAdd);
+    const updatedPoints = Math.min(1665, profile.resiliencePoints + pointsToAdd);
     const pointsLevel = calculateLevelFromPoints(updatedPoints);
-    const validatedLevel = profile.validatedLevel ?? 10;
+    const validatedLevel = profile.validatedLevel ?? 0;
     
-    // Effective level is strictly bounded by validatedLevel
-    const effectiveLevel = Math.min(validatedLevel, pointsLevel);
+    // Effective level is strictly bounded by validatedLevel or 1
+    const effectiveLevel = Math.max(1, Math.min(validatedLevel, pointsLevel));
     const newTitle = getRelationshipTitleForLevel(effectiveLevel);
 
     const keyVictories = victoryLabel 
@@ -128,12 +122,12 @@ export const CompanionMemoryService = {
   validateLevelQuestion(levelToValidate: number, reflection: string, selectedOption?: string): CompanionMemoryProfile {
     const profile = this.getProfile();
     const today = new Date().toISOString().split('T')[0];
-    const newValidatedLevel = Math.max(profile.validatedLevel || 1, levelToValidate);
+    const newValidatedLevel = Math.max(profile.validatedLevel || 0, levelToValidate);
     
     // Award +25 bonus resilience points for therapeutic healing question validation
-    const updatedPoints = Math.min(1500, profile.resiliencePoints + 25);
+    const updatedPoints = Math.min(1665, profile.resiliencePoints + 25);
     const pointsLevel = calculateLevelFromPoints(updatedPoints);
-    const effectiveLevel = Math.min(newValidatedLevel, pointsLevel);
+    const effectiveLevel = Math.max(1, Math.min(newValidatedLevel, pointsLevel));
     const newTitle = getRelationshipTitleForLevel(effectiveLevel);
 
     const validatedQuestions = {
@@ -169,14 +163,14 @@ export const CompanionMemoryService = {
   isLevelValidationPending(profile?: CompanionMemoryProfile): boolean {
     const p = profile || this.getProfile();
     const pointsLevel = calculateLevelFromPoints(p.resiliencePoints || 0);
-    const validatedLevel = p.validatedLevel ?? 10;
+    const validatedLevel = p.validatedLevel ?? 0;
     return pointsLevel > validatedLevel;
   },
 
   getPendingValidationLevel(profile?: CompanionMemoryProfile): number | null {
     const p = profile || this.getProfile();
     const pointsLevel = calculateLevelFromPoints(p.resiliencePoints || 0);
-    const validatedLevel = p.validatedLevel ?? 10;
+    const validatedLevel = p.validatedLevel ?? 0;
     if (pointsLevel > validatedLevel) {
       return validatedLevel + 1;
     }

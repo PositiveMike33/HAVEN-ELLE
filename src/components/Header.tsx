@@ -159,10 +159,10 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => onSelectTab('evaluation')}
             className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 ${userCycle.badgeBg} ${userCycle.badgeBorder} ${userCycle.badgeText} shadow-2xs`}
-            title={`Niveau validé ${userLevel}/100 (${currentPts} pts) - ${userCycle.subtitle}${isPendingValidation ? ' • Question de palier débloquée !' : ''}`}
+            title={`Niveau validé ${userLevel}/111 (${currentPts} pts) - ${userCycle.subtitle}${isPendingValidation ? ' • Question de palier débloquée !' : ''}`}
           >
             <Trophy className="w-3.5 h-3.5 text-[#385117]" />
-            <span>Niveau {userLevel}/100</span>
+            <span>Niveau {userLevel}/111</span>
             {isPendingValidation && (
               <span className="w-2 h-2 rounded-full bg-[#9FE870] animate-ping inline-block ml-0.5" />
             )}
