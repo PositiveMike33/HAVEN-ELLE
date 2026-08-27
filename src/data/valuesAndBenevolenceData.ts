@@ -23,6 +23,35 @@ export interface ToltecAudioBookInfo {
   audioBadge: string;
 }
 
+export interface ToltecSeminarVideo {
+  id: string;
+  title: string;
+  subtitle: string;
+  youtubeId: string;
+  url: string;
+  startTimeSeconds: number;
+  durationLabel: string;
+  description: string;
+  keyTakeaways: string[];
+}
+
+export const TOLTEC_SEMINAR_VIDEO: ToltecSeminarVideo = {
+  id: 'toltec_seminar_full',
+  title: 'Séminaire Audio/Vidéo : Résumé des 2 Livres Toltèques',
+  subtitle: 'Les 4 Accords Toltèques & Le 5e Accord en conférence intégrale',
+  youtubeId: 'VP91x440Rmw',
+  url: 'https://www.youtube.com/watch?v=VP91x440Rmw&t=269s',
+  startTimeSeconds: 269,
+  durationLabel: 'Conférence & Synthèse Gratuite',
+  description: 'Ce séminaire audio/vidéo synthétise avec clarté et profondeur les enseignements fondamentaux de Don Miguel Ruiz et Don Jose Ruiz. Une immersion transformatrice pour guérir des conditionnements et retrouver une souveraineté sereine.',
+  keyTakeaways: [
+    'Comprendre le poison émotionnel et comment s\'en immuniser définitivement',
+    'Application concrète des 4 premiers accords pour apaiser les relations',
+    'La puissance du discernement et du doute libérateur avec le 5e accord',
+    'Sortir du rôle de victime et réactiver l\'amour inconditionnel de soi'
+  ]
+};
+
 export const TOLTEC_AUDIOBOOKS_INFO: ToltecAudioBookInfo[] = [
   {
     id: 'toltec_book_1',

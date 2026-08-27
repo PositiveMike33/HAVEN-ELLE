@@ -11,6 +11,7 @@ import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
 import { BackgroundMusicVideo } from './components/BackgroundMusicVideo';
 import { ProgressionDashboard } from './components/ProgressionDashboard';
+import { ValuesAndBenevolenceBuilder } from './components/ValuesAndBenevolenceBuilder';
 import { StorageService } from './utils/storage';
 import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment, UserAssessmentProfile } from './types';
 import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
@@ -228,6 +229,14 @@ export default function App() {
               onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
             />
             <MainScreenVideoAndQuestions onPlanGenerated={() => setActiveTab('wellness')} />
+          </div>
+        )}
+
+        {activeTab === 'toltec' && (
+          <div className="space-y-6">
+            <ValuesAndBenevolenceBuilder 
+              onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
+            />
           </div>
         )}
 

@@ -24,7 +24,8 @@ import {
   ChevronDown,
   BookOpen,
   Settings,
-  Trophy
+  Trophy,
+  Headphones
 } from 'lucide-react';
 import { QuickLocationShare } from './QuickLocationShare';
 import { UiOpacityControl } from './UiOpacityControl';
@@ -110,6 +111,9 @@ export const Header: React.FC<HeaderProps> = ({
   
   // Niveau 1: Bilan et Q&A
   navItems.push({ id: 'evaluation', label: 'Bilan & Questions', icon: ClipboardList });
+
+  // Les 5 Accords Toltèques & Livres Audios (Toujours accessible et essentiel)
+  navItems.push({ id: 'toltec', label: 'Les 5 Accords Toltèques (Audio)', icon: Headphones });
 
   // Dès qu'on a un peu de points (niveau 2+)
   if (currentPts >= 20) {

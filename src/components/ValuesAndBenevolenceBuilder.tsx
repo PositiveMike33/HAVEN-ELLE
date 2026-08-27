@@ -22,13 +22,16 @@ import {
   Info,
   CheckCircle2,
   Volume2,
-  ExternalLink
+  ExternalLink,
+  Play,
+  Video
 } from 'lucide-react';
 import { 
   PRESET_CORE_VALUES, 
   BENEVOLENT_SELF_AFFIRMATIONS, 
   TOLTEC_AGREEMENTS_VALUES,
   TOLTEC_AUDIOBOOKS_INFO,
+  TOLTEC_SEMINAR_VIDEO,
   CoreValueItem 
 } from '../data/valuesAndBenevolenceData';
 import { CompanionMemoryService } from '../utils/companionMemory';
@@ -63,6 +66,10 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
   const [activeTab, setActiveTab] = useState<'my_list' | 'toltec_wisdom' | 'preset_gallery' | 'benevolent_mirror'>('my_list');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [selectedToltecDetail, setSelectedToltecDetail] = useState<CoreValueItem | null>(null);
+  const [isVideoExpanded, setIsVideoExpanded] = useState(true);
+  const [hasClaimedSeminarPoints, setHasClaimedSeminarPoints] = useState(() => {
+    return localStorage.getItem('haven_claimed_toltec_seminar_pts') === 'true';
+  });
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,6 +79,20 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
       console.error(e);
     }
   }, [selectedValues]);
+
+  const handleClaimSeminarPoints = () => {
+    if (hasClaimedSeminarPoints) {
+      setActionFeedback("Points déjà crédités pour ce séminaire ! Bonne écoute.");
+      setTimeout(() => setActionFeedback(null), 3000);
+      return;
+    }
+    const updated = CompanionMemoryService.addResiliencePoints(25, 'Séminaire résumé des 2 Livres Audios Toltèques écouté');
+    if (onPointsEarned) onPointsEarned(updated.resiliencePoints);
+    setHasClaimedSeminarPoints(true);
+    localStorage.setItem('haven_claimed_toltec_seminar_pts', 'true');
+    setActionFeedback("+25 pts ! Séminaire résumé des 2 Livres Audios Toltèques validé.");
+    setTimeout(() => setActionFeedback(null), 4000);
+  };
 
   const handleApplyAll5Toltec = () => {
     setSelectedValues(TOLTEC_AGREEMENTS_VALUES);
@@ -260,12 +281,16 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <button
-            onClick={() => setActiveTab('toltec_wisdom')}
-            className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-white hover:bg-[#FAF9F6] text-[#385117] text-xs font-bold border border-[#CED6C1] transition-all"
+            onClick={() => {
+              setActiveTab('toltec_wisdom');
+              setIsVideoExpanded(true);
+            }}
+            className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-white hover:bg-[#FAF9F6] text-[#385117] text-xs font-bold border border-[#CED6C1] flex items-center justify-center gap-1.5 transition-all shadow-2xs"
           >
-            Lire les enseignements
+            <Video className="w-3.5 h-3.5" />
+            <span>Séminaire Vidéo Audio</span>
           </button>
           {!areAll5ToltecSelected ? (
             <button
@@ -462,9 +487,106 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
         </div>
       )}
 
-      {/* TAB 2: LES 5 ACCORDS TOLTÈQUES (AUDIOBOOKS DEEP DIVE) */}
+      {/* TAB 2: LES 5 ACCORDS TOLTÈQUES (AUDIOBOOKS & SEMINAR DEEP DIVE) */}
       {activeTab === 'toltec_wisdom' && (
         <div className="space-y-6">
+          {/* SEMINAR VIDEO PLAYER CARD */}
+          <div className="rounded-3xl bg-gradient-to-br from-[#18210E] via-[#2A3B14] to-[#1F201C] text-white p-6 md:p-8 shadow-md border-2 border-[#506B26] space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-[#E5EED6] text-[#2E4313] flex items-center justify-center font-bold shrink-0 shadow-xs">
+                  <Video className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-[#E5EED6] text-[#18210E]">
+                      {TOLTEC_SEMINAR_VIDEO.durationLabel}
+                    </span>
+                    <span className="text-xs text-white/70 flex items-center gap-1 font-medium">
+                      <Headphones className="w-3.5 h-3.5" />
+                      Résumé des 2 Livres Audios
+                    </span>
+                  </div>
+                  <h4 className="text-lg md:text-xl font-serif font-bold text-white mt-1">
+                    {TOLTEC_SEMINAR_VIDEO.title}
+                  </h4>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href={TOLTEC_SEMINAR_VIDEO.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors border border-white/20"
+                >
+                  <span>Ouvrir sur YouTube</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+                <button
+                  onClick={() => setIsVideoExpanded(!isVideoExpanded)}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#E5EED6] hover:bg-[#D5E4C0] text-[#18210E] text-xs font-bold transition-colors"
+                >
+                  {isVideoExpanded ? 'Réduire' : 'Afficher la vidéo'}
+                </button>
+              </div>
+            </div>
+
+            <p className="text-xs md:text-sm text-white/90 leading-relaxed max-w-3xl">
+              {TOLTEC_SEMINAR_VIDEO.description}
+            </p>
+
+            {/* Embedded Responsive YouTube Iframe */}
+            {isVideoExpanded && (
+              <div className="space-y-4">
+                <div className="relative w-full overflow-hidden rounded-2xl border-2 border-white/20 shadow-lg bg-black aspect-video">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${TOLTEC_SEMINAR_VIDEO.youtubeId}?start=${TOLTEC_SEMINAR_VIDEO.startTimeSeconds}&autoplay=0&rel=0`}
+                    title={TOLTEC_SEMINAR_VIDEO.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="absolute top-0 left-0 w-full h-full border-0"
+                  />
+                </div>
+
+                {/* Key Takeaways Grid */}
+                <div className="bg-white/10 rounded-2xl p-4 border border-white/15 backdrop-blur-xs space-y-2.5">
+                  <div className="text-xs font-bold text-[#E5EED6] flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Points Clés Transmis dans ce Séminaire :
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-white/90">
+                    {TOLTEC_SEMINAR_VIDEO.keyTakeaways.map((point, idx) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-[#C1DB99] shrink-0 mt-0.5" />
+                        <span>{point}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Bar for Resilience Points */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-white/15">
+              <div className="text-xs text-white/80">
+                🌱 <em>L'écoute attentive de ce séminaire consolide votre boussole intérieure et votre clarté d'esprit.</em>
+              </div>
+              <button
+                onClick={handleClaimSeminarPoints}
+                disabled={hasClaimedSeminarPoints}
+                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  hasClaimedSeminarPoints
+                    ? 'bg-white/20 text-white/70 cursor-default border border-white/10'
+                    : 'bg-[#C1DB99] hover:bg-[#B0D080] text-[#18210E] shadow-sm'
+                }`}
+              >
+                <Check className="w-4 h-4" />
+                {hasClaimedSeminarPoints ? 'Séminaire Validé (+25 pts obtenus)' : 'Valider mon écoute (+25 pts)'}
+              </button>
+            </div>
+          </div>
+
           {/* Audiobooks Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {TOLTEC_AUDIOBOOKS_INFO.map((book) => (
