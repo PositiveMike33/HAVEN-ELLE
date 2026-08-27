@@ -252,15 +252,15 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
                   <div className="flex-1 space-y-1">
                     <span className="text-xs sm:text-sm leading-relaxed block">{option}</span>
                     {isChecked && isWrongOption && (
-                      <span className="text-[11px] font-normal text-[#B45309] block flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3 shrink-0" />
-                        Posture de comparaison ou de jugement (Réponse réflexe à dépasser)
+                      <span className="text-[11px] font-medium text-[#B45309] block flex items-center gap-1">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#D97706]" />
+                        🌱 Apprentissage sain : Piège cognitif ou fausse croyance (L'erreur est un tuteur de résilience vers la vérité)
                       </span>
                     )}
                     {isChecked && isCorrectOption && (
                       <span className="text-[11px] font-bold text-[#2D5A1E] block flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 shrink-0 text-[#385117]" />
-                        Réponse constructive : Ancrage dans l'auto-compassion et votre rythme sacré ✨
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-[#385117]" />
+                        ✨ Réponse constructive et souveraine : Ancrage toltèque de vérité et de paix
                       </span>
                     )}
                   </div>

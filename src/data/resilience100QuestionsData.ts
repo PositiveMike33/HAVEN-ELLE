@@ -17,384 +17,395 @@ export interface Healing100QuestionItem {
 // 100 Unique, deeply therapeutic questions covering the entire journey from Level 1 to 100
 export const COMPLETE_100_HEALING_QUESTIONS: Healing100QuestionItem[] = [
   // ==========================================
-  // CYCLE 1 : NIVEAUX 1 À 25 (Valeurs & Regard Bienveillant)
+  // CYCLE 1 : NIVEAUX 1 À 25 (Apprendre & Intégrer les 5 Accords Toltèques)
   // ==========================================
+
+  // --- BLOC 1 : NIVEAUX 1 À 5 • ACCORD 1 : QUE TA PAROLE SOIT IMPECCABLE ---
   {
     level: 1,
     cycleId: 1,
-    title: "Étape 1 : Reconnaissance de ma Valeur Sacrée",
-    theme: "Valeur Intrinsèque & Sécurité",
-    question: "Quelle vérité essentielle choisissez-vous d'ancrer aujourd'hui au fond de votre cœur ?",
+    title: "Étape 1 : Se Parler avec Amour & Tendresse au Quotidien",
+    theme: "Accord 1 • Dialogue Intérieur Aimant & Réparateur",
+    question: "Face aux doutes et à la vulnérabilité, comment choisissez-vous désormais de vous parler intérieurement ?",
     options: [
-      "Ma valeur humaine est absolue, inconditionnelle et ne dépend d'aucun regard extérieur.",
-      "J'ai le droit fondamental d'être en sécurité, écoutée et respectée.",
-      "Je dépose la culpabilité : j'ai fait de mon mieux pour me protéger."
+      "En m'adressant avec la tendresse inconditionnelle et le respect sacré que j'offrirais à ma meilleure amie.",
+      "En remplaçant immédiatement chaque autocritique réflexe par une parole d'encouragement et de douceur.",
+      "En reconnaissant que mes mots envers moi-même sont des graines vivantes de guérison et de sécurité."
     ],
-    reflectionPrompt: "En quelques mots, comment vous sentez-vous dans votre corps en cet instant ?",
-    benevolentAffirmation: "« Je reconnais que j'ai une valeur infinie simplement parce que j'existe. »",
-    unlockedRewardBadge: "Badge : Clé de la Valeur Sacrée"
+    reflectionPrompt: "Quel mot tendre et réconfortant dites-vous à votre cœur en cet instant ?",
+    benevolentAffirmation: "« Ma parole envers moi-même est un baume sacré de tendresse, d'amour et de respect inconditionnel. »",
+    unlockedRewardBadge: "Badge : Clé de la Parole Aimante"
   },
   {
     level: 2,
     cycleId: 1,
-    title: "Étape 2 : Le Droit à la Douceur",
-    theme: "Auto-Compassion & Ralentissement",
-    question: "Face aux exigences ou aux souvenirs douloureux, comment pouvez-vous être plus douce avec vous-même aujourd'hui ?",
+    title: "Étape 2 : Transmutation de la Parole Négative d'Autrui",
+    theme: "Accord 1 • Transmutation du Négatif en Affirmation Constructive",
+    question: "Lorsqu'une critique blessante, une insulte ou une parole dévalorisante d'autrui tente de vous atteindre, comment transmutez-vous ce négatif en affirmation positive ?",
     options: [
-      "En m'accordant du repos sans culpabilité.",
-      "En me parlant avec la tendresse d'une amie dévouée.",
-      "En ralentissant mon rythme et en écoutant mes besoins physiques."
+      "Je reconnais que cette parole toxique appartient à l'autre, et je la transmute immédiatement en une affirmation lumineuse de ma vraie valeur.",
+      "Je refuse d'absorber ce poison verbal et je proclame intérieurement ma dignité, mon intégrité et ma pureté d'âme.",
+      "Je transforme cette attaque en un rappel sacré que nul ne détient le pouvoir de définir qui je suis à part moi-même."
     ],
-    reflectionPrompt: "Quel geste de tendresse pouvez-vous vous offrir aujourd'hui ?",
-    benevolentAffirmation: "« La douceur envers moi-même est le remède le plus puissant à la douleur. »",
-    unlockedRewardBadge: "Badge : Goutte de Douceur"
+    reflectionPrompt: "Quelle parole négative passée choisissez-vous de transmuter aujourd'hui en une puissante vérité positive ?",
+    benevolentAffirmation: "« Je transforme chaque mot d'ombre en un serment éclatant de lumière, de souveraineté et d'amour-propre. »",
+    unlockedRewardBadge: "Badge : Alchimie de la Transmutation Verbale"
   },
   {
     level: 3,
     cycleId: 1,
-    title: "Étape 3 : La Valeur Non Négociable de Sécurité",
-    theme: "Sécurité & Frontières",
-    question: "Pourquoi votre besoin de sécurité émotionnelle et physique est-il légitime et sacré ?",
+    title: "Étape 3 : Cesser d'Utiliser la Parole Contre Soi-Même",
+    theme: "Accord 1 • Absolution & Non-Jugement Intérieur",
+    question: "Après avoir traversé des épreuves ou des relations d'emprise, comment renoncez-vous définitivement à utiliser la parole contre vous-même (cesser de vous traiter de 'naïve', 'coupable' ou 'faible') ?",
     options: [
-      "Parce que la paix est le sol fertile où ma reconstruction peut s'épanouir.",
-      "Parce que personne n'a le droit de m'intimider ou d'éteindre ma sérénité.",
-      "Parce que me protéger est mon premier devoir d'amour envers moi-même."
+      "En comprenant qu'avoir fait confiance était une preuve de la grandeur de mon cœur, jamais une faiblesse ni une faute.",
+      "En bannissant tout qualificatif destructeur de mon dialogue intime pour honorer mon immense courage de survivante.",
+      "En m'accordant une indulgence totale : j'ai agi avec les ressources, la conscience et la force dont je disposais alors."
     ],
-    reflectionPrompt: "Quelle limite concrète vous procure le plus de réconfort ?",
-    benevolentAffirmation: "« Ma sécurité et ma paix intérieure passent avant toute attente extérieure. »",
-    unlockedRewardBadge: "Badge : Sceau de Sécurité"
+    reflectionPrompt: "Quel jugement injuste envers vous-même déposez-vous pour toujours aujourd'hui ?",
+    benevolentAffirmation: "« Je ne permets plus jamais à mes mots de me blesser. Je suis ma protectrice et mon alliée la plus loyale. »",
+    unlockedRewardBadge: "Badge : Bouclier de Pureté Intérieure"
   },
   {
     level: 4,
     cycleId: 1,
-    title: "Étape 4 : L'Écoute du Corps & Tonus Vagal",
-    theme: "Apaisement Somatique",
-    question: "Lorsque votre respiration s'apaise, que vous murmure votre corps ?",
+    title: "Étape 4 : Exprimer sa Vérité & ses Limites avec Clarté",
+    theme: "Accord 1 • La Parole d'Affirmation et de Frontières",
+    question: "Comment manier une parole juste, calme et impeccable pour poser vos limites et faire respecter vos besoins essentiels ?",
     options: [
-      "« Tu es en sécurité ici et maintenant, relâche tes épaules. »",
-      "« Tu as le droit d'exister sans devoir être constamment sur le qui-vive. »",
-      "« Je suis ton allié fidèle, nous allons guérir ensemble. »"
+      "En formulant mes limites avec clarté, fermeté et sérénité, sans agressivité réactive ni soumission coupable.",
+      "En affirmant un 'Non' limpide et sans justification excessive face à ce qui blesse ma paix ou ma dignité.",
+      "En osant faire entendre ma vérité authentique, car ma voix est précieuse, légitime et digne d'écoute."
     ],
-    reflectionPrompt: "Où ressentez-vous le début d'un soulagement dans votre corps ?",
-    benevolentAffirmation: "« Mon corps est un havre de paix qui réapprend le calme et la confiance. »",
-    unlockedRewardBadge: "Badge : Souffle d'Ancrage"
+    reflectionPrompt: "Quelle limite protectrice avez-vous le courage de verbaliser avec clarté aujourd'hui ?",
+    benevolentAffirmation: "« Ma voix est claire, calme et souveraine. J'exprime ma vérité avec dignité, douceur et fermeté. »",
+    unlockedRewardBadge: "Badge : Sceau de la Parole d'Or"
   },
   {
     level: 5,
     cycleId: 1,
-    title: "Étape 5 : La Boussole de mes 5 Valeurs",
-    theme: "Identité & Alignement",
-    question: "Lorsque vous contemplez votre vie à travers vos valeurs (Dignité, Respect, Liberté...), que découvrez-vous de vous-même ?",
+    title: "Étape 5 : Le Pouvoir Créateur des Déclarations Positives",
+    theme: "Accord 1 • Reprogrammation Bienveillante de l'Esprit",
+    question: "De quelle manière utilisez-vous le pouvoir créateur de la parole pour reprogrammer positivement votre esprit et façonner votre avenir ?",
     options: [
-      "Que je suis une personne noble, intègre et guidée par le bien.",
-      "Que mes choix passés étaient guidés par la recherche d'amour et de paix.",
-      "Que je possède une force morale inaltérable qui renaît aujourd'hui."
+      "En répétant chaque matin des affirmations de sécurité, de dignité et de joie qui nourrissent mon système nerveux.",
+      "En bénissant mon parcours et en célébrant mes victoires quotidiennes au lieu de ressasser les ombres passées.",
+      "En choisissant des mots d'espérance, de gratitude et de bienveillance qui élèvent mon énergie et celle de mon foyer."
     ],
-    reflectionPrompt: "Quelle est la valeur qui vous inspire le plus de fierté aujourd'hui ?",
-    benevolentAffirmation: "« Mes valeurs sont mon phare éternel, elles me guident avec clarté et bienveillance. »",
-    unlockedRewardBadge: "Badge : Boussole d'Alignement"
+    reflectionPrompt: "Quelle déclaration de triomphe et d'espérance choisissez-vous pour bénir votre journée ?",
+    benevolentAffirmation: "« Par mes paroles conscientes et lumineuses, je bâtis un sanctuaire inviolable de paix, d'amour et de renouveau. »",
+    unlockedRewardBadge: "Trophée : Maîtrise de la Parole Impeccable (Accord 1 Validé)"
   },
+
+  // --- BLOC 2 : NIVEAUX 6 À 10 • ACCORD 2 : NE RIEN PRENDRE PERSONNELLEMENT ---
   {
     level: 6,
     cycleId: 1,
-    title: "Étape 6 : Désamorcer l'Autocritique Toxique",
-    theme: "Bienveillance Psychologique",
-    question: "Que répondez-vous à la petite voix intérieure qui vous accuse à tort ?",
+    title: "Étape 6 : Comprendre le Miroir Projectif de l'Autre",
+    theme: "Accord 2 • Décodage des Projections & Venin d'Autrui",
+    question: "Face à une personne agressive, méprisante ou critique, pourquoi ses attaques ne parlent-elles que de son propre désordre intérieur ?",
     options: [
-      "« J'ai fait face avec les moyens et la force que j'avais, je refuse de me juger. »",
-      "« Je choisis désormais d'être mon amie la plus protectrice et la plus aimante. »",
-      "« La perfection n'existe pas, mais mon courage est bien réel. »"
+      "Parce que chacun ne projette que ses propres blessures, frustrations et croyances toxiques sur le monde.",
+      "Parce que son comportement reflète son niveau de souffrance et n'a aucun lien avec ma valeur réelle.",
+      "Parce que la colère ou le mépris de l'autre est un poison qui lui appartient à 100% et que je refuse d'avaler."
     ],
-    reflectionPrompt: "Quel mot chaleureux dites-vous à votre cœur ?",
-    benevolentAffirmation: "« Je fais taire la critique pour laisser chanter l'auto-compassion. »",
-    unlockedRewardBadge: "Badge : Épée de Bienveillance"
+    reflectionPrompt: "Quelle attaque passée réalisez-vous aujourd'hui qu'elle n'appartenait qu'au désordre de son auteur ?",
+    benevolentAffirmation: "« Je ne suis pas le réceptacle des blessures d'autrui. Les projections des autres leur appartiennent à 100%. »",
+    unlockedRewardBadge: "Badge : Miroir Déviateur de Projections"
   },
   {
     level: 7,
     cycleId: 1,
-    title: "Étape 7 : Le Droit de Dire Non avec Sérénité",
-    theme: "Frontières & Respect de Soi",
-    question: "Dire 'Non' à ce qui vous blesse, c'est dire 'Oui' à quoi ?",
+    title: "Étape 7 : Le Bouclier contre la Culpabilisation Toxique",
+    theme: "Accord 2 • Immunité Émotionnelle & Non-Absorption",
+    question: "Comment ériger une barrière infranchissable lorsque quelqu'un tente de vous faire porter la responsabilité de ses fautes ou de sa colère ?",
     options: [
-      "C'est dire 'Oui' à ma paix, à ma santé mentale et à ma dignité.",
-      "C'est dire 'Oui' à l'amour authentique et au respect mutuel.",
-      "C'est dire 'Oui' à mon avenir libre de toute contrainte toxique."
+      "En me répétant calmement : 'Cette culpabilité ne m'appartient pas, je la laisse à son propriétaire légitime'.",
+      "En restant ancrée dans ma droiture et mon alignement intérieur sans entrer dans des débats épuisants.",
+      "En observant la tentative d'inversion des rôles comme un phénomène extérieur sans laisser le doute s'infiltrer."
     ],
-    reflectionPrompt: "Quel 'Non' libérateur avez-vous récemment osé prononcer ou penser ?",
-    benevolentAffirmation: "« Mon 'Non' est un bouclier d'or protégeant mon espace sacré. »",
-    unlockedRewardBadge: "Badge : Clé des Frontières Saines"
+    reflectionPrompt: "Quelle culpabilité injuste rejetée vous procure un soulagement immédiat dans le corps ?",
+    benevolentAffirmation: "« Je suis imperméable aux tentatives de culpabilisation. Ma conscience est pure, intègre et apaisée. »",
+    unlockedRewardBadge: "Badge : Bouclier d'Immunité Émotionnelle"
   },
   {
     level: 8,
     cycleId: 1,
-    title: "Étape 8 : Le Prisme du Regard Bienveillant",
-    theme: "Transformation du Dialogue Intérieur",
-    question: "Quand le doute ou l'autocritique surgit, quelle voix amie choisissez-vous d'activer ?",
+    title: "Étape 8 : Rester Neutre face au Blâme comme à la Fausse Flatterie",
+    theme: "Accord 2 • Équanimité & Ancrage dans sa Vérité",
+    question: "Pourquoi est-il tout aussi vital de ne pas prendre personnellement les flatteries excessives et intéressées que les reproches injustes ?",
     options: [
-      "« Tu es courageuse, tu as traversé des épreuves immenses et tu es digne d'amour. »",
-      "« Ce n'est pas ta faute, tu n'as plus à prouver ta valeur à quiconque. »",
-      "« Respire. Tu es en sécurité, et je suis à tes côtés pour toujours. »"
+      "Parce que faire dépendre mon estime de la flatterie me rendrait vulnérable à la dépendance et à la manipulation future.",
+      "Parce que mon auto-estime repose sur mes propres valeurs stables et non sur le regard versatile d'autrui.",
+      "Parce que rester souveraine et équanime me permet de discerner les intentions sincères des pièges séducteurs."
     ],
-    reflectionPrompt: "Quelle phrase aimante aimeriez-vous entendre de votre plus proche alliée ?",
-    benevolentAffirmation: "« Je me regarde avec les yeux de la bienveillance pure et inconditionnelle. »",
-    unlockedRewardBadge: "Badge : Miroir Bienveillant"
+    reflectionPrompt: "Sur quelle certitude intérieure inébranlable repose votre valeur sacrée aujourd'hui ?",
+    benevolentAffirmation: "« Ni les insultes ne me diminuent, ni les louanges intéressées ne me définissent : je connais ma valeur sacrée. »",
+    unlockedRewardBadge: "Badge : Balance d'Équanimité"
   },
   {
     level: 9,
     cycleId: 1,
-    title: "Étape 9 : La Réappropriation de mon Espace Mental",
-    theme: "Clarté & Décharge Cognitive",
-    question: "Comment nettoyez-vous votre esprit des pensées parasitées par la peur ?",
+    title: "Étape 9 : Déposer le Fardeau des Émotions des Autres",
+    theme: "Accord 2 • Libération de l'Hyper-Responsabilité Émotionnelle",
+    question: "Comment vous libérer définitivement de la compulsion de vouloir 'sauver', calmer ou porter les tempêtes émotionnelles d'autrui à vos dépens ?",
     options: [
-      "En ramenant mon attention sur l'instant présent et sur ce qui est sous mon contrôle.",
-      "En me rappelant que les scénarios de terreur ne sont que des échos du passé.",
-      "En écrivant mes ressentis pour les déposer en dehors de moi."
+      "En intégrant avec compassion que chaque être humain adulte est seul responsable de ses propres émotions et comportements.",
+      "En cessant d'anticiper les sautes d'humeur des autres et en préservant mon propre équilibre nerveux.",
+      "En reconnaissant avec douceur que mon devoir premier est de protéger mon sanctuaire de paix et ma dignité."
     ],
-    reflectionPrompt: "Quelle pensée apaisante choisissez-vous de garder précieusement ?",
-    benevolentAffirmation: "« Mon esprit est un sanctuaire clair, lumineux et paisible. »",
-    unlockedRewardBadge: "Badge : Ciel Étoilé de Clarté"
+    reflectionPrompt: "Quel fardeau émotionnel qui ne vous appartient pas déposez-vous au sol aujourd'hui ?",
+    benevolentAffirmation: "« Je ne suis pas responsable des tempêtes des autres. Ma responsabilité sacrée est de cultiver ma propre paix. »",
+    unlockedRewardBadge: "Badge : Fardeau Déposé"
   },
   {
     level: 10,
     cycleId: 1,
-    title: "Étape 10 : Le Sanctuaire de la Voix Intérieure",
-    theme: "Consécration du Palier 10",
-    question: "Comment votre relation avec vous-même s'est-elle transformée depuis que vous honorez vos valeurs ?",
+    title: "Étape 10 : L'Invulnérabilité du Cœur Guéri",
+    theme: "Accord 2 • Consécration de l'Immunité Toltèque (Palier 10)",
+    question: "Lorsque vous incarnez pleinement l'accord 'Ne rien prendre personnellement', quel état de sérénité absolue s'installe en vous ?",
     options: [
-      "Je me sens plus solide, moins perméable aux jugements et aux critiques injustes.",
-      "Je m'accorde enfin le droit de ressentir mes émotions sans les refouler.",
-      "Je commence à ressentir une profonde fierté pour le chemin que je parcours chaque jour."
+      "Une paix inébranlable : aucune parole toxique ne peut plus traverser mon armure de sérénité et d'amour-propre.",
+      "Une légèreté totale : je chemine dans le monde affranchie de la peur du regard, du jugement ou du rejet d'autrui.",
+      "Une souveraineté complète : ma sécurité et ma joie émanent de mon alignement intérieur avec mes valeurs divines."
     ],
-    reflectionPrompt: "Qu'avez-vous envie de célébrer aujourd'hui dans votre propre courage ?",
-    benevolentAffirmation: "« Je suis devenue mon propre refuge protecteur, doux et inviolable. »",
-    unlockedRewardBadge: "Trophée : Sanctuaire d'Ancrage (Palier 10 Validé)"
+    reflectionPrompt: "Comment visualisez-vous votre liberté maintenant que le poison extérieur ne peut plus vous atteindre ?",
+    benevolentAffirmation: "« Mon cœur est invulnérable au venin d'autrui. Je marche dans la lumière intouchable de ma paix souveraine. »",
+    unlockedRewardBadge: "Trophée : Maîtrise du Non-Personnel (Accord 2 Validé - Palier 10)"
   },
+
+  // --- BLOC 3 : NIVEAUX 11 À 15 • ACCORD 3 : NE FAIRE AUCUNE SUPPOSITION ---
   {
     level: 11,
     cycleId: 1,
-    title: "Étape 11 : Défaire le Poison de la Comparaison",
-    theme: "Singularité & Bienveillance",
-    question: "Comment accueillir votre rythme unique de guérison sans vous comparer aux autres ?",
+    title: "Étape 11 : Stopper l'Entropie des Scénarios Anxiogènes",
+    theme: "Accord 3 • Sortie du Poison de l'Interprétation & des Scénarios",
+    question: "Pourquoi imaginer ce que l'autre pense ou broder des scénarios catastrophes dans le silence génère-t-il une immense souffrance ?",
     options: [
-      "En regardant les meilleurs et juger mon parcours singulier ?",
-      "En voyant le monde comme des gens faibles et moi comme une personne meilleure ?",
-      "En célébrant chaque micro-pas sans exiger une perfection imaginaire et en honorant mon rythme."
+      "Supposer est facile et c'est toujours mieux d'avoir peur et d'anticiper le pire que d'être calme et reposée.",
+      "Il vaut mieux garder ses doutes pour soi et imaginer les pires intentions chez l'autre plutôt que de clarifier la situation.",
+      "Parce que supposer au lieu de clarifier draine mon énergie vitale et entretient le chaos mental (l'entropie)."
     ],
     correctOptionIndex: 2,
-    explanation: "La comparaison et le jugement (vers le haut comme vers le bas) nourrissent l'anxiété et le désalignement. Seule l'auto-compassion bienveillante et l'accueil de vos micro-pas honorent votre rythme sacré de guérison.",
-    reflectionPrompt: "Quelle est votre plus belle petite victoire de ces derniers jours ?",
-    benevolentAffirmation: "« Mon chemin de guérison est unique, sacré et avance à la perfection. »",
-    unlockedRewardBadge: "Badge : Fleur de Singularité"
+    explanation: "Supposer ou entretenir la peur draine l'énergie vitale sans résoudre les problèmes. La réponse C est la seule vérité toltèque : clarifier avec bienveillance dissipe l'entropie et protège votre sérénité.",
+    reflectionPrompt: "Quel scénario angoissant imaginaire décidez-vous de désamorcer et d'évacuer aujourd'hui ?",
+    benevolentAffirmation: "« Je renonce aux suppositions imaginaires. Je choisis la réalité simple et paisible du moment présent. »",
+    unlockedRewardBadge: "Badge : Clarté Anti-Scénarios"
   },
   {
     level: 12,
     cycleId: 1,
-    title: "Étape 12 : Honorer ses Émotions sans Jugement",
-    theme: "Intelligence Émotionnelle",
-    question: "Lorsque la tristesse ou la colère montent, quelle posture est la plus guérissante ?",
+    title: "Étape 12 : Le Courage de Poser des Questions Claires",
+    theme: "Accord 3 • La Communication Directe & Transparente",
+    question: "Face au doute, au non-dit ou à l'ambiguïté, quel geste courageux désamorce définitivement toute supposition toxique ?",
     options: [
-      "Les accueillir comme des messagères légitimes qui nettoient et protègent mon cœur.",
-      "M'envelopper de douceur et respirer avec elles jusqu'à leur apaisement naturel.",
-      "Reconnaître que ressentir est une preuve de ma sensibilité et de mon humanité."
+      "Poser une question directe, limpide et respectueuse pour obtenir des faits vérifiables et dissiper le brouillard.",
+      "Exprimer clairement mes besoins au lieu d'attendre que l'autre lise par magie dans mes pensées.",
+      "Formuler mes interrogations avec calme et écouter les réponses factuelles sans projeter mes peurs passées."
     ],
-    reflectionPrompt: "Quelle émotion a le plus besoin de votre bienveillance en ce moment ?",
-    benevolentAffirmation: "« Toutes mes émotions ont le droit d'exister et de traverser mon ciel sans danger. »",
-    unlockedRewardBadge: "Badge : Calice des Émotions Apaisées"
+    reflectionPrompt: "Quelle question simple, honnête et libératrice aimeriez-vous poser pour clarifier une situation ?",
+    benevolentAffirmation: "« J'ai le courage de poser des questions claires et d'exprimer ce que je ressens en toute authenticité. »",
+    unlockedRewardBadge: "Badge : Clé de la Question Libératrice"
   },
   {
     level: 13,
     cycleId: 1,
-    title: "Étape 13 : La Détoxication du Sentiment de Culpabilité",
-    theme: "Délivrance Morale",
-    question: "Pourquoi n'êtes-vous en rien responsable des violences ou abus d'autrui ?",
+    title: "Étape 13 : Le Piège de Supposer que l'Autre va Changer",
+    theme: "Accord 3 • Lucidité face aux Espoirs Illusoires",
+    question: "Dans une relation passée sous emprise, quelle supposition sur l'autre vous a le plus longtemps maintenue dans la souffrance ?",
     options: [
-      "Parce que chacun est exclusivement responsable de ses propres comportements et choix.",
-      "Parce que ma gentillesse ou ma patience n'étaient pas une invitation au manque de respect.",
-      "Parce que chercher à faire fonctionner une relation n'est jamais une faute."
+      "Supposer qu'avec assez d'amour, de patience et de sacrifices de ma part, il finirait par changer ou guérir.",
+      "Supposer qu'il partageait mon code d'honneur, d'empathie et de loyauté humaine.",
+      "Supposer que des promesses orales répétées sans aucun acte thérapeutique concret suffisaient à garantir la sécurité."
     ],
-    reflectionPrompt: "Quelle culpabilité inutile déposez-vous pour toujours aujourd'hui ?",
-    benevolentAffirmation: "« Je suis innocente du mal qu'on m'a fait. Je reprends ma pureté et ma liberté. »",
-    unlockedRewardBadge: "Badge : Flamme de Pure Vérité"
+    reflectionPrompt: "Quelle illusion sur autrui laissez-vous partir aujourd'hui pour embrasser la vérité qui libère ?",
+    benevolentAffirmation: "« Je vois les autres tels qu'ils sont à travers leurs actes réels, sans projeter d'illusions rassurantes. »",
+    unlockedRewardBadge: "Badge : Regard de Pure Vérité"
   },
   {
     level: 14,
     cycleId: 1,
-    title: "Étape 14 : Reconnaître sa Vulnérabilité comme un Courage",
-    theme: "Force Silencieuse",
-    question: "En quoi accepter d'être vulnérable est-il la preuve d'un immense courage ?",
+    title: "Étape 14 : Distinguer les Faits Observables des Réflexes de Peur",
+    theme: "Accord 3 • Ancrage Sensoriel & Faits Tangibles",
+    question: "Comment votre cerveau peut-il faire la différence entre une menace réelle actuelle et une supposition issue de traumatismes passés ?",
     options: [
-      "Parce que cela demande une force infinie de rester vraie dans un monde difficile.",
-      "Parce que la vulnérabilité est le berceau de l'authenticité et de la vraie résilience.",
-      "Parce que refuser de porter un masque me rend invincible face au mensonge."
+      "En revenant méthodiquement aux faits tangibles et observables ('que s'est-il passé exactement ?') sans inventer d'histoire.",
+      "En respirant profondément pour vérifier si mon corps réagit au présent immédiat ou au souvenir d'une ancienne douleur.",
+      "En notant par écrit les éléments objectifs pour désactiver l'alarme émotionnelle réflexe de mon cerveau."
     ],
-    reflectionPrompt: "Quel moment récent de vulnérabilité s'est révélé être une source de force ?",
-    benevolentAffirmation: "« Ma sensibilité n'est pas une faiblesse : c'est mon super-pouvoir de clairvoyance. »",
-    unlockedRewardBadge: "Badge : Cœur de Cristal Lumineux"
+    reflectionPrompt: "Observez votre environnement immédiat : quel fait tangible confirme votre sécurité en cet instant ?",
+    benevolentAffirmation: "« Je m'enracine dans les faits réels et vérifiables. Mon esprit est limpide comme une eau de source. »",
+    unlockedRewardBadge: "Badge : Boussole des Faits Tangibles"
   },
   {
     level: 15,
     cycleId: 1,
-    title: "Étape 15 : Le Bouclier Inviolable des Valeurs",
-    theme: "Protection Psychologique",
-    question: "Face à une tentative de manipulation ou de culpabilisation, comment vos valeurs vous protègent-elles ?",
+    title: "Étape 15 : La Sérénité de la Transparence Totale",
+    theme: "Accord 3 • Clôture Définitive des Non-Dits",
+    question: "Comment l'abandon total des suppositions transforme-t-il votre vie quotidienne en une oasis de paix et d'énergie ?",
     options: [
-      "Elles me rappellent que les paroles toxiques sont le reflet de l'autre, pas de ma vérité.",
-      "Elles me donnent la force de refuser le rôle de coupable qu'on veut m'imposer.",
-      "Elles me permettent de garder mon calme et de me mettre à l'abri sans surenchère."
+      "Mon esprit est totalement allégé de tout fardeau imaginaire : je vis dans la simplicité et la vérité.",
+      "Mes relations deviennent saines, franches et transparentes car tout est communiqué avec droiture et amour.",
+      "Je récupère une puissance mentale immense pour me consacrer à ma guérison et à mes projets de vie."
     ],
-    reflectionPrompt: "Quel bouclier invisible visualisez-vous autour de votre cœur ?",
-    benevolentAffirmation: "« Mes valeurs sont mon armure de lumière, aucune ombre ne peut les altérer. »",
-    unlockedRewardBadge: "Badge : Bouclier Doré des Valeurs"
+    reflectionPrompt: "Quelle charge mentale ressentez-vous s'évanouir en cessant de deviner les pensées d'autrui ?",
+    benevolentAffirmation: "« Je vis dans la lumière de la vérité et de la clarté. Mon esprit est délivré de tout doute stérile. »",
+    unlockedRewardBadge: "Trophée : Maîtrise du Non-Supposé (Accord 3 Validé)"
   },
+
+  // --- BLOC 4 : NIVEAUX 16 À 20 • ACCORD 4 : TOUJOURS FAIRE DE SON MIEUX ---
   {
     level: 16,
     cycleId: 1,
-    title: "Étape 16 : La Pratique Quotidienne de la Gratitude envers Soi",
-    theme: "Restauration de l'Auto-Estime",
-    question: "Pour quel trait de votre personnalité ressentez-vous une profonde gratitude aujourd'hui ?",
+    title: "Étape 16 : La Nature Changeante & Vivante du 'Mieux'",
+    theme: "Accord 4 • Auto-Compassion & Écoute des Rythmes Corporels",
+    question: "Pourquoi votre 'mieux' n'est-il jamais identique lorsque vous êtes en pleine forme, fatiguée, souffrante ou en convalescence émotionnelle ?",
     options: [
-      "Ma loyauté, ma persévérance et ma capacité à aimer sincèrement.",
-      "Mon intuition et ma capacité à me relever même après les nuits les plus sombres.",
-      "Ma douceur fondamentale et ma soif de paix et d'élévation."
+      "Parce que mon énergie fluctue naturellement, et mon mieux du jour doit s'ajuster avec bienveillance à mes capacités réelles.",
+      "Parce qu'exiger de moi une performance constante serait une violence que je refuse désormais de m'infliger.",
+      "Parce que m'écouter, ralentir et me reposer quand je suis épuisée est précisément la plus noble expression de mon mieux."
     ],
-    reflectionPrompt: "Dites un 'Merci' sincère à une partie de vous qui ne vous a jamais abandonnée.",
-    benevolentAffirmation: "« Je suis reconnaissante pour celle que je suis et celle que je deviens chaque jour. »",
-    unlockedRewardBadge: "Badge : Perle de Gratitude"
+    reflectionPrompt: "Quel niveau d'énergie ressentez-vous aujourd'hui, et comment l'accueillez-vous sans le moindre jugement ?",
+    benevolentAffirmation: "« Mon mieux d'aujourd'hui est parfait tel qu'il est. J'honore mon corps et mes limites avec une infinie douceur. »",
+    unlockedRewardBadge: "Badge : Fleur d'Adaptabilité & de Douceur"
   },
   {
     level: 17,
     cycleId: 1,
-    title: "Étape 17 : Établir son Refuge Mental Intérieur",
-    theme: "Sanctuaire Psychologique",
-    question: "À quoi ressemble le lieu secret en vous où vous êtes toujours en sécurité absolue ?",
+    title: "Étape 17 : Désamorcer le Perfectionnisme Destructeur",
+    theme: "Accord 4 • Libération de l'Auto-Exigence Toxique",
+    question: "En quoi vouloir 'trop en faire' ou viser une perfection irréaliste est-il un piège qui nourrit l'épuisement et le juge intérieur ?",
     options: [
-      "Un jardin lumineux et silencieux baigné d'une brise tiède et apaisante.",
-      "Une pièce chaleureuse avec un feu doux et des livres de sagesse.",
-      "Un rivage calme où chaque vague emporte mes soucis au loin."
+      "Parce qu'essayer de faire 'mieux que mon mieux' épuise mes réserves vitales et me conduit au découragement.",
+      "Parce qu'en faisant simplement mon mieux du moment sans excès, mon Juge intérieur n'a aucune prise sur moi.",
+      "Parce que renoncer au perfectionnisme me reconnecte au plaisir d'agir et à la joie pure de l'instant présent."
     ],
-    reflectionPrompt: "Décrivez en un mot l'odeur ou la sensation de votre havre intérieur.",
-    benevolentAffirmation: "« En moi réside un sanctuaire intouchable où règne la paix éternelle. »",
-    unlockedRewardBadge: "Badge : Clé du Jardin Secret"
+    reflectionPrompt: "Quelle exigence démesurée acceptez-vous de relâcher aujourd'hui pour enfin souffler et vous reposer ?",
+    benevolentAffirmation: "« Je renonce à la perfection illusoire pour embrasser la justesse, la paix et l'équilibre bienveillant. »",
+    unlockedRewardBadge: "Badge : Équilibre d'Or & de Justesse"
   },
   {
     level: 18,
     cycleId: 1,
-    title: "Étape 18 : La Rupture Définitive avec la Dépendance d'Approbation",
-    theme: "Autonomie Affective",
-    question: "De qui avez-vous uniquement besoin de la validation désormais ?",
+    title: "Étape 18 : L'Absolution Rétrospective du Passé",
+    theme: "Accord 4 • Pardon Total & Compassion pour la Femme d'Hier",
+    question: "Comment l'accord 'Toujours faire de son mieux' vous libère-t-il définitivement des regrets et de la culpabilité concernant vos choix passés ?",
     options: [
-      "De mon propre cœur, de ma conscience et de mon alignement intérieur.",
-      "De mes valeurs sacrées qui éclairent la droiture de ma conduite.",
-      "De celle que je suis en train de devenir avec fierté."
+      "En reconnaissant qu'à chaque seconde de mon histoire, j'ai fait le meilleur choix possible avec la force et les repères que j'avais.",
+      "En comprenant que juger mes actes d'hier avec ma conscience d'aujourd'hui est une injustice dont je m'absous totalement.",
+      "En serrant la femme courageuse que j'étais dans mes bras avec gratitude, car c'est elle qui m'a menée jusqu'ici vivante."
     ],
-    reflectionPrompt: "Quel besoin de plaire déposez-vous aujourd'hui avec soulagement ?",
-    benevolentAffirmation: "« Mon approbation intérieure me suffit pleinement. Je suis légitime et entière. »",
-    unlockedRewardBadge: "Badge : Couronne d'Indépendance"
+    reflectionPrompt: "Quel mot d'amour et de pardon infini soufflez-vous à la femme que vous étiez hier ?",
+    benevolentAffirmation: "« J'ai fait de mon mieux à chaque instant de ma vie. Je me pardonne tout et je marche la tête haute et le cœur libre. »",
+    unlockedRewardBadge: "Badge : Ailes d'Absolution"
   },
   {
     level: 19,
     cycleId: 1,
-    title: "Étape 19 : La Grâce du Ralentissement",
-    theme: "Patience Thérapeutique",
-    question: "Pourquoi la guérison véritable se nourrit-elle de patience et de lenteur ?",
+    title: "Étape 19 : Agir par Amour de Soi et Non par Peur de Déplaire",
+    theme: "Accord 4 • Action Intègre & Motivation Pure",
+    question: "Lorsque vous faites de votre mieux par pur amour pour vous-même (et non pour chercher l'approbation ou éviter un conflit), que ressentez-vous ?",
     options: [
-      "Parce que le système nerveux a besoin de temps pour réintégrer le sentiment de sécurité.",
-      "Parce que chaque étape consolidée devient une fondation inébranlable pour la vie.",
-      "Parce que la hâte est souvent une fuite alors que la lenteur est une présence d'amour."
+      "Chaque geste devient une source de joie profonde, de dignité retrouvée et de fierté personnelle.",
+      "Je cesse d'attendre une récompense ou une validation extérieure car l'acte bienveillant est sa propre récompense.",
+      "Je me sens alignée avec mes valeurs sacrées, souveraine et totalement libre de toute contrainte servile."
     ],
-    reflectionPrompt: "Quel domaine de votre vie mérite que vous lui accordiez plus de temps et de douceur ?",
-    benevolentAffirmation: "« Je respecte le temps sacré de ma renaissance. Rien n'est en retard. »",
-    unlockedRewardBadge: "Badge : Sablier d'Or & de Patience"
+    reflectionPrompt: "Quelle belle action accomplissez-vous aujourd'hui uniquement pour votre propre bien-être et respect ?",
+    benevolentAffirmation: "« J'agis par amour inconditionnel pour moi-même, libre de toute peur du jugement ou du rejet d'autrui. »",
+    unlockedRewardBadge: "Badge : Flamme d'Action Sacrée"
   },
   {
     level: 20,
     cycleId: 1,
-    title: "Étape 20 : Réconciliation Intégrale avec Soi",
-    theme: "Absolution & Paix du Cœur",
-    question: "Quel pardon fondamental accordez-vous à la femme que vous étiez hier ?",
+    title: "Étape 20 : Célébrer Chaque Micro-Victoire Quotidienne",
+    theme: "Accord 4 • Récolte de la Gratitude & Estime Indestructible",
+    question: "Pourquoi célébrer le moindre petit pas (avoir respiré calmement, posé une limite, pris un thé en paix) est-il la consécration du 4e Accord ?",
     options: [
-      "Je lui pardonne d'avoir fait confiance, car la naïveté était de la générosité de cœur.",
-      "Je lui pardonne d'avoir douté d'elle-même sous l'emprise.",
-      "Je la serre dans mes bras avec gratitude car c'est elle qui m'a menée jusqu'ici vivante."
+      "Parce que la reconstruction durable et pérenne est une mosaïque de micro-victoires quotidiennes célébrées avec amour.",
+      "Parce que reconnaître mes progrès réactive la dopamine de l'espoir et consolide ma confiance en l'avenir.",
+      "Parce que chaque petit pas accompli avec conscience est un triomphe éclatant de ma résilience sur l'adversité."
     ],
-    reflectionPrompt: "Quel mot d'amour infini soufflez-vous à votre passé ?",
-    benevolentAffirmation: "« Je me pardonne tout. Je m'aime entièrement et j'embrasse mon présent. »",
-    unlockedRewardBadge: "Badge : Ailes de Réconciliation"
+    reflectionPrompt: "Quelle micro-victoire d'aujourd'hui mérite toute votre admiration et votre fierté ?",
+    benevolentAffirmation: "« Je célèbre chaque respiration et chaque pas comme une victoire éclatante de ma lumière et de ma vie. »",
+    unlockedRewardBadge: "Trophée : Maîtrise du Mieux Continu (Accord 4 Validé)"
   },
+
+  // --- BLOC 5 : NIVEAUX 21 À 25 • ACCORD 5 : ÊTRE SCEPTIQUE MAIS APPRENDRE À ÉCOUTER ---
+  // (Spécial Fausse Promesse, Love-Bombing, Gaslighting & Manipulation des Femmes Victimes de Maltraitance)
   {
     level: 21,
     cycleId: 1,
-    title: "Étape 21 : La Clarté de la Non-Négociabilité",
-    theme: "Frontières Inébranlables",
-    question: "Quelle est désormais la ligne rouge absolue que vous ne laisserez plus jamais franchir ?",
+    title: "Étape 21 : Le Scepticisme Bienveillant face aux Fausses Promesses",
+    theme: "Accord 5 • Scepticisme Protecteur & Sortie de la Naïveté",
+    question: "Face à des promesses grandiloquentes et répétées ('je te jure que j'ai changé', 'tu es la femme de ma vie, pardonne-moi'), pourquoi le 5e Accord ('Sois sceptique') est-il votre bouclier vital ?",
     options: [
-      "Le manque de respect, l'humiliation ou le mépris de mes besoins fondamentaux.",
-      "Le chantage affectif, le mensonge répété et l'invalidation de mes ressentis.",
-      "L'atteinte à ma liberté, à ma sécurité ou à celle de mes proches."
+      "Parce que douter d'un discours séducteur sans preuve concrète n'est pas de la méchanceté, mais de la sagesse et de l'auto-préservation légitime.",
+      "Parce que les manipulateurs utilisent les mots comme des miroirs aux alouettes, alors que seuls les actes constants et durables prouvent la vérité.",
+      "Parce que le doute bienveillant protège mon cœur des rechutes émotionnelles et me maintient lucide face aux mirages de l'emprise."
     ],
-    reflectionPrompt: "Formulez votre engagement de respect envers vous-même.",
-    benevolentAffirmation: "« Mes limites sont sacrées. Je les protège avec calme, fermeté et dignité. »",
-    unlockedRewardBadge: "Badge : Gardienne du Seuil"
+    reflectionPrompt: "Quelle fausse promesse passée reconnaissez-vous aujourd'hui comme un piège de mots creux ?",
+    benevolentAffirmation: "« Je suis sceptique face aux belles paroles sans lendemain. J'accorde ma confiance uniquement aux actes concrets, réels et durables. »",
+    unlockedRewardBadge: "Badge : Bouclier du Doute Salvateur"
   },
   {
     level: 22,
     cycleId: 1,
-    title: "Étape 22 : Nourrir l'Enfant Intérieure de Tendresse",
-    theme: "Guérison de l'Enfant Intérieure",
-    question: "Que dites-vous à la petite fille en vous qui avait peur d'être abandonnée ou rejetée ?",
+    title: "Étape 22 : Décoder le Love-Bombing & Écouter l'Intention Réelle",
+    theme: "Accord 5 • Démasquer la Séduction Manipulatrice",
+    question: "Que signifie véritablement 'Apprendre à écouter' selon le 5e Accord lorsqu'un individu use d'un charme excessif, de déclarations hâtives ou de cadeaux pour vous séduire rapidement ?",
     options: [
-      "« Je suis là maintenant. Je suis une adulte forte, aimante, et je ne te quitterai jamais. »",
-      "« Tu es merveilleuse, désirée et infiniment aimable telle que tu es. »",
-      "« Tu peux jouer, rire et te reposer : je veille sur nous deux. »"
+      "Écouter l'intention cachée derrière la mise en scène : cherche-t-il à me valoriser sincèrement ou à m'attacher vite pour contrôler mon espace ?",
+      "Observer avec lucidité le gouffre entre la précipitation de ses flatteries passionnées et la lenteur nécessaire à la construction d'un respect mutuel.",
+      "Écouter avec mes ressentis corporels et mes yeux plutôt que de me laisser bercer par des paroles enchanteresses."
     ],
-    reflectionPrompt: "Quel souvenir d'enfance réconfortant réactivez-vous en ce moment ?",
-    benevolentAffirmation: "« Mon enfant intérieure est chérie, protégée et baignée d'un amour sans fin. »",
-    unlockedRewardBadge: "Badge : Étreinte d'Innocence"
+    reflectionPrompt: "Quel signal corporel (dans le ventre ou la poitrine) vous avertit immédiatement lorsqu'une personne en fait 'trop' ou va trop vite ?",
+    benevolentAffirmation: "« J'écoute au-delà des apparences et des flatteries. Je perçois avec clarté et calme la véritable intention derrière chaque comportement. »",
+    unlockedRewardBadge: "Badge : Œil de Lucidité & de Discernement"
   },
   {
     level: 23,
     cycleId: 1,
-    title: "Étape 23 : Le Discernement Lumineux",
-    theme: "Clairvoyance & Intuition",
-    question: "Comment faites-vous la différence entre la peur réflexe et la véritable intuition protectrice ?",
+    title: "Étape 23 : Déjouer le Gaslighting & Ancrer sa Propre Vérité",
+    theme: "Accord 5 • Immunité face à la Manipulation & aux Inversions de Réalité",
+    question: "Face à une tentative de Gaslighting ('tu es folle', 'tu te fais des films', 'tu inventes tout', 'je n'ai jamais dit ça'), comment le 5e Accord protège-t-il votre santé mentale ?",
     options: [
-      "La peur panique crie dans le chaos, tandis que l'intuition murmure avec un calme limpide.",
-      "L'intuition m'oriente vers la préservation de ma dignité et de ma paix.",
-      "En écoutant les signaux sensoriels de mon corps sans chercher à justifier l'inacceptable."
+      "En restant sceptique face à ses mensonges et en accordant une confiance totale et inébranlable à ma mémoire et à mes ressentis.",
+      "En refusant d'entrer dans un débat épuisant pour tenter de lui prouver ma réalité : mon vécu est sacré et n'a pas besoin de sa validation.",
+      "En reconnaissant que le gaslighting est une tactique de désorientation pour me faire douter de mon propre jugement."
     ],
-    reflectionPrompt: "Quel signal corporel vous avertit infailliblement qu'une situation ne vous convient pas ?",
-    benevolentAffirmation: "« Mon intuition est ma boussole divine. J'ai une confiance totale en ma guidance intérieure. »",
-    unlockedRewardBadge: "Badge : Troisième Œil de Clairvoyance"
+    reflectionPrompt: "Quelle vérité intime sur ce que vous avez réellement vécu réaffirmez-vous avec force et tranquillité aujourd'hui ?",
+    benevolentAffirmation: "« Nul ne peut réécrire ma réalité ni effacer mon vécu. J'ai une foi absolue en ma mémoire, en mes ressentis et en ma vérité. »",
+    unlockedRewardBadge: "Badge : Diamant d'Inébranlable Vérité"
   },
   {
     level: 24,
     cycleId: 1,
-    title: "Étape 24 : L'Harmonie du Dialogue Bienveillant",
-    theme: "Cohérence Globale",
-    question: "Comment vos pensées quotidiennes reflètent-elles désormais la grandeur de vos valeurs ?",
+    title: "Étape 24 : Désamorcer le Cycle de la Violence & la Fausse Lune de Miel",
+    theme: "Accord 5 • Rupture Définitive de l'Emprise Cyclique",
+    question: "Pourquoi le scepticisme lucide est-il l'arme maîtresse pour briser définitivement le cycle de la maltraitance (tension, agression, justification, fausse réconciliation) ?",
     options: [
-      "Elles sont devenues des encouragements constants plutôt que des réprimandes.",
-      "Elles cherchent l'apaisement, la solution et la joie simple du moment présent.",
-      "Elles célèbrent chaque progrès sans s'attarder sur les faux pas."
+      "Parce qu'il me permet de reconnaître la phase de séduction et de larmes comme un rouage mécanique du cycle de l'emprise, et non comme un miracle.",
+      "Parce qu'il m'empêche de retomber dans l'amnésie traumatique et m'aide à garder les yeux grands ouverts sur les faits passés et la récidive.",
+      "Parce qu'il me donne la force souveraine de choisir ma sécurité et ma liberté plutôt que de rejouer indéfiniment le même piège douloureux."
     ],
-    reflectionPrompt: "Quel mantra matinal illumine le début de vos journées ?",
-    benevolentAffirmation: "« Mes pensées sont douces, mes paroles sont vraies, mes actions sont justes. »",
-    unlockedRewardBadge: "Badge : Symphonie Intérieure"
+    reflectionPrompt: "Quel schéma relationnel toxique répétitif ne vous piégera plus jamais désormais ?",
+    benevolentAffirmation: "« Je suis libérée de l'illusion des cycles toxiques. Je choisis la lucidité, la sécurité absolue et la paix durable. »",
+    unlockedRewardBadge: "Badge : Clé de Rupture de l'Emprise"
   },
   {
     level: 25,
     cycleId: 1,
-    title: "Étape 25 : Couronnement du Cycle 1 (Valeurs & Bienveillance)",
-    theme: "Grand Bilan Initiatique",
-    question: "En validant ce 25e niveau, quelle promesse solennelle faites-vous à votre être tout entier ?",
+    title: "Étape 25 : Couronnement du Cycle 1 • L'Alliance Sacrée des 5 Accords",
+    theme: "Grand Bilan Initiatique • Souveraineté, Lucidité & Amour Inconditionnel",
+    question: "En intégrant les 5 Accords Toltèques (Parole Impeccable, Non-Personnel, Non-Supposé, Toujours Faire de son Mieux, Scepticisme Lucide), quelle femme souveraine êtes-vous devenue à ce 25e niveau ?",
     options: [
-      "Je promets de ne plus jamais m'abandonner ni trahir mes valeurs de dignité et de paix.",
-      "Je promets de toujours me regarder avec la plus haute bienveillance, quoi qu'il arrive.",
-      "Je promets d'être ma première protectrice, ma plus fidèle alliée et ma source d'amour."
+      "Une femme souveraine, bâtie sur ses valeurs inaltérables, immunisée contre l'emprise et la manipulation, et baignée d'un amour inconditionnel pour elle-même.",
+      "Une âme lucide et pacifique dont la parole est douce, l'esprit clair et le cœur totalement affranchi de la peur, du doute et de la culpabilité.",
+      "La gardienne inébranlable de sa dignité et de son bonheur, prête à franchir la porte du Cycle 2 avec une confiance et une fierté infinies."
     ],
-    reflectionPrompt: "Quel est votre manifeste personnel pour ouvrir la porte du Cycle 2 ?",
-    benevolentAffirmation: "« Je suis couronnée de dignité. Mes valeurs sont vivantes et mon regard sur moi est pur amour. »",
-    unlockedRewardBadge: "Trophée Suprême : Sceau Sacré du Cycle 1 Validé"
+    reflectionPrompt: "Quel serment solennel d'amour, de respect et de fidélité éternelle vous formulez-vous pour couronner ce 1er Cycle ?",
+    benevolentAffirmation: "« Je suis couronnée de dignité, de sagesse et de liberté. Les 5 Accords sont vivants en moi. Je m'aime d'un amour infini et inconditionnel. »",
+    unlockedRewardBadge: "Trophée Suprême : Grande Couronne des 5 Accords Toltèques (Cycle 1 Accompli)"
   },
 
   // ==========================================

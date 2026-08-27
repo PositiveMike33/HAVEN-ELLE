@@ -21,6 +21,9 @@ export interface ToltecAudioBookInfo {
   description: string;
   agreements: number[];
   audioBadge: string;
+  isSoonActive?: boolean;
+  statusLabel?: string;
+  audibleLink?: string;
 }
 
 export interface ToltecSeminarVideo {
@@ -60,7 +63,9 @@ export const TOLTEC_AUDIOBOOKS_INFO: ToltecAudioBookInfo[] = [
     subtitle: 'La voie de la liberté personnelle (Livre Audio 1)',
     description: 'Un guide de sagesse pratique pour briser les croyances limitantes, éliminer le poison émotionnel et restaurer la dignité intérieure.',
     agreements: [1, 2, 3, 4],
-    audioBadge: '🎧 Livre Audio Fondateur'
+    audioBadge: '🎧 Livre Audio Fondateur',
+    isSoonActive: true,
+    statusLabel: 'Bientôt actif'
   },
   {
     id: 'toltec_book_2',
@@ -69,7 +74,9 @@ export const TOLTEC_AUDIOBOOKS_INFO: ToltecAudioBookInfo[] = [
     subtitle: 'Un guide pratique vers la maîtrise de soi (Livre Audio 2)',
     description: 'L\'art du discernement et du doute libérateur : voir la réalité avec les yeux de la vérité, au-delà des mots et des conditionnements.',
     agreements: [5],
-    audioBadge: '🎧 Livre Audio Maîtrise de Soi'
+    audioBadge: '🎧 Livre Audio Maîtrise de Soi',
+    isSoonActive: true,
+    statusLabel: 'Bientôt actif'
   }
 ];
 
@@ -251,4 +258,192 @@ export const BENEVOLENT_SELF_AFFIRMATIONS = [
   "« Mes valeurs sont mon phare inébranlable. Elles éclairent ma beauté intérieure et guident chacun de mes choix. »",
   "« Je suis digne de douceur, d'écoute et de respect infini simplement parce que j'existe. »",
   "« Chaque fois que j'honore une de mes valeurs, je restaure l'amour pur et bienveillant que je me porte. »"
+];
+
+export interface ToltecExamOption {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+  explanation: string;
+  entropyReductionFeedback: string;
+}
+
+export interface ToltecExamQuestion {
+  id: string;
+  agreementNumber: 1 | 2 | 3 | 4 | 5;
+  agreementTitle: string;
+  audioBookSource: string;
+  situation: string;
+  promptQuestion: string;
+  options: ToltecExamOption[];
+  summaryKey: string;
+  dailyApplication: string;
+}
+
+export const TOLTEC_EXAM_QUESTIONS: ToltecExamQuestion[] = [
+  {
+    id: 'exam_toltec_1',
+    agreementNumber: 1,
+    agreementTitle: 'Que ta parole soit impeccable',
+    audioBookSource: 'Livre Audio 1 (Don Miguel Ruiz)',
+    situation: 'Après une journée éprouvante, une petite erreur survient et une pensée surgit dans votre tête : « Tu es nulle, tu ne réussiras jamais rien ». Selon le 1er Accord Toltèque, quelle réaction réduit immédiatement l\'entropie interne ?',
+    promptQuestion: 'Comment appliquez-vous concrètement l\'Accord 1 (Parole Impeccable) face à cette situation ?',
+    options: [
+      {
+        id: 'opt_1_a',
+        text: 'Interrompre immédiatement ce poison verbal : refuser d\'utiliser la parole contre moi-même et me dire avec douceur : « J\'ai fait face avec courage, cette erreur est humaine et je mérite mon propre respect. »',
+        isCorrect: true,
+        explanation: 'La parole impeccable signifie ne jamais diriger l\'énergie des mots contre soi-même. Éteindre l\'autocritique désamorce le traumatisme et restaure la sécurité interne.',
+        entropyReductionFeedback: 'Excellente réduction d\'entropie : le persécuteur intérieur est désactivé au profit de l\'auto-compassion.'
+      },
+      {
+        id: 'opt_1_b',
+        text: 'Répéter cette phrase en cherchant à punir mes faiblesses pour être plus performante à l\'avenir.',
+        isCorrect: false,
+        explanation: 'C\'est l\'opposé de la parole impeccable : c\'est injecter du poison émotionnel et renforcer la culpabilité.',
+        entropyReductionFeedback: 'Augmentation du stress et du désalignement intérieur.'
+      },
+      {
+        id: 'opt_1_c',
+        text: 'Accuser quelqu\'un d\'autre avec colère pour me décharger du sentiment d\'échec.',
+        isCorrect: false,
+        explanation: 'Médire ou projeter sur autrui disperse le poison sans guérir la blessure.',
+        entropyReductionFeedback: 'Crée du conflit relationnel et entretient l\'agitation.'
+      }
+    ],
+    summaryKey: 'Parler avec vérité, amour et intégrité. Bannir toute violence verbale dirigée contre soi-même ou autrui.',
+    dailyApplication: 'Repérer chaque jugement interne négatif et le transformer en parole de protection aimante.'
+  },
+  {
+    id: 'exam_toltec_2',
+    agreementNumber: 2,
+    agreementTitle: 'Ne prends rien personnellement',
+    audioBookSource: 'Livre Audio 1 (Don Miguel Ruiz)',
+    situation: 'Une personne de votre entourage ou un ex-partenaire vous envoie un message froid et dévalorisant affirmant que vous êtes responsable de tous ses malheurs. Selon le 2e Accord Toltèque, quelle est la vérité lucide ?',
+    promptQuestion: 'Quelle posture mentale neutralise ce poison selon le 2e Accord ?',
+    options: [
+      {
+        id: 'opt_2_a',
+        text: 'Reconnaître que ses propos ne parlent que de son propre univers, de ses blessures et de sa programmation. Rien n\'est dirigé contre ma valeur réelle : je n\'absorbe pas son venin.',
+        isCorrect: true,
+        explanation: 'Ce que les autres disent et font est une projection de leur propre rêve. En ne prenant rien personnellement, vous devenez totalement immunisée contre la manipulation.',
+        entropyReductionFeedback: 'Immunité émotionnelle totale : vous conservez votre calme sans entrer dans la culpabilité imposée.'
+      },
+      {
+        id: 'opt_2_b',
+        text: 'Ruminer le message pendant des heures en cherchant où j\'ai commis une faute impardonnable.',
+        isCorrect: false,
+        explanation: 'Prendre les attaques d\'autrui personnellement vous rend dépendante de leur validation et valide leur emprise.',
+        entropyReductionFeedback: 'Augmente le sentiment de culpabilité et l\'hypervigilance.'
+      },
+      {
+        id: 'opt_2_c',
+        text: 'Rédiger une lettre de 5 pages pour lui prouver à tout prix que j\'ai raison et qu\'il a tort.',
+        isCorrect: false,
+        explanation: 'Vouloir convaincre à tout prix montre qu\'on a mordu à l\'hameçon du poison personnel.',
+        entropyReductionFeedback: 'Perte massive d\'énergie et escalade inutile.'
+      }
+    ],
+    summaryKey: 'Ce que disent ou font les autres est un reflet de leur propre monde, jamais de votre dignité.',
+    dailyApplication: 'Visualiser les reproches injustifiés comme des nuages qui glissent sur un bouclier de sérénité.'
+  },
+  {
+    id: 'exam_toltec_3',
+    agreementNumber: 3,
+    agreementTitle: 'Ne fais aucune supposition',
+    audioBookSource: 'Livre Audio 1 (Don Miguel Ruiz)',
+    situation: 'Quelqu\'un ne répond pas à votre message depuis 24h. Votre mental commence à échafauder des scénarios catastrophiques : « Il m\'en veut », « J\'ai encore tout gâché ». Selon le 3e Accord Toltèque, comment agir ?',
+    promptQuestion: 'Quelle est la méthode toltèque pour couper court au drame imaginaire ?',
+    options: [
+      {
+        id: 'opt_3_a',
+        text: 'Distinguer les faits réels des suppositions : je n\'ai aucun élément vérifié. Si nécessaire, je pose une question claire et directe, sans m\'inventer un scénario anxiogène.',
+        isCorrect: true,
+        explanation: 'Les suppositions créent du poison émotionnel et des drames fictifs. Avoir le courage de vérifier les faits et de communiquer avec clarté dissout l\'illusion.',
+        entropyReductionFeedback: 'Clarté cognitive rétablie : fin du chaos décisionnel et des ruminations prédictives.'
+      },
+      {
+        id: 'opt_3_b',
+        text: 'Considérer que mes scénarios noirs sont obligatoirement réels et me préparer au pire en coupant tout contact.',
+        isCorrect: false,
+        explanation: 'Faire des suppositions et y croire aveuglément est le mécanisme premier de la souffrance relationnelle.',
+        entropyReductionFeedback: 'Crée un stress d\'anticipation majeur et une anxiété non fondée.'
+      },
+      {
+        id: 'opt_3_c',
+        text: 'Demander l\'avis de dix personnes pour savoir ce qu\'elles supposent à leur tour.',
+        isCorrect: false,
+        explanation: 'Empiler des suppositions extérieures ne remplace jamais une vérification directe ou un retour au calme intérieur.',
+        entropyReductionFeedback: 'Multiplie l\'incertitude et la confusion.'
+      }
+    ],
+    summaryKey: 'Exprimer ses besoins réels, vérifier les faits tangibles et refuser de vivre dans les scénarios inventés.',
+    dailyApplication: 'Se demander systématiquement : « Est-ce un fait avéré à 100% ou une supposition de mon esprit ? »'
+  },
+  {
+    id: 'exam_toltec_4',
+    agreementNumber: 4,
+    agreementTitle: 'Fais toujours de ton mieux',
+    audioBookSource: 'Livre Audio 1 (Don Miguel Ruiz)',
+    situation: 'Aujourd\'hui, vous vous sentez épuisée et vous n\'avez réussi à accomplir qu\'une seule tâche simple. Une voix commence à vous culpabiliser. Que vous enseigne le 4e Accord Toltèque ?',
+    promptQuestion: 'Comment honorer la juste mesure de « votre mieux » aujourd\'hui ?',
+    options: [
+      {
+        id: 'opt_4_a',
+        text: 'Reconnaître avec gratitude que « mon mieux » fluctue selon ma fatigue ou ma douleur. Avoir respiré et fait ce geste était mon 100% du jour : je vis sans auto-jugement ni honte.',
+        isCorrect: true,
+        explanation: 'Faire de son mieux évite à la fois le surmenage (en voulant trop en faire) et la culpabilité (en se dévalorisant). Votre mieux dans la maladie ou l\'épuisement n\'est pas le même que dans la pleine forme.',
+        entropyReductionFeedback: 'Libération du perfectionnisme toxique : acceptation inconditionnelle du moment présent.'
+      },
+      {
+        id: 'opt_4_b',
+        text: 'Me forcer à travailler jusqu\'à l\'épuisement total pour me prouver que je suis courageuse.',
+        isCorrect: false,
+        explanation: 'Vouloir faire plus que son mieux mène à l\'épuisement, à la blessure et au ressentiment.',
+        entropyReductionFeedback: 'Épuisement du système nerveux et risque de rechute somatique.'
+      },
+      {
+        id: 'opt_4_c',
+        text: 'Abandonner tout effort futur en me disant que je ne suis bonne à rien.',
+        isCorrect: false,
+        explanation: 'Faire moins que son mieux entraîne la frustration et le regret.',
+        entropyReductionFeedback: 'Sentiment d\'impuissance acquise et découragement.'
+      }
+    ],
+    summaryKey: 'Faire simplement de son mieux à l\'instant T : ni plus (surmenage), ni moins (regrets).',
+    dailyApplication: 'Chaque soir, poser une main sur le cœur et dire : « J\'ai fait de mon mieux aujourd\'hui, et cela suffit amplement. »'
+  },
+  {
+    id: 'exam_toltec_5',
+    agreementNumber: 5,
+    agreementTitle: 'Sois sceptique, mais apprends à écouter',
+    audioBookSource: 'Livre Audio 2 (Don Miguel Ruiz & Don Jose Ruiz)',
+    situation: 'Face à un discours culpabilisant, un mensonge évident ou un conditionnement passé qui tente de vous dicter ce que vous devez être, quelle est la posture de souveraineté enseignée par le 5e Accord ?',
+    promptQuestion: 'Comment exercer le doute libérateur tout en maintenant une écoute sereine ?',
+    options: [
+      {
+        id: 'opt_5_a',
+        text: 'Utiliser le doute comme un bouclier lucide : ne pas croire aveuglément les mots ni les jugements d\'autrui, tout en écoutant calmement l\'intention sans me laisser intoxiquer.',
+        isCorrect: true,
+        explanation: 'Le 5e Accord utilise le scepticisme bienveillant. Vous ne croyez pas vos propres pensées toxiques ni les récits manipulatoires d\'autrui, mais vous écoutez avec respect pour discerner la réalité profonde.',
+        entropyReductionFeedback: 'Souveraineté et clarté d\'esprit inébranlables : immunité absolue contre le gaslighting.'
+      },
+      {
+        id: 'opt_5_b',
+        text: 'Croire aveuglément tout ce que dit la personne par peur d\'un conflit ou d\'un rejet.',
+        isCorrect: false,
+        explanation: 'Céder à l\'illusion et au conditionnement aliène votre libre arbitre et votre discernement.',
+        entropyReductionFeedback: 'Perte de souveraineté personnelle et soumission à l\'illusion.'
+      },
+      {
+        id: 'opt_5_c',
+        text: 'Boucher ses oreilles avec agressivité en refusant d\'entendre quoi que ce soit.',
+        isCorrect: false,
+        explanation: 'Le 5e accord demande d\'apprendre à écouter avec discernement, et non de réagir avec fermeture ou panique.',
+        entropyReductionFeedback: 'Réaction de défense rigide sans clarté introspective.'
+      }
+    ],
+    summaryKey: 'Ne pas croire aveuglément les mots ou les récits (y compris ses propres doutes), mais écouter avec sagesse pour voir la vérité.',
+    dailyApplication: 'Face à une affirmation troublante, se répéter : « Je doute avec sagesse, j\'observe les actes réels et je garde mon discernement. »'
+  }
 ];

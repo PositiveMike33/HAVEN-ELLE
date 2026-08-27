@@ -109,26 +109,28 @@ export const Header: React.FC<HeaderProps> = ({
   const userCycleId = getCycleForLevel(userLevel);
   const userCycle = RESILIENCE_CYCLES.find(c => c.id === userCycleId) || RESILIENCE_CYCLES[0];
   
-  // Niveau 1: Bilan et Q&A
-  navItems.push({ id: 'evaluation', label: 'Bilan & Questions', icon: ClipboardList });
+  // Strictly 3 Main Tabs:
+  // 1. Questionnaire & 5 Accords (Parcours de Résilience & Découverte)
+  navItems.push({ 
+    id: 'evaluation', 
+    label: 'Questionnaire & 5 Accords', 
+    icon: ClipboardList 
+  });
 
-  // Les 5 Accords Toltèques & Livres Audios (Toujours accessible et essentiel)
-  navItems.push({ id: 'toltec', label: 'Les 5 Accords Toltèques (Audio)', icon: Headphones });
-
-  // Dès qu'on a un peu de points (niveau 2+)
-  if (currentPts >= 20) {
-    navItems.push({ id: 'wellness', label: 'Soutien & Apprentissage', icon: Heart });
-  }
+  // 2. Soutien & Bien-Être (Psychanalyste IA, Respiration, Méditations)
+  navItems.push({ 
+    id: 'wellness', 
+    label: 'Soutien & Bien-Être', 
+    icon: Heart 
+  });
   
-  // Niveau 3+
-  if (currentPts >= 50) {
-    navItems.push({ id: 'network', label: 'Réseau de Secours', icon: Users, badge: contactsCount > 0 ? `${contactsCount}` : undefined });
-  }
-
-  // Niveau 4+
-  if (currentPts >= 100) {
-    navItems.push({ id: 'justice', label: 'Dossier Justice', icon: Scale });
-  }
+  // 3. Sécurité & Protection (Réseau de Secours, Dossier Justice & Alertes)
+  navItems.push({ 
+    id: 'security', 
+    label: 'Sécurité & Protection', 
+    icon: ShieldCheck, 
+    badge: contactsCount > 0 ? `${contactsCount}` : undefined 
+  });
 
 
   return (

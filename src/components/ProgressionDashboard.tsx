@@ -33,6 +33,7 @@ import { CompanionMemoryService } from '../utils/companionMemory';
 import { ValuesAndBenevolenceBuilder } from './ValuesAndBenevolenceBuilder';
 import { HealingLevelQuestionCard } from './HealingLevelQuestionCard';
 import { HealingRoadmap100Questions } from './HealingRoadmap100Questions';
+import { ToltecFlashcardQuestionnaire } from './ToltecFlashcardQuestionnaire';
 import { CompanionMemoryProfile } from '../types';
 
 interface ProgressionDashboardProps {
@@ -56,8 +57,8 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
   const [selectedCycleId, setSelectedCycleId] = useState<1 | 2 | 3 | 4>(currentCycleId);
   const [rewardToast, setRewardToast] = useState<{ message: string; points: number } | null>(null);
   
-  // Dashboard Sub-View: 'overview' | 'roadmap100' | 'values'
-  const [activeDashboardView, setActiveDashboardView] = useState<'overview' | 'roadmap100' | 'values'>('overview');
+  // Dashboard Sub-View: 'toltec_cards' | 'overview' | 'roadmap100' | 'values'
+  const [activeDashboardView, setActiveDashboardView] = useState<'toltec_cards' | 'overview' | 'roadmap100' | 'values'>('toltec_cards');
 
   const selectedCycle = RESILIENCE_CYCLES.find(c => c.id === selectedCycleId) || RESILIENCE_CYCLES[0];
   const activeCycle = RESILIENCE_CYCLES.find(c => c.id === currentCycleId) || RESILIENCE_CYCLES[0];
@@ -145,6 +146,18 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
       {/* Navigation Switcher Tabs between Dashboard Views */}
       <div className="flex flex-wrap items-center gap-2 p-1.5 bg-[#F4F2EB] rounded-2xl border-2 border-[#D5D0C2]">
         <button
+          onClick={() => setActiveDashboardView('toltec_cards')}
+          className={`flex-1 min-w-[200px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+            activeDashboardView === 'toltec_cards'
+              ? 'bg-[#385117] text-white shadow-xs'
+              : 'text-[#5C5952] hover:bg-white/50'
+          }`}
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>Fiches des 5 Accords (Q&A Caché)</span>
+        </button>
+
+        <button
           onClick={() => setActiveDashboardView('overview')}
           className={`flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
             activeDashboardView === 'overview'
@@ -152,7 +165,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
               : 'text-[#5C5952] hover:bg-white/50'
           }`}
         >
-          <Sparkles className="w-4 h-4 text-[#385117]" />
+          <Trophy className="w-4 h-4 text-[#385117]" />
           Vue Tableau de Bord
         </button>
 
@@ -182,9 +195,19 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           }`}
         >
           <Compass className="w-4 h-4 text-[#385117]" />
-          Mes 5 Valeurs Fondatrices
+          Mes 5 Valeurs & Audios
         </button>
       </div>
+
+      {/* VIEW 0: TOLTEC FLASHCARD QUESTIONNAIRE */}
+      {activeDashboardView === 'toltec_cards' && (
+        <div className="space-y-6">
+          <ToltecFlashcardQuestionnaire 
+            onPointsEarned={onPointsEarned}
+            onNavigateToRoadmap={() => setActiveDashboardView('roadmap100')}
+          />
+        </div>
+      )}
 
       {/* VIEW 1: ROADMAP 100 QUESTIONS */}
       {activeDashboardView === 'roadmap100' && (

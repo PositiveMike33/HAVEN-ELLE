@@ -24,7 +24,14 @@ import {
   Volume2,
   ExternalLink,
   Play,
-  Video
+  Video,
+  Clock,
+  FileQuestion,
+  CheckCheck,
+  RotateCcw,
+  Trophy,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { 
   PRESET_CORE_VALUES, 
@@ -32,6 +39,8 @@ import {
   TOLTEC_AGREEMENTS_VALUES,
   TOLTEC_AUDIOBOOKS_INFO,
   TOLTEC_SEMINAR_VIDEO,
+  TOLTEC_EXAM_QUESTIONS,
+  ToltecExamQuestion,
   CoreValueItem 
 } from '../data/valuesAndBenevolenceData';
 import { CompanionMemoryService } from '../utils/companionMemory';
@@ -63,12 +72,28 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
   const [customValueName, setCustomValueName] = useState('');
   const [customValueVision, setCustomValueVision] = useState('');
   const [isAddingCustom, setIsAddingCustom] = useState(false);
-  const [activeTab, setActiveTab] = useState<'my_list' | 'toltec_wisdom' | 'preset_gallery' | 'benevolent_mirror'>('my_list');
+  const [activeTab, setActiveTab] = useState<'my_list' | 'toltec_wisdom' | 'toltec_exam' | 'preset_gallery' | 'benevolent_mirror'>('my_list');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [selectedToltecDetail, setSelectedToltecDetail] = useState<CoreValueItem | null>(null);
-  const [isVideoExpanded, setIsVideoExpanded] = useState(true);
+  const [isVideoExpanded, setIsVideoExpanded] = useState(false);
   const [hasClaimedSeminarPoints, setHasClaimedSeminarPoints] = useState(() => {
     return localStorage.getItem('haven_claimed_toltec_seminar_pts') === 'true';
+  });
+  
+  // Toltec Exam State
+  const [examAnswers, setExamAnswers] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem('haven_toltec_exam_answers');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  const [examSubmitted, setExamSubmitted] = useState<boolean>(() => {
+    return localStorage.getItem('haven_toltec_exam_submitted') === 'true';
+  });
+  const [hasClaimedExamPoints, setHasClaimedExamPoints] = useState<boolean>(() => {
+    return localStorage.getItem('haven_claimed_toltec_exam_pts') === 'true';
   });
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
 
@@ -79,6 +104,64 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
       console.error(e);
     }
   }, [selectedValues]);
+
+  const handleSelectExamOption = (questionId: string, optionId: string) => {
+    const newAnswers = { ...examAnswers, [questionId]: optionId };
+    setExamAnswers(newAnswers);
+    localStorage.setItem('haven_toltec_exam_answers', JSON.stringify(newAnswers));
+  };
+
+  const handleValidateExam = () => {
+    const answeredCount = Object.keys(examAnswers).length;
+    if (answeredCount < TOLTEC_EXAM_QUESTIONS.length) {
+      alert(`Veuillez répondre aux ${TOLTEC_EXAM_QUESTIONS.length} situations toltèques pour calculer votre score complet (${answeredCount}/${TOLTEC_EXAM_QUESTIONS.length} répondues).`);
+      return;
+    }
+
+    setExamSubmitted(true);
+    localStorage.setItem('haven_toltec_exam_submitted', 'true');
+
+    // Calculate score
+    let correctCount = 0;
+    TOLTEC_EXAM_QUESTIONS.forEach(q => {
+      const chosenOptId = examAnswers[q.id];
+      const opt = q.options.find(o => o.id === chosenOptId);
+      if (opt?.isCorrect) {
+        correctCount += 1;
+      }
+    });
+
+    if (!hasClaimedExamPoints) {
+      const awardedPoints = correctCount * 10 + (correctCount === 5 ? 15 : 0);
+      const updated = CompanionMemoryService.addResiliencePoints(awardedPoints, `Examen des 5 Accords Toltèques complété (${correctCount}/5)`);
+      if (onPointsEarned) onPointsEarned(updated.resiliencePoints);
+      setHasClaimedExamPoints(true);
+      localStorage.setItem('haven_claimed_toltec_exam_pts', 'true');
+      setActionFeedback(`+${awardedPoints} pts ! Examen validé avec succès (${correctCount}/5 accords maîtrisés).`);
+    } else {
+      setActionFeedback(`Examen recalculé : ${correctCount}/5 accords maîtrisés.`);
+    }
+    setTimeout(() => setActionFeedback(null), 4000);
+  };
+
+  const handleResetExam = () => {
+    setExamAnswers({});
+    setExamSubmitted(false);
+    localStorage.removeItem('haven_toltec_exam_answers');
+    localStorage.removeItem('haven_toltec_exam_submitted');
+    setActionFeedback("Examen réinitialisé. Vous pouvez repasser l'évaluation.");
+    setTimeout(() => setActionFeedback(null), 3000);
+  };
+
+  const calculateExamScore = () => {
+    let correct = 0;
+    TOLTEC_EXAM_QUESTIONS.forEach(q => {
+      const chosen = examAnswers[q.id];
+      const opt = q.options.find(o => o.id === chosen);
+      if (opt?.isCorrect) correct += 1;
+    });
+    return correct;
+  };
 
   const handleClaimSeminarPoints = () => {
     if (hasClaimedSeminarPoints) {
@@ -234,7 +317,18 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
             }`}
           >
             <Headphones className="w-3.5 h-3.5" />
-            Les 5 Accords (Livres Audios)
+            Les 5 Accords (Résumés & Clés)
+          </button>
+          <button
+            onClick={() => setActiveTab('toltec_exam')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'toltec_exam'
+                ? 'bg-[#2E6930] text-white shadow-xs font-extrabold'
+                : 'text-[#2E6930] bg-[#E5EED6] hover:bg-[#D5E4C0]'
+            }`}
+          >
+            <FileQuestion className="w-3.5 h-3.5" />
+            Examen des 5 Accords (+50 pts)
           </button>
           <button
             onClick={() => setActiveTab('preset_gallery')}
@@ -272,7 +366,7 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
                 Les 5 Accords Toltèques (2 Livres Audios Fondateurs)
               </h4>
               <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-[#385117] text-white">
-                Essentiel
+                Base de l'Examen
               </span>
             </div>
             <p className="text-xs text-[#403E3A] mt-0.5">
@@ -283,28 +377,27 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
 
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <button
-            onClick={() => {
-              setActiveTab('toltec_wisdom');
-              setIsVideoExpanded(true);
-            }}
+            onClick={() => setActiveTab('toltec_exam')}
+            className="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-[#2E6930] hover:bg-[#245226] text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-xs"
+          >
+            <FileQuestion className="w-3.5 h-3.5" />
+            <span>Passer l'Examen (+50 pts)</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('toltec_wisdom')}
             className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-white hover:bg-[#FAF9F6] text-[#385117] text-xs font-bold border border-[#CED6C1] flex items-center justify-center gap-1.5 transition-all shadow-2xs"
           >
-            <Video className="w-3.5 h-3.5" />
-            <span>Séminaire Vidéo Audio</span>
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Lire les 5 Résumés</span>
           </button>
-          {!areAll5ToltecSelected ? (
+          {!areAll5ToltecSelected && (
             <button
               onClick={handleApplyAll5Toltec}
-              className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs"
+              className="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Adopter les 5 Accords (+35 pts)</span>
+              <span>Adopter les 5 (+35 pts)</span>
             </button>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#385117] bg-white px-3 py-2 rounded-xl border border-[#506B26]/30">
-              <CheckCircle2 className="w-4 h-4 text-[#385117]" />
-              Charte Toltèque Active
-            </span>
           )}
         </div>
       </div>
@@ -487,156 +580,51 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
         </div>
       )}
 
-      {/* TAB 2: LES 5 ACCORDS TOLTÈQUES (AUDIOBOOKS & SEMINAR DEEP DIVE) */}
+      {/* TAB 2: LES 5 ACCORDS TOLTÈQUES (RÉSUMÉS CLAIRS & ENSEIGNEMENTS) */}
       {activeTab === 'toltec_wisdom' && (
         <div className="space-y-6">
-          {/* SEMINAR VIDEO PLAYER CARD */}
-          <div className="rounded-3xl bg-gradient-to-br from-[#18210E] via-[#2A3B14] to-[#1F201C] text-white p-6 md:p-8 shadow-md border-2 border-[#506B26] space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-[#E5EED6] text-[#2E4313] flex items-center justify-center font-bold shrink-0 shadow-xs">
-                  <Video className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-[#E5EED6] text-[#18210E]">
-                      {TOLTEC_SEMINAR_VIDEO.durationLabel}
-                    </span>
-                    <span className="text-xs text-white/70 flex items-center gap-1 font-medium">
-                      <Headphones className="w-3.5 h-3.5" />
-                      Résumé des 2 Livres Audios
-                    </span>
-                  </div>
-                  <h4 className="text-lg md:text-xl font-serif font-bold text-white mt-1">
-                    {TOLTEC_SEMINAR_VIDEO.title}
-                  </h4>
-                </div>
+          {/* Quick Callout to Exam */}
+          <div className="bg-[#E5EED6] border-2 border-[#506B26]/40 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#2E6930] text-white flex items-center justify-center shrink-0">
+                <FileQuestion className="w-5 h-5" />
               </div>
-
-              <div className="flex items-center gap-2">
-                <a
-                  href={TOLTEC_SEMINAR_VIDEO.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors border border-white/20"
-                >
-                  <span>Ouvrir sur YouTube</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-                <button
-                  onClick={() => setIsVideoExpanded(!isVideoExpanded)}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#E5EED6] hover:bg-[#D5E4C0] text-[#18210E] text-xs font-bold transition-colors"
-                >
-                  {isVideoExpanded ? 'Réduire' : 'Afficher la vidéo'}
-                </button>
-              </div>
-            </div>
-
-            <p className="text-xs md:text-sm text-white/90 leading-relaxed max-w-3xl">
-              {TOLTEC_SEMINAR_VIDEO.description}
-            </p>
-
-            {/* Embedded Responsive YouTube Iframe */}
-            {isVideoExpanded && (
-              <div className="space-y-4">
-                <div className="relative w-full overflow-hidden rounded-2xl border-2 border-white/20 shadow-lg bg-black aspect-video">
-                  <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${TOLTEC_SEMINAR_VIDEO.youtubeId}?start=${TOLTEC_SEMINAR_VIDEO.startTimeSeconds}&autoplay=0&rel=0`}
-                    title={TOLTEC_SEMINAR_VIDEO.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="absolute top-0 left-0 w-full h-full border-0"
-                  />
-                </div>
-
-                {/* Key Takeaways Grid */}
-                <div className="bg-white/10 rounded-2xl p-4 border border-white/15 backdrop-blur-xs space-y-2.5">
-                  <div className="text-xs font-bold text-[#E5EED6] flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Points Clés Transmis dans ce Séminaire :
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-white/90">
-                    {TOLTEC_SEMINAR_VIDEO.keyTakeaways.map((point, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#C1DB99] shrink-0 mt-0.5" />
-                        <span>{point}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Action Bar for Resilience Points */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-white/15">
-              <div className="text-xs text-white/80">
-                🌱 <em>L'écoute attentive de ce séminaire consolide votre boussole intérieure et votre clarté d'esprit.</em>
-              </div>
-              <button
-                onClick={handleClaimSeminarPoints}
-                disabled={hasClaimedSeminarPoints}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-                  hasClaimedSeminarPoints
-                    ? 'bg-white/20 text-white/70 cursor-default border border-white/10'
-                    : 'bg-[#C1DB99] hover:bg-[#B0D080] text-[#18210E] shadow-sm'
-                }`}
-              >
-                <Check className="w-4 h-4" />
-                {hasClaimedSeminarPoints ? 'Séminaire Validé (+25 pts obtenus)' : 'Valider mon écoute (+25 pts)'}
-              </button>
-            </div>
-          </div>
-
-          {/* Audiobooks Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {TOLTEC_AUDIOBOOKS_INFO.map((book) => (
-              <div 
-                key={book.id}
-                className="p-5 rounded-2xl bg-gradient-to-br from-white to-[#F8F7F4] border-2 border-[#D5D0C2] space-y-3 shadow-2xs"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#E5EED6] text-[#2E4313] border border-[#8DA765]/30">
-                    {book.audioBadge}
-                  </span>
-                  <span className="text-xs font-mono font-bold text-[#5C5952]">
-                    Auteur : {book.author}
-                  </span>
-                </div>
-
-                <div>
-                  <h4 className="text-lg font-serif font-bold text-[#1F201C]">
-                    {book.title}
-                  </h4>
-                  <p className="text-xs font-semibold text-[#385117] mt-0.5">
-                    {book.subtitle}
-                  </p>
-                </div>
-
-                <p className="text-xs text-[#403E3A] leading-relaxed">
-                  {book.description}
+              <div>
+                <h4 className="text-sm font-bold text-[#18210E]">
+                  Évaluation & Examen des 5 Accords Toltèques
+                </h4>
+                <p className="text-xs text-[#2D450C] mt-0.5">
+                  L'examen est calculé directement en réponse aux 5 résumés clairs ci-dessous.
                 </p>
-
-                <div className="pt-2 border-t border-[#EAE7DE] flex items-center justify-between text-xs font-bold text-[#385117]">
-                  <span>Accords couverts : {book.agreements.map(a => `N°${a}`).join(', ')}</span>
-                  <Headphones className="w-4 h-4" />
-                </div>
               </div>
-            ))}
+            </div>
+            <button
+              onClick={() => setActiveTab('toltec_exam')}
+              className="px-4 py-2 rounded-xl bg-[#2E6930] hover:bg-[#245226] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs shrink-0 self-stretch sm:self-auto justify-center"
+            >
+              <FileQuestion className="w-3.5 h-3.5" />
+              <span>Passer l'Examen (+50 pts)</span>
+            </button>
           </div>
 
-          {/* Deep-Dive into the 5 Toltec Agreements */}
+          {/* Deep-Dive into the 5 Toltec Agreements: FRONT AND CENTER */}
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D5D0C2] pb-2">
-              <h4 className="text-base font-bold text-[#1F201C] flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#385117]" />
-                Les 5 Accords Détaillés & Leurs Clés Thérapeutiques
-              </h4>
+              <div>
+                <h4 className="text-base font-bold text-[#1F201C] flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-[#385117]" />
+                  Les 5 Accords Toltèques : Résumés Thérapeutiques Clairs
+                </h4>
+                <p className="text-xs text-[#5C5952] mt-0.5">
+                  Les piliers fondamentaux de Don Miguel Ruiz et Don Jose Ruiz pour désamorcer l'entropie émotionnelle.
+                </p>
+              </div>
               <button
                 onClick={handleApplyAll5Toltec}
                 className="text-xs font-bold text-[#385117] hover:underline flex items-center gap-1 self-start sm:self-auto"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                Activer les 5 dans ma charte personnelle
+                Activer les 5 dans ma charte
               </button>
             </div>
 
@@ -693,7 +681,7 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
                       <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#E5E2D9] space-y-1.5 text-xs">
                         <span className="font-bold text-[#1F201C] flex items-center gap-1.5">
                           <Headphones className="w-3.5 h-3.5 text-[#385117]" />
-                          Explication du Livre Audio :
+                          Principe & Résumé Essentiel :
                         </span>
                         <p className="text-[#403E3A] leading-relaxed">
                           {accord.detailedAudioExplanation}
@@ -730,6 +718,427 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Audiobooks Reference Cards (with Voile Bientôt Actif for Audible Links) */}
+          <div className="space-y-3 pt-2">
+            <div className="border-b border-[#D5D0C2] pb-1">
+              <h4 className="text-sm font-bold text-[#1F201C] flex items-center gap-2">
+                <Headphones className="w-4 h-4 text-[#385117]" />
+                Les 2 Livres Audios Fondateurs de Référence
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {TOLTEC_AUDIOBOOKS_INFO.map((book) => (
+                <div 
+                  key={book.id}
+                  className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-br from-white to-[#F8F7F4] border-2 border-[#D5D0C2] space-y-3 shadow-2xs group"
+                >
+                  {/* Content underneath with slight blur if isSoonActive */}
+                  <div className={`space-y-3 ${book.isSoonActive ? 'filter blur-[1.5px] opacity-60 select-none pointer-events-none' : ''}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#E5EED6] text-[#2E4313] border border-[#8DA765]/30">
+                        {book.audioBadge}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-[#5C5952]">
+                        Auteur : {book.author}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-serif font-bold text-[#1F201C]">
+                        {book.title}
+                      </h4>
+                      <p className="text-xs font-semibold text-[#385117] mt-0.5">
+                        {book.subtitle}
+                      </p>
+                    </div>
+
+                    <p className="text-xs text-[#403E3A] leading-relaxed">
+                      {book.description}
+                    </p>
+
+                    <div className="pt-2 border-t border-[#EAE7DE] flex items-center justify-between text-xs font-bold text-[#385117]">
+                      <span>Accords couverts : {book.agreements.map(a => `N°${a}`).join(', ')}</span>
+                      <Headphones className="w-4 h-4" />
+                    </div>
+                  </div>
+
+                  {/* Voile / Overlay "Bientôt actif" */}
+                  {book.isSoonActive && (
+                    <div className="absolute inset-0 bg-[#FAF9F6]/85 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center space-y-2.5 z-10 transition-all">
+                      <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#18210E] text-white text-xs font-extrabold shadow-xs tracking-wide">
+                        <Clock className="w-3.5 h-3.5 text-[#C1DB99]" />
+                        <span>{book.statusLabel || 'Bientôt actif'}</span>
+                      </div>
+                      <div className="space-y-1 max-w-xs">
+                        <p className="text-xs font-bold text-[#1F201C]">
+                          {book.title}
+                        </p>
+                        <p className="text-[11px] text-[#5C5952] leading-snug">
+                          Téléchargement et liens d'écoute officielle Audible en cours d'activation.
+                        </p>
+                      </div>
+                      <div className="pt-1 flex items-center gap-1 text-[10px] font-semibold text-[#385117] bg-[#E5EED6] px-2.5 py-1 rounded-lg border border-[#8DA765]/30">
+                        <Headphones className="w-3 h-3" />
+                        <span>L'examen se base directement sur les 5 résumés ci-dessus</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* OPTIONAL / SECONDARY VIDEO SEMINAR ACCORDION */}
+          <div className="rounded-2xl border-2 border-[#D5D0C2] bg-[#F7F5EE] overflow-hidden transition-all shadow-2xs">
+            <div 
+              onClick={() => setIsVideoExpanded(!isVideoExpanded)}
+              className="p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:bg-[#EFECE3] transition-colors select-none"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#5C5952] text-white flex items-center justify-center font-bold shrink-0">
+                  <Video className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-[#E5EED6] text-[#2E4313]">
+                      Optionnel • Pour aller plus loin
+                    </span>
+                    <span className="text-xs text-[#5C5952]">
+                      {TOLTEC_SEMINAR_VIDEO.durationLabel}
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-[#1F201C] mt-0.5">
+                    {TOLTEC_SEMINAR_VIDEO.title}
+                  </h4>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-[#5C5952] hidden sm:inline">
+                  {isVideoExpanded ? 'Masquer la vidéo' : 'Écouter le séminaire'}
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-white border border-[#D5D0C2] flex items-center justify-center text-[#5C5952]">
+                  {isVideoExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </div>
+              </div>
+            </div>
+
+            {isVideoExpanded && (
+              <div className="p-4 sm:p-6 bg-white border-t border-[#D5D0C2] space-y-4">
+                <p className="text-xs text-[#5C5952] leading-relaxed">
+                  {TOLTEC_SEMINAR_VIDEO.description}
+                </p>
+
+                <div className="relative w-full overflow-hidden rounded-2xl border-2 border-[#D5D0C2] shadow-sm bg-black aspect-video">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${TOLTEC_SEMINAR_VIDEO.youtubeId}?start=${TOLTEC_SEMINAR_VIDEO.startTimeSeconds}&autoplay=0&rel=0`}
+                    title={TOLTEC_SEMINAR_VIDEO.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="absolute top-0 left-0 w-full h-full border-0"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                  <a
+                    href={TOLTEC_SEMINAR_VIDEO.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-bold text-[#385117] hover:underline flex items-center gap-1"
+                  >
+                    <span>Ouvrir sur YouTube</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+
+                  <button
+                    onClick={handleClaimSeminarPoints}
+                    disabled={hasClaimedSeminarPoints}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                      hasClaimedSeminarPoints
+                        ? 'bg-[#E5EED6] text-[#2E4313] border border-[#506B26]/30 cursor-default'
+                        : 'bg-[#385117] hover:bg-[#2A3E11] text-white shadow-xs'
+                    }`}
+                  >
+                    <Check className="w-4 h-4" />
+                    {hasClaimedSeminarPoints ? 'Séminaire Validé (+25 pts obtenus)' : 'Valider mon écoute (+25 pts)'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2.5: EXAMEN DES 5 ACCORDS TOLTÈQUES (CALCULÉ SUR LES 5 RÉSUMÉS) */}
+      {activeTab === 'toltec_exam' && (
+        <div className="space-y-6 animate-in fade-in">
+          {/* Exam Header Card */}
+          <div className="rounded-3xl bg-gradient-to-br from-[#18210E] via-[#243510] to-[#1F201C] text-white p-6 md:p-8 shadow-md border-2 border-[#506B26] space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-[#E5EED6] text-[#2E4313] flex items-center justify-center font-bold shrink-0 shadow-xs">
+                  <FileQuestion className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-[#E5EED6] text-[#18210E]">
+                      Auto-Évaluation de Résilience
+                    </span>
+                    <span className="text-xs text-white/70 font-semibold">
+                      5 Situations Réelles
+                    </span>
+                  </div>
+                  <h4 className="text-xl md:text-2xl font-serif font-bold text-white mt-1">
+                    Examen & Maîtrise des 5 Accords Toltèques
+                  </h4>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="px-3.5 py-1.5 rounded-xl bg-white/10 text-white text-xs font-bold border border-white/20 flex items-center gap-1.5">
+                  <Trophy className="w-3.5 h-3.5 text-[#C1DB99]" />
+                  Jusqu'à +50 pts de résilience
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs md:text-sm text-white/90 leading-relaxed max-w-3xl">
+              Cet examen teste votre capacité à mobiliser les 5 Accords face au stress, aux critiques, à la culpabilité et aux suppositions toxiques. Répondez aux 5 situations ci-dessous pour calculer votre score d'immunité émotionnelle.
+            </p>
+
+            {/* Live Progress Bar */}
+            <div className="space-y-1.5 pt-2">
+              <div className="flex justify-between text-xs font-bold text-[#E5EED6]">
+                <span>Progression : {Object.keys(examAnswers).length} / {TOLTEC_EXAM_QUESTIONS.length} situations traitées</span>
+                {examSubmitted && (
+                  <span className="text-[#C1DB99]">
+                    Score : {calculateExamScore()} / {TOLTEC_EXAM_QUESTIONS.length} ({Math.round((calculateExamScore() / TOLTEC_EXAM_QUESTIONS.length) * 100)}%)
+                  </span>
+                )}
+              </div>
+              <div className="w-full bg-white/20 h-2.5 rounded-full overflow-hidden">
+                <div 
+                  className="bg-[#C1DB99] h-full transition-all duration-300 rounded-full"
+                  style={{ width: `${(Object.keys(examAnswers).length / TOLTEC_EXAM_QUESTIONS.length) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Results Summary Card when Submitted */}
+          {examSubmitted && (
+            <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#506B26] shadow-sm space-y-4 animate-in fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE7DE] pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#E5EED6] text-[#2E4313] flex items-center justify-center font-bold shrink-0">
+                    <Trophy className="w-6 h-6 text-[#385117]" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#385117]">
+                      Bilan Thérapeutique
+                    </span>
+                    <h4 className="text-lg font-bold text-[#1F201C]">
+                      Votre Score : {calculateExamScore()} / 5 Accords Toltèques Maîtrisés
+                    </h4>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleResetExam}
+                    className="px-3.5 py-2 rounded-xl bg-[#FAF9F6] hover:bg-[#EAE7DE] text-[#5C5952] hover:text-[#1F201C] text-xs font-bold border border-[#D5D0C2] flex items-center gap-1.5 transition-colors"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Repasser l'Examen</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('toltec_wisdom')}
+                    className="px-3.5 py-2 rounded-xl bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Relire les 5 Résumés</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#F0F5E8] border border-[#CED6C1] text-xs text-[#2D450C] space-y-1">
+                <p className="font-bold text-sm text-[#18210E]">
+                  {calculateExamScore() === 5 && '🌟 Maîtrise Toltèque Parfaite • Clarté & Immunité Totale !'}
+                  {calculateExamScore() >= 3 && calculateExamScore() < 5 && '🌿 Solide Compréhension • Vos réflexes de protection sont bien installés.'}
+                  {calculateExamScore() < 3 && '🌱 Apprentissage en cours • Prenez le temps d\'ancrer chaque accord dans vos micro-gestes quotidiens.'}
+                </p>
+                <p>
+                  Chaque bonne réponse désamorce le chaos décisionnel et renforce votre regard de compassion envers vous-même.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* 5 Toltec Exam Questions List */}
+          <div className="space-y-6">
+            {TOLTEC_EXAM_QUESTIONS.map((q, qIndex) => {
+              const selectedOptionId = examAnswers[q.id];
+              const selectedOption = q.options.find(o => o.id === selectedOptionId);
+
+              return (
+                <div 
+                  key={q.id}
+                  className={`p-5 md:p-6 rounded-3xl border-2 transition-all space-y-4 shadow-2xs ${
+                    examSubmitted
+                      ? selectedOption?.isCorrect
+                        ? 'bg-[#F9FAF6] border-[#506B26]'
+                        : 'bg-[#FFFDFB] border-[#C88A34]/50'
+                      : selectedOptionId
+                        ? 'bg-white border-[#8DA765]'
+                        : 'bg-white border-[#D5D0C2]'
+                  }`}
+                >
+                  {/* Question Header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#385117] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                        {qIndex + 1}
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#385117]">
+                          {q.agreementTitle} (Accord N°{q.agreementNumber})
+                        </span>
+                        <h4 className="text-base font-bold text-[#1F201C]">
+                          Situation {qIndex + 1}
+                        </h4>
+                      </div>
+                    </div>
+
+                    {examSubmitted && (
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 ${
+                        selectedOption?.isCorrect 
+                          ? 'bg-[#E5EED6] text-[#2E4313]' 
+                          : 'bg-[#FBE8D6] text-[#8C4600]'
+                      }`}>
+                        {selectedOption?.isCorrect ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-[#385117]" />
+                            <span>Correct (+10 pts)</span>
+                          </>
+                        ) : (
+                          <>
+                            <X className="w-3.5 h-3.5 text-[#8C4600]" />
+                            <span>À réajuster</span>
+                          </>
+                        )}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Scenario Description */}
+                  <div className="p-4 rounded-2xl bg-[#FAF9F6] border border-[#E5E2D9] space-y-1.5">
+                    <span className="text-[11px] font-bold text-[#5C5952] uppercase">
+                      Contexte de la situation :
+                    </span>
+                    <p className="text-xs sm:text-sm text-[#1F201C] font-medium leading-relaxed">
+                      {q.situation}
+                    </p>
+                    <p className="text-xs font-bold text-[#385117] pt-1">
+                      👉 {q.promptQuestion}
+                    </p>
+                  </div>
+
+                  {/* Options */}
+                  <div className="space-y-2.5">
+                    {q.options.map((opt) => {
+                      const isSelected = selectedOptionId === opt.id;
+                      let optionClasses = "p-3.5 rounded-2xl border-2 text-xs font-medium text-left transition-all flex items-start gap-3 w-full ";
+
+                      if (examSubmitted) {
+                        if (opt.isCorrect) {
+                          optionClasses += "bg-[#E5EED6] border-[#506B26] text-[#18210E] font-bold";
+                        } else if (isSelected && !opt.isCorrect) {
+                          optionClasses += "bg-[#FDF2E9] border-[#C88A34] text-[#8C4600]";
+                        } else {
+                          optionClasses += "bg-white border-[#E5E2D9] text-[#7A766E] opacity-60";
+                        }
+                      } else {
+                        if (isSelected) {
+                          optionClasses += "bg-[#F0F5E8] border-[#385117] text-[#18210E] font-semibold shadow-2xs";
+                        } else {
+                          optionClasses += "bg-white border-[#D5D0C2] hover:border-[#8DA765] hover:bg-[#FAF9F6] text-[#403E3A]";
+                        }
+                      }
+
+                      return (
+                        <button
+                          key={opt.id}
+                          onClick={() => handleSelectExamOption(q.id, opt.id)}
+                          className={optionClasses}
+                        >
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                            isSelected 
+                              ? 'border-[#385117] bg-[#385117] text-white' 
+                              : 'border-[#A39E93]'
+                          }`}>
+                            {isSelected && <Check className="w-3 h-3" />}
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <p>{opt.text}</p>
+                            {/* Explanations shown after submit */}
+                            {examSubmitted && isSelected && (
+                              <div className="pt-1.5 text-[11px] leading-relaxed border-t border-black/10 mt-1">
+                                <p className="font-semibold">
+                                  {opt.isCorrect ? '✅ Clé Toltèque :' : '⚠️ Analyse du piège :'} {opt.explanation}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Feedback on Entropy Reduction when submitted */}
+                  {examSubmitted && (
+                    <div className="p-3 rounded-xl bg-[#F4F2EB] border border-[#D5D0C2] text-xs text-[#403E3A] flex items-start gap-2">
+                      <Sparkles className="w-4 h-4 text-[#385117]" />
+                      <div className="space-y-0.5">
+                        <div>
+                          <strong>🧠 Réduction d'entropie émotionnelle :</strong>{' '}
+                          {selectedOption?.entropyReductionFeedback || q.summaryKey}
+                        </div>
+                        <div className="text-[11px] text-[#5C5952]">
+                          🌱 <strong>Micro-geste d'ancrage :</strong> {q.dailyApplication}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Action Bar */}
+          <div className="p-5 rounded-3xl bg-white border-2 border-[#CED6C1] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+            <div>
+              <p className="text-xs font-bold text-[#1F201C]">
+                {Object.keys(examAnswers).length === TOLTEC_EXAM_QUESTIONS.length
+                  ? "Toutes les situations sont complétées !"
+                  : `Encore ${TOLTEC_EXAM_QUESTIONS.length - Object.keys(examAnswers).length} situation(s) à répondre.`}
+              </p>
+              <p className="text-[11px] text-[#5C5952]">
+                La validation calcule immédiatement votre score d'assimilation et crédite vos points.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <button
+                onClick={handleValidateExam}
+                className="flex-1 sm:flex-initial px-6 py-3 rounded-2xl bg-[#2E6930] hover:bg-[#245226] text-white text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-sm"
+              >
+                <CheckCheck className="w-4 h-4" />
+                <span>{examSubmitted ? 'Recalculer mon Score' : 'Valider mon Examen (+50 pts)'}</span>
+              </button>
             </div>
           </div>
         </div>

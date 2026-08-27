@@ -14,7 +14,7 @@ import { ProgressionDashboard } from './components/ProgressionDashboard';
 import { ValuesAndBenevolenceBuilder } from './components/ValuesAndBenevolenceBuilder';
 import { StorageService } from './utils/storage';
 import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment, UserAssessmentProfile } from './types';
-import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
+import { ShieldCheck, Lock, AlertCircle, HeartHandshake, Users, Scale, Calendar } from 'lucide-react';
 import { CompanionMemoryService } from './utils/companionMemory';
 import { initAuth, getAccessToken, googleSignIn } from './utils/auth';
 import { syncToGoogleDrive, loadFromGoogleDrive } from './utils/driveSync';
@@ -27,7 +27,7 @@ export default function App() {
   });
   const [activeTab, setActiveTab] = useState('evaluation');
   const [companionProfile, setCompanionProfile] = useState(() => CompanionMemoryService.getProfile());
-  const [networkSubTab, setNetworkSubTab] = useState<'contacts' | 'appointments'>('contacts');
+  const [securitySubTab, setSecuritySubTab] = useState<'network' | 'justice' | 'appointments'>('network');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showAssessmentModal, setShowAssessmentModal] = useState(false);
@@ -212,17 +212,18 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 md:py-8">
         {/* Upcoming Appointments Widget (Visible on all tabs except appointments itself) */}
-        {!(activeTab === 'network' && networkSubTab === 'appointments') && appointments.length > 0 && (
+        {!(activeTab === 'security' && securitySubTab === 'appointments') && appointments.length > 0 && (
           <UpcomingAppointmentsWidget
             appointments={appointments}
             onNavigateToAppointments={() => {
-              setActiveTab('network');
-              setNetworkSubTab('appointments');
+              setActiveTab('security');
+              setSecuritySubTab('appointments');
             }}
           />
         )}
 
-        {activeTab === 'evaluation' && (
+        {/* TAB 1: Questionnaire & 5 Accords */}
+        {(activeTab === 'evaluation' || activeTab === 'toltec') && (
           <div className="space-y-6">
             <ProgressionDashboard 
               resiliencePoints={companionProfile.resiliencePoints} 
@@ -232,27 +233,7 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === 'toltec' && (
-          <div className="space-y-6">
-            <ValuesAndBenevolenceBuilder 
-              onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
-            />
-          </div>
-        )}
-
-        {activeTab === 'network' && (
-          <ContactsEtConsultations
-            contacts={contacts}
-            onUpdateContacts={setContacts}
-            alerts={alerts}
-            onAlertDispatched={handleAlertDispatched}
-            appointments={appointments}
-            onUpdateAppointments={setAppointments}
-            requestedSubTab={networkSubTab}
-            onSubTabChange={setNetworkSubTab}
-          />
-        )}
-
+        {/* TAB 2: Soutien & Bien-Être */}
         {activeTab === 'wellness' && (
           <SoutienBienEtre 
             isNightMode={isNightMode} 
@@ -260,17 +241,86 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'justice' && (
-          <JusticeDossier
-            incidents={incidents}
-            onUpdateIncidents={setIncidents}
-            onNavigateToRelaxation={() => setActiveTab('wellness')}
-            onNavigateToContacts={() => {
-              setActiveTab('network');
-              setNetworkSubTab('contacts');
-            }}
-            onOpenDetailedAssessment={() => setShowAssessmentModal(true)}
-          />
+        {/* TAB 3: Sécurité & Protection (Unified Network, Justice & Appointments) */}
+        {(activeTab === 'security' || activeTab === 'network' || activeTab === 'justice') && (
+          <div className="space-y-6">
+            {/* Security Sub-Navigation */}
+            <div className="bg-white p-2 rounded-2xl border-2 border-[#D5D0C2] flex flex-wrap gap-2 shadow-2xs">
+              <button
+                onClick={() => setSecuritySubTab('network')}
+                className={`flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+                  securitySubTab === 'network'
+                    ? 'bg-[#385117] text-white shadow-xs'
+                    : 'text-[#5C5952] hover:bg-[#F4F2EB]'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span>Réseau de Secours & SOS</span>
+                {contacts.length > 0 && (
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    securitySubTab === 'network' ? 'bg-white/20 text-white' : 'bg-[#E5EED6] text-[#385117]'
+                  }`}>
+                    {contacts.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setSecuritySubTab('justice')}
+                className={`flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+                  securitySubTab === 'justice'
+                    ? 'bg-[#385117] text-white shadow-xs'
+                    : 'text-[#5C5952] hover:bg-[#F4F2EB]'
+                }`}
+              >
+                <Scale className="w-4 h-4" />
+                <span>Dossier Justice & Preuves</span>
+                {incidents.length > 0 && (
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    securitySubTab === 'justice' ? 'bg-white/20 text-white' : 'bg-[#E5EED6] text-[#385117]'
+                  }`}>
+                    {incidents.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setSecuritySubTab('appointments')}
+                className={`flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+                  securitySubTab === 'appointments'
+                    ? 'bg-[#385117] text-white shadow-xs'
+                    : 'text-[#5C5952] hover:bg-[#F4F2EB]'
+                }`}
+              >
+                <Calendar className="w-4 h-4" />
+                <span>Rendez-vous Discrets</span>
+              </button>
+            </div>
+
+            {/* Sub-view rendering */}
+            {securitySubTab === 'justice' ? (
+              <JusticeDossier
+                incidents={incidents}
+                onUpdateIncidents={setIncidents}
+                onNavigateToRelaxation={() => setActiveTab('wellness')}
+                onNavigateToContacts={() => {
+                  setSecuritySubTab('network');
+                }}
+                onOpenDetailedAssessment={() => setShowAssessmentModal(true)}
+              />
+            ) : (
+              <ContactsEtConsultations
+                contacts={contacts}
+                onUpdateContacts={setContacts}
+                alerts={alerts}
+                onAlertDispatched={handleAlertDispatched}
+                appointments={appointments}
+                onUpdateAppointments={setAppointments}
+                requestedSubTab={securitySubTab === 'appointments' ? 'appointments' : 'contacts'}
+                onSubTabChange={(sub) => setSecuritySubTab(sub as any)}
+              />
+            )}
+          </div>
         )}
       </main>
 
@@ -302,10 +352,11 @@ export default function App() {
         onClose={() => setShowOnboarding(false)}
         onNavigateToTab={(tab) => {
           if (tab === 'contacts') {
-            setActiveTab('network');
-            setNetworkSubTab('contacts');
+            setActiveTab('security');
+            setSecuritySubTab('network');
           } else if (tab === 'safety_plan') {
-            setActiveTab('justice');
+            setActiveTab('security');
+            setSecuritySubTab('justice');
           } else if (tab === 'chat') {
             setActiveTab('wellness');
           } else {
