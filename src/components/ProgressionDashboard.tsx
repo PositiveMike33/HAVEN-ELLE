@@ -54,7 +54,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
   const isValidationPending = pointsLevel > validatedLevel;
   
   const currentCycleId = getCycleForLevel(currentLevel);
-  const [selectedCycleId, setSelectedCycleId] = useState<1 | 2 | 3 | 4>(currentCycleId);
+  const [selectedCycleId, setSelectedCycleId] = useState<1 | 2 | 3 | 4 | 5>(currentCycleId);
   const [rewardToast, setRewardToast] = useState<{ message: string; points: number } | null>(null);
   
   // Dashboard Sub-View: 'toltec_cards' | 'overview' | 'roadmap100' | 'values'
@@ -67,12 +67,12 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
   const pointsAtStartOfCurrentLevel = calculatePointsForLevel(currentLevel);
   const pointsForNextLevel = calculatePointsForLevel(currentLevel + 1);
   const pointsInCurrentLevel = Math.max(0, resiliencePoints - pointsAtStartOfCurrentLevel);
-  const percentToNextLevel = currentLevel >= 100 
+  const percentToNextLevel = currentLevel >= 111 
     ? 100 
     : Math.min(100, Math.round((pointsInCurrentLevel / POINTS_PER_LEVEL) * 100));
 
-  // Global Progress to 100 levels
-  const globalProgress = Math.min(100, Math.round((resiliencePoints / 1500) * 100));
+  // Global Progress to 111 levels
+  const globalProgress = Math.min(100, Math.round((resiliencePoints / 1665) * 100));
 
   const handleExecuteQuickAction = (action: typeof QUICK_DAILY_ACTIONS[0]) => {
     const updated = CompanionMemoryService.addResiliencePoints(action.points, action.title);
@@ -109,7 +109,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
             </div>
           </div>
           <span className="text-xs font-bold px-3 py-1 bg-[#385117] text-white rounded-full">
-            Niveau {calculateLevelFromPoints(resiliencePoints)} / 100
+            Niveau {calculateLevelFromPoints(resiliencePoints)} / 111
           </span>
         </div>
       )}
@@ -119,14 +119,14 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5EED6] text-[#2E4313] text-xs font-bold uppercase tracking-wider mb-2 border border-[#8DA765]/30">
             <Sparkles className="w-3.5 h-3.5 text-[#385117]" />
-            Évolution Échelonnée en 100 Niveaux
+            Évolution Échelonnée en 111 Niveaux
           </div>
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
             <Trophy className="w-7 h-7 text-[#385117]" />
             Votre Sanctuaire de Résilience
           </h2>
           <p className="text-[#403E3A] font-medium mt-1 text-sm max-w-2xl">
-            Un cheminement progressif en 4 grands cycles de 25 niveaux. Chaque micro-action vous apporte une récompense immédiate pour avancer sereinement et sans découragement.
+            Un cheminement progressif en 4 grands cycles de 25 niveaux couronnés par le Cycle Secret du Kybalion (Niveaux 101 à 111) et le Trophée Légendaire « ÉVEILLÉ ».
           </p>
         </div>
 
@@ -134,7 +134,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           <div className="bg-[#F4F2EB] px-5 py-3 rounded-2xl border-2 border-[#D5D0C2] text-right shadow-xs">
             <div className="text-3xl font-extrabold text-[#385117] font-mono leading-none">
               {resiliencePoints}
-              <span className="text-sm text-[#6A6860] font-sans font-medium">/1500</span>
+              <span className="text-sm text-[#6A6860] font-sans font-medium">/1665</span>
             </div>
             <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#403E3A] mt-1">
               Points de Résilience
@@ -178,11 +178,11 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           }`}
         >
           <BookOpen className="w-4 h-4" />
-          <span>Grand Livre des 100 Questions</span>
+          <span>Grand Livre des 111 Questions</span>
           <span className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${
             activeDashboardView === 'roadmap100' ? 'bg-white/20 text-white' : 'bg-[#E5EED6] text-[#385117]'
           }`}>
-            {validatedLevel}/100
+            {validatedLevel}/111
           </span>
         </button>
 
@@ -240,7 +240,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
                   <span className="text-2xl md:text-3xl font-extrabold text-[#1F201C]">
                     Niveau {currentLevel}
                   </span>
-                  <span className="text-sm font-bold text-[#6A6860]">sur 100</span>
+                  <span className="text-sm font-bold text-[#6A6860]">sur 111</span>
                   <span className={`text-xs font-extrabold px-3 py-1 rounded-full border ${activeCycle.badgeBg} ${activeCycle.badgeBorder} ${activeCycle.badgeText}`}>
                     {activeCycle.title} : {activeCycle.tag}
                   </span>
@@ -251,14 +251,14 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
               </div>
 
               <div className="text-left sm:text-right">
-                {currentLevel < 100 ? (
+                {currentLevel < 111 ? (
                   <div className="text-xs font-bold text-[#403E3A]">
                     Plus que <strong className="text-[#385117] font-extrabold">{POINTS_PER_LEVEL - pointsInCurrentLevel} pts</strong> pour atteindre le <span className="font-extrabold text-[#1F201C]">Niveau {currentLevel + 1}</span>
                   </div>
                 ) : (
-                  <div className="text-sm font-extrabold text-[#385117] flex items-center gap-1">
+                  <div className="text-sm font-extrabold text-[#065F46] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#059669] flex items-center gap-1 shadow-xs">
                     <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                    Guérison & Niveau Suprême Atteints
+                    👑 Trophée Suprême [ÉVEILLÉ] Débloqué
                   </div>
                 )}
               </div>
@@ -278,10 +278,10 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
               </div>
             </div>
 
-            {/* Global Progress Bar (1500 points) */}
+            {/* Global Progress Bar (1665 points) */}
             <div className="pt-2 border-t border-[#D5D0C2] flex items-center justify-between text-xs text-[#5C5952]">
               <span className="font-medium">
-                Progression Globale (100 Niveaux) : <strong className="text-[#1F201C] font-bold">{globalProgress}%</strong>
+                Progression Globale (111 Niveaux) : <strong className="text-[#1F201C] font-bold">{globalProgress}%</strong>
               </span>
               <div className="flex items-center gap-3">
                 <button
@@ -289,10 +289,10 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
                   className="text-xs font-bold text-[#385117] hover:underline flex items-center gap-1"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
-                  Consulter les 100 questions
+                  Consulter les 111 questions
                 </button>
                 <span className="font-mono font-bold text-[#385117]">
-                  {resiliencePoints} / 1500 pts totaux
+                  {resiliencePoints} / 1665 pts totaux
                 </span>
               </div>
             </div>
@@ -362,10 +362,10 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
               </div>
               <div>
                 <h4 className="text-base md:text-lg font-bold text-[#1F201C]">
-                  Le Grand Livre des 100 Questions & Réponses
+                  Le Grand Livre des 111 Questions & Réponses
                 </h4>
                 <p className="text-xs md:text-sm text-[#5C5952] mt-0.5 max-w-2xl">
-                  Parcourez la carte complète de vos 100 étapes. Relisez vos anciennes réflexions et découvrez les paliers futurs protégés par le voile de la curiosité.
+                  Parcourez la carte complète de vos 111 étapes dont les 11 Arcanes Secrets du Kybalion. Relisez vos réflexions et découvrez les paliers futurs.
                 </p>
               </div>
             </div>
@@ -373,25 +373,25 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
               onClick={() => setActiveDashboardView('roadmap100')}
               className="px-5 py-3 rounded-xl bg-[#385117] hover:bg-[#2D450C] text-white text-xs md:text-sm font-bold transition-all shadow-xs flex items-center gap-2 shrink-0"
             >
-              <span>Ouvrir la liste des 100 questions</span>
+              <span>Ouvrir la liste des 111 questions</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* The 4 Major Resilience Cycles Tabs (25 levels each) */}
+          {/* The 5 Resilience Cycles Tabs */}
           <div>
             <div className="mb-4">
               <h3 className="text-lg font-serif font-bold text-[#1F201C] flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-[#385117]" />
-                Les 4 Grands Cycles d'Ascension (100 Niveaux)
+                Les 5 Cycles d'Ascension & Mystères du Kybalion (111 Niveaux)
               </h3>
               <p className="text-xs text-[#5C5952]">
-                Explorez les 4 piliers de votre transformation et découvrez les paliers et récompenses de chaque étape.
+                Explorez les 4 grands piliers de résilience et le Cycle Secret Bonus de Haute Maîtrise Hermétique.
               </p>
             </div>
 
             {/* Cycle Selection Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
               {RESILIENCE_CYCLES.map((cycle) => {
                 const Icon = cycle.icon;
                 const isCurrent = currentCycleId === cycle.id;

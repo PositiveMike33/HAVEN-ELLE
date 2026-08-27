@@ -98,17 +98,21 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
         onLevelValidated(updatedProfile);
       }
 
-      setCelebrationMessage(`🎉 Niveau ${selectedLevel} validé avec succès ! +25 points de résilience ajoutés.`);
+      if (selectedLevel === 111) {
+        setCelebrationMessage(`👑 FÉLICITATIONS SUBLIMES ! Vous venez de franchir l'Ultime Arcane 111 et de débloquer le Trophée Légendaire « ÉVEILLÉ » ! 🌟✨`);
+      } else {
+        setCelebrationMessage(`🎉 Niveau ${selectedLevel} validé avec succès ! +25 points de résilience ajoutés.`);
+      }
       setIsSubmitting(false);
       
       setTimeout(() => {
         setCelebrationMessage(null);
-        if (selectedLevel < pointsLevel) {
+        if (selectedLevel < pointsLevel && selectedLevel < 111) {
           setSelectedLevel(selectedLevel + 1);
           setSelectedOption('');
           setCustomReflection('');
         }
-      }, 3500);
+      }, 4000);
     }, 600);
   };
 
@@ -181,11 +185,11 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
               ←
             </button>
             <span className="text-xs font-mono font-bold px-2 text-[#1F201C]">
-              Niveau {selectedLevel} / 100
+              Niveau {selectedLevel} / 111
             </span>
             <button
-              onClick={() => setSelectedLevel(Math.min(100, selectedLevel + 1))}
-              disabled={selectedLevel >= Math.max(pointsLevel, currentValidatedLevel + 1)}
+              onClick={() => setSelectedLevel(Math.min(111, selectedLevel + 1))}
+              disabled={selectedLevel >= Math.min(111, Math.max(pointsLevel, currentValidatedLevel + 1))}
               className="px-2.5 py-1 rounded-xl text-xs font-bold text-[#5A5852] hover:bg-white disabled:opacity-30 transition-all"
               title="Niveau suivant"
             >

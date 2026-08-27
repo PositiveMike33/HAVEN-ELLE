@@ -2,7 +2,7 @@ import { HealingQuestion } from './resilience100Levels';
 
 export interface Healing100QuestionItem {
   level: number;
-  cycleId: 1 | 2 | 3 | 4;
+  cycleId: 1 | 2 | 3 | 4 | 5;
   title: string;
   theme: string;
   question: string;
@@ -14,7 +14,7 @@ export interface Healing100QuestionItem {
   unlockedRewardBadge: string;
 }
 
-// 100 Unique, deeply therapeutic questions covering the entire journey from Level 1 to 100
+// 111 Unique, deeply therapeutic questions covering the entire journey from Level 1 to 111
 export const COMPLETE_100_HEALING_QUESTIONS: Healing100QuestionItem[] = [
   // ==========================================
   // CYCLE 1 : NIVEAUX 1 À 25 (Apprendre & Intégrer les 5 Accords Toltèques)
@@ -409,382 +409,442 @@ export const COMPLETE_100_HEALING_QUESTIONS: Healing100QuestionItem[] = [
   },
 
   // ==========================================
-  // CYCLE 2 : NIVEAUX 26 À 50 (Développement Personnel & Force)
+  // CYCLE 2 : NIVEAUX 26 À 50 (Guérison des Traumas, Neurobiologie & Systèmes Autonomes)
   // ==========================================
+  
+  // --- BLOC 1 : NEUROBIOLOGIE DU TRAUMA & SYSTÈMES AUTONOMES (Niv. 26 à 30) ---
   {
     level: 26,
     cycleId: 2,
-    title: "Étape 26 : La Relégitimation de sa Puissance",
-    theme: "Empowerment & Renaissance",
-    question: "Comment transformez-vous l'épreuve traversée en une source de force inaltérable ?",
+    title: "Étape 26 : La Définition Réelle du Trauma (Événement vs Réaction)",
+    theme: "Neurobiologie du Trauma",
+    question: "Face à une réaction émotionnelle intense et soudaine, comment devez-vous considérer le trauma ?",
     options: [
-      "En réalisant que si j'ai pu survivre à l'obscurité, je suis capable de bâtir la plus belle lumière.",
-      "En utilisant chaque cicatrice comme un diplôme de courage et de lucidité.",
-      "En réinvestissant mon énergie dans la construction de mes rêves personnels."
+      "Comme une faiblesse de caractère qui prouve que je ne suis pas assez forte.",
+      "Comme une injustice que je dois combattre avec agressivité pour prouver ma valeur.",
+      "Comme une réponse involontaire de mon système nerveux à un événement inattendu que mon corps n'a pas pu traiter sur le moment."
     ],
-    reflectionPrompt: "Quel talent ou force oubliée avez-vous redécouvert en vous ?",
-    benevolentAffirmation: "« Ma puissance d'agir est intacte, vivante et guidée par la sagesse. »",
-    unlockedRewardBadge: "Badge : Étincelle de Puissance"
+    correctOptionIndex: 2,
+    explanation: "Le trauma n'est pas une faiblesse morale ni une fatalité, mais une réaction neurophysiologique bloquée dans le corps face à l'inattendu. La réponse C est la vérité thérapeutique.",
+    reflectionPrompt: "Quel souvenir ou tension corporelle reconnaissez-vous aujourd'hui comme une simple réaction de protection de votre système nerveux ?",
+    benevolentAffirmation: "« Je reconnais que mon corps a réagi pour me protéger et non pour me punir. »",
+    unlockedRewardBadge: "Badge : Clarté du Trauma & Souveraineté Somatique"
   },
   {
     level: 27,
     cycleId: 2,
-    title: "Étape 27 : Briser le Miroir Déformant de la Manipulation",
-    theme: "Déconstruction de l'Emprise",
-    question: "Quelle fausse étiquette imposée par le passé retirez-vous définitivement de votre être ?",
+    title: "Étape 27 : Le Corps comme Inconscient (L'Insula et le Cortex Cingulaire)",
+    theme: "Neurosciences & Conscience Corporelle",
+    question: "Pourquoi une simple réflexion mentale ne suffit-elle pas toujours à apaiser une angoisse corporelle ?",
     options: [
-      "« Tu es trop émotive / instable » -> Je suis vivante, sensible et profondément lucide.",
-      "« Tu ne réussiras jamais seule » -> Je suis autonome, capable et entourée d'alliés vrais.",
-      "« C'est de ta faute » -> La responsabilité appartenait entièrement à celui qui blessait."
+      "Parce que mon mental refuse obstinément de lâcher prise.",
+      "Parce que mon corps est définitivement abîmé par mon passé.",
+      "Parce que 95% des mémoires traumatiques sont stockées dans le corps et s'apaisent par des signaux somatiques de sécurité."
     ],
-    reflectionPrompt: "Quelle est votre vraie vérité identitaire ?",
-    benevolentAffirmation: "« Je brise tous les faux reflets. Je resplendis dans mon authenticité souveraine. »",
-    unlockedRewardBadge: "Badge : Miroir Brisé de l'Emprise"
+    correctOptionIndex: 2,
+    explanation: "Les sensations sont captées par l'insula et relayées au cortex cingulaire. Le corps garde l'empreinte somatique et nécessite des signaux physiques de sécurité plutôt qu'une analyse mentale forcée.",
+    reflectionPrompt: "Quelle zone de votre corps réclame le plus de douceur et de signaux de sécurité aujourd'hui ?",
+    benevolentAffirmation: "« J'écoute mon corps avec tendresse. Il est mon allié et s'apaise à travers des signaux concrets de paix. »",
+    unlockedRewardBadge: "Badge : Écoute de l'Insula & Apaisement"
   },
   {
     level: 28,
     cycleId: 2,
-    title: "Étape 28 : Réappropriation Somatique de l'Espace",
-    theme: "Présence Corporelle",
-    question: "Comment prenez-vous physiquement votre juste place dans votre environnement ?",
+    title: "Étape 28 : Le Figeage Dorsal (Théorie Polyvagale de Stephen Porges)",
+    theme: "Théorie Polyvagale",
+    question: "Lorsque vous vous sentez paralysée, coupée de vos émotions ou incapable d'agir face à une pression, comment interpréter cet état ?",
     options: [
-      "En marchant la tête haute, le regard serein et les pieds solidement ancrés dans le sol.",
-      "En aménageant un lieu de vie qui respire la beauté, l'ordre et le repos.",
-      "En respirant amplement sans retenir mon souffle par appréhension."
+      "Comme une preuve de paresse et d'incapacité chronique.",
+      "Comme un refus volontaire de faire face à mes responsabilités.",
+      "Comme une activation de mon système parasympathique dorsal qui s'est figé pour amortir un choc trop lourd."
     ],
-    reflectionPrompt: "Quel coin de votre chez-vous vous ressource le plus profondément ?",
-    benevolentAffirmation: "« J'ai le droit légitime d'occuper mon espace et d'exister en pleine lumière. »",
-    unlockedRewardBadge: "Badge : Ancre Terrestre"
+    correctOptionIndex: 2,
+    explanation: "La voie parasympathique dorsale ancestrale déclenche la sidération (Freeze). Ce réflexe biologique est un mécanisme d'anesthésie de survie, non de la paresse.",
+    reflectionPrompt: "Quel jugement de 'paresse' déposez-vous en comprenant que votre corps était simplement en figeage protecteur ?",
+    benevolentAffirmation: "« Je dépose toute honte : mon figeage était un bouclier biologique de survie. Je me réveille pas à pas. »",
+    unlockedRewardBadge: "Badge : Sagesse Polyvagale"
   },
   {
     level: 29,
     cycleId: 2,
-    title: "Étape 29 : Déjouer les Pièges de la Rechute Émotionnelle",
-    theme: "Vigilance Bienveillante",
-    question: "Face à une vague de nostalgie trompeuse (le 'hoovering' ou l'amnésie traumatique), que vous rappelez-vous ?",
+    title: "Étape 29 : La Désincarnation et la Déconnexion Somatique",
+    theme: "Réancrage Sensoriel",
+    question: "Pourquoi avez-vous parfois l'impression d'observer votre vie de l'extérieur sans vraiment la ressentir ?",
     options: [
-      "Je me rappelle des faits concrets et de la réalité des actes, pas des promesses illusoires.",
-      "Je consulte mon dossier de vérités et mes notes de sécurité pour garder les idées claires.",
-      "Je contacte immédiatement une personne de mon réseau de secours bienveillant."
+      "Parce que je perds la raison et que je ne reviendrai jamais à la normale.",
+      "Parce que je préfère fuir la réalité pour éviter tout effort.",
+      "Parce que mon esprit a créé une dissociation protectrice que je peux réintégrer pas à pas dans la douceur."
     ],
-    reflectionPrompt: "Quel fait irréfutable vous protège contre tout retour en arrière ?",
-    benevolentAffirmation: "« Ma lucidité est mon rempart. Je choisis la réalité qui me sauve plutôt que l'illusion qui me détruit. »",
-    unlockedRewardBadge: "Badge : Sentinelle de Vérité"
+    correctOptionIndex: 2,
+    explanation: "Se sentir 'hors de son corps' (dissociation/disembodiment) est un réflexe adaptatif pour échapper à la souffrance. On se réincarne en douceur par les 5 sens.",
+    reflectionPrompt: "Quel ancrage sensoriel simple (eau chaude, toucher des pieds sur le sol, texture) vous ramène en sécurité dans votre corps ?",
+    benevolentAffirmation: "« Je réintègre mon corps dans la douceur et la sécurité. Je suis ici, vivante et protégée. »",
+    unlockedRewardBadge: "Badge : Réintégration Somatique"
   },
   {
     level: 30,
     cycleId: 2,
-    title: "Étape 30 : Bâtir son Cercle de Sécurité Triangulé",
-    theme: "Réseau Relationnel Sûr",
-    question: "Quels critères stricts appliquez-vous désormais pour choisir les personnes proches ?",
+    title: "Étape 30 : Le Trauma Complexe vs le Trauma Simple",
+    theme: "Trauma Complexe & Accumulation",
+    question: "Pourquoi des micro-tensions répétées du passé peuvent-elles faire autant souffrir qu'un choc unique majeur ?",
     options: [
-      "La cohérence entre leurs paroles et leurs actes, et l'absence totale de manipulation.",
-      "Leur capacité à respecter mes limites sans se vexer ni chercher à me contrôler.",
-      "La sensation de paix et de détente que leur présence m'inspire."
+      "Parce que je suis trop sensible et que j'exagère les détails.",
+      "Parce que les autres cherchent délibérément à m'anéantir.",
+      "Parce que l'exposition prolongée à l'imprévisibilité use le système d'adaptation et constitue un trauma cumulatif réel."
     ],
-    reflectionPrompt: "Nommez une qualité humaine essentielle chez vos vrais alliés.",
-    benevolentAffirmation: "« Je m'entoure d'âmes bienveillantes, respectueuses et constructives. »",
-    unlockedRewardBadge: "Badge : Cercle d'Or des Alliés"
+    correctOptionIndex: 2,
+    explanation: "Le trauma complexe résulte de micro-agressions répétées ou d'insécurité prolongée. Il érode le sentiment de sécurité et est tout aussi réel qu'un choc unique.",
+    reflectionPrompt: "Quelle micro-agression répétée du passé reconnaissez-vous aujourd'hui comme un trauma cumulatif légitime ?",
+    benevolentAffirmation: "« Je valide la réalité de mon épreuve : l'usure de l'imprévisibilité était réelle, ma reconstruction l'est tout autant. »",
+    unlockedRewardBadge: "Trophée : Clarté du Trauma Complexe (Bloc 1 Validé)"
   },
+
+  // --- BLOC 2 : PROTOCOLES DE DÉSENSIBILISATION & REPROGRAMMATION TCC (Niv. 31 à 35) ---
   {
     level: 31,
     cycleId: 2,
-    title: "Étape 31 : L'Art de l'Affirmation Assertive",
-    theme: "Communication Protectrice",
-    question: "Comment exprimer un désaccord sans agressivité ni soumission ?",
+    title: "Étape 31 : L'Approche « Bottom-Up » (Du Corps vers le Cerveau)",
+    theme: "Thérapie Somatique Bottom-Up",
+    question: "Face à une vague d'angoisse panique, quelle est la démarche la plus efficace et respectueuse de votre physiologie ?",
     options: [
-      "En utilisant le 'Je', en énonçant des faits clairs et en posant ma conclusion calmement.",
-      "En refusant de me justifier indéfiniment lorsque ma décision est prise.",
-      "En maintenant un ton neutre et posé qui ne laisse aucune prise au conflit stérile."
+      "Analyser intellectuellement toutes les causes de mon stress pour trouver une solution immédiate.",
+      "M'imposer le silence et réprimer mes tremblements pour garder le contrôle.",
+      "Utiliser des gestes corporels doux (respiration, soupir physiologique, ancrage) pour signaler physiquement la sécurité à mon cerveau."
     ],
-    reflectionPrompt: "Dans quelle situation récente avez-vous su vous affirmer avec dignité ?",
-    benevolentAffirmation: "« Ma parole est calme, directe, respectueuse et souveraine. »",
-    unlockedRewardBadge: "Badge : Verbe de Sagesse"
+    correctOptionIndex: 2,
+    explanation: "Dans l'approche 'Bottom-Up' (Bessel van der Kolk), les messages sensoriels montent du corps vers l'amygdale cérébrale pour éteindre l'alarme avant toute rationalisation.",
+    reflectionPrompt: "Quel geste corporel bienveillant (main sur le cœur, expiration lente) pouvez-vous offrir à votre corps lors d'un pic de stress ?",
+    benevolentAffirmation: "« J'apaise d'abord mon corps. Mon esprit suit naturellement le chemin de la sérénité. »",
+    unlockedRewardBadge: "Badge : Maîtrise Somatique Bottom-Up"
   },
   {
     level: 32,
     cycleId: 2,
-    title: "Étape 32 : Restaurer sa Souveraineté Décisionnelle",
-    theme: "Autonomie d'Action",
-    question: "Pourquoi chaque décision que vous prenez pour vous-même renforce-t-elle votre liberté ?",
+    title: "Étape 32 : Le Soupir Physiologique et la Régulation Vagale",
+    theme: "Frein Vagal & Neurochimie",
+    question: "Comment relancer immédiatement votre nerf vague et calmer le cœur qui s'emballe sans médicament ?",
     options: [
-      "Parce qu'elle me prouve que je suis le seul capitaine légitime de mon existence.",
-      "Parce que même si je fais une erreur, j'ai les compétences pour apprendre et rectifier.",
-      "Parce que cela brise le conditionnement à l'impuissance apprise."
+      "En retenant ma respiration le plus longtemps possible jusqu'à ce que la panique disparaisse.",
+      "En respirant très rapidement pour faire entrer un maximum d'oxygène.",
+      "En exécutant 2 ou 3 soupirs physiologiques (double inspiration par le nez suivie d'une longue expiration par la bouche)."
     ],
-    reflectionPrompt: "Quelle décision simple avez-vous prise par et pour vous-même cette semaine ?",
-    benevolentAffirmation: "« Je suis la créatrice libre et souveraine de mon chemin de vie. »",
-    unlockedRewardBadge: "Badge : Gouvernail d'Or"
+    correctOptionIndex: 2,
+    explanation: "Le soupir physiologique (étudié par le Dr Andrew Huberman) ré-ouvre les alvéoles pulmonaires et stimule le nœud sino-auriculaire pour ralentir le rythme cardiaque en moins de 30 secondes.",
+    reflectionPrompt: "Prenez maintenant deux inspirations courtes par le nez puis soupirez longuement par la bouche. Que ressentez-vous ?",
+    benevolentAffirmation: "« Mon souffle est ma télécommande biologique de paix intérieure. »",
+    unlockedRewardBadge: "Badge : Soupir Physiologique Vagal"
   },
   {
     level: 33,
     cycleId: 2,
-    title: "Étape 33 : La Transmutation de la Colère Saine",
-    theme: "Énergie d'Action",
-    question: "Comment utiliser la colère saine comme un carburant de reconstruction ?",
+    title: "Étape 33 : La Thérapie de Traitement Cognitif (CPT) & Les Points de Blocage",
+    theme: "Restructuration Cognitive TCC",
+    question: "Comment dissoudre un 'point de blocage' cognitif (ex: 'Si j'avais été plus vigilante, rien ne serait arrivé') ?",
     options: [
-      "En la transformant en énergie d'organisation, de rangement et de projets d'avenir.",
-      "En l'utilisant pour sceller définitivement les portes aux abus futurs.",
-      "En l'exprimant à travers l'art, le sport ou l'écriture libératrice."
+      "En me forçant à répéter des phrases positives sans y croire.",
+      "En m'isolant pour ne plus jamais être confrontée à ce souvenir.",
+      "En séparant les faits objectifs de l'interprétation blessante que mon cerveau traumatisé avait construite."
     ],
-    reflectionPrompt: "Quel projet positif cette énergie vous pousse-t-elle à concrétiser ?",
-    benevolentAffirmation: "« Ma sainte colère est une force de renouveau qui me propulse vers le meilleur. »",
-    unlockedRewardBadge: "Badge : Feu Protecteur"
+    correctOptionIndex: 2,
+    explanation: "La thérapie de traitement cognitif (CPT) enseigne que la souffrance chronique naît de l'assimilation erronée ('C'est ma faute') plutôt que des faits bruts.",
+    reflectionPrompt: "Quel point de blocage ou fausse culpabilité pouvez-vous dissoudre aujourd'hui en le remplaçant par les faits réels ?",
+    benevolentAffirmation: "« Je libère la vérité des faits. Je dépose le fardeau des fausses culpabilités. »",
+    unlockedRewardBadge: "Badge : Clarté Cognitive CPT"
   },
   {
     level: 34,
     cycleId: 2,
-    title: "Étape 34 : L'Indépendance Financière & Matérielle",
-    theme: "Sécurité Pratique",
-    question: "Quelle petite action renforce votre sécurité matérielle au quotidien ?",
+    title: "Étape 34 : La Réponse de Servilité (Fawn Response) en TCC",
+    theme: "Déconditionnement de la Soumission",
+    question: "Pourquoi aviez-vous tendance à vous excuser ou à faire plaisir à ceux qui vous faisaient du mal ?",
     options: [
-      "Gérer mon budget avec prévoyance et transparence pour moi-même.",
-      "Créer mon épargne de sécurité et protéger mes documents légaux essentiels.",
-      "Développer de nouvelles compétences professionnelles ou créatives."
+      "Parce que je n'ai aucune personnalité ni colonne vertébrale.",
+      "Parce que je suis supérieurement dévouée et que les autres sont incapables.",
+      "Parce que mon système nerveux a appris que plaire et anticiper les humeurs d'autrui était mon seul moyen d'assurer ma sécurité."
     ],
-    reflectionPrompt: "Quelle est votre prochaine étape d'autonomie pratique ?",
-    benevolentAffirmation: "« Je gère mes ressources avec intelligence, sagesse et abondance. »",
-    unlockedRewardBadge: "Badge : Coffre de Stabilité"
+    correctOptionIndex: 2,
+    explanation: "La réaction de 'Fawn' (amadouer/servilité) est la 4e réponse de survie biologique décrite par Pete Walker. C'est une stratégie adaptative de protection infantile ou relationnelle.",
+    reflectionPrompt: "À quelle habitude de sur-adaptation automatique pouvez-vous renoncer aujourd'hui dans votre sanctuaire ?",
+    benevolentAffirmation: "« Je n'ai plus besoin d'acheter ma sécurité en m'effaçant. J'ai le droit d'exister pleinement. »",
+    unlockedRewardBadge: "Badge : Souveraineté Post-Fawning"
   },
   {
     level: 35,
     cycleId: 2,
-    title: "Étape 35 : Le Sanctuaire du Sommeil Régénérateur",
-    theme: "Santé Neurobiologique",
-    question: "Comment préparez-vous vos nuits pour retrouver un sommeil réparateur et sans cauchemars ?",
+    title: "Étape 35 : L'Exposition Graduée et le Réapprentissage de la Tolérance au Stress",
+    theme: "Exposition Progressive & Sécurisée",
+    question: "Comment réapprendre à faire face à une situation qui vous effrayait jadis ?",
     options: [
-      "En coupant les écrans, en buvant une tisane douce et en pratiquant la respiration 4-7-8.",
-      "En affirmant avant de dormir : 'Cette nuit, mon corps et mon esprit sont sous haute garde.'",
-      "En consignant mes soucis dans mon carnet pour ne pas les emporter sous l'oreiller."
+      "En m'y plongeant d'un coup brutalement pour « casser » ma peur.",
+      "En évitant définitivement tout ce qui me rappelle de près ou de loin mon passé.",
+      "En franchissant un micro-pas sécurisé, validé par un temps de repos et d'auto-compassion immédiat."
     ],
-    reflectionPrompt: "Quel rituel du coucher vous apaise le plus profondément ?",
-    benevolentAffirmation: "« Mon sommeil est profond, protecteur et réparateur. Je me réveille revigorée. »",
-    unlockedRewardBadge: "Badge : Étoile du Sommeil Doux"
+    correctOptionIndex: 2,
+    explanation: "L'exposition graduée par micro-doses permet d'élargir la fenêtre de tolérance du système nerveux sans le submerger ni provoquer de traumatisme secondaire.",
+    reflectionPrompt: "Quel micro-pas minuscule et totalement sécurisé pouvez-vous célébrer cette semaine ?",
+    benevolentAffirmation: "« J'avance à mon rythme. Chaque micro-pas courageux reconstruit mon autoroute de confiance. »",
+    unlockedRewardBadge: "Trophée : Maîtrise de la Fenêtre de Tolérance (Bloc 2 Validé)"
   },
+
+  // --- BLOC 3 : DÉCONSTRUCTION DES SCHÉMAS INCONSCIENTS DU PASSÉ (Niv. 36 à 40) ---
   {
     level: 36,
     cycleId: 2,
-    title: "Étape 36 : Reconnecter avec la Joie Simple",
-    theme: "Réactivation de la Dopamine Saine",
-    question: "Quel plaisir simple et innocent réenchante votre quotidien ?",
+    title: "Étape 36 : L'Intemporalité du Système Limbique",
+    theme: "Mémoire Temporelle Limbique",
+    question: "Pourquoi une dispute insignifiante d'aujourd'hui vous fait-elle parfois réagir comme si votre survie était en jeu ?",
     options: [
-      "Écouter une musique qui me donne envie de sourire et de bouger.",
-      "Savourer la chaleur d'un rayon de soleil sur mon visage ou d'une boisson chaude.",
-      "Rire aux éclats avec une personne saine et vraie."
+      "Parce que mon cerveau régresse et refuse de grandir.",
+      "Parce que je suis maudite à revivre éternellement la même histoire.",
+      "Parce que mon cerveau limbique ne lit pas le calendrier et a besoin de preuves sensorielles actuelles pour savoir que « c'est terminé »."
     ],
-    reflectionPrompt: "Quelle petite joie allez-vous vous offrir aujourd'hui ?",
-    benevolentAffirmation: "« J'accueille la joie, le rire et la légèreté dans ma vie quotidienne. »",
-    unlockedRewardBadge: "Badge : Rayon de Soleil"
+    correctOptionIndex: 2,
+    explanation: "L'amygdale n'a pas de notion du temps. Elle traite un déclencheur actuel comme une réplique directe du danger initial tant que le cortex préfrontal n'a pas réactualisé la date.",
+    reflectionPrompt: "Dites à haute voix l'année et l'heure actuelle en posant votre main sur votre poitrine : quel soulagement physique percevez-vous ?",
+    benevolentAffirmation: "« Le danger est dans le passé. Ici et maintenant, en cette seconde précise, je suis en totale sécurité. »",
+    unlockedRewardBadge: "Badge : Actualisation Temporelle"
   },
   {
     level: 37,
     cycleId: 2,
-    title: "Étape 37 : L'Affranchissement du Regard des Autres",
-    theme: "Liberté d'Être",
-    question: "Pourquoi les jugements de l'entourage ou de la société n'ont plus d'emprise sur vous ?",
+    title: "Étape 37 : La Chute de l'Adrénaline & L'Effet de Contrecoup (Le Burnout Différé)",
+    theme: "Décompression Neurochimique",
+    question: "Pourquoi vous sentez-vous souvent épuisée au moment précis où le danger est enfin écarté et que tout redevient calme ?",
     options: [
-      "Parce que personne d'autre n'a marché dans mes souliers ni porté mes fardeaux.",
-      "Parce que ma valeur ne dépend que de mon honnêteté et de ma fidélité à mes valeurs.",
-      "Parce que j'ai cessé de sacrifier mon bien-être pour les convenances."
+      "Parce que je suis incapable de profiter du bonheur et de la paix.",
+      "Parce que le calme m'affaiblit et me rend vulnérable.",
+      "Parce que mon corps se sent enfin assez en sécurité pour relâcher l'hypervigilance et entamer la réparation cellulaire."
     ],
-    reflectionPrompt: "Quelle liberté d'être avez-vous retrouvée avec bonheur ?",
-    benevolentAffirmation: "« Je vis pour ce qui est vrai et juste, libre du jugement du monde. »",
-    unlockedRewardBadge: "Badge : Papillon Émancipé"
+    correctOptionIndex: 2,
+    explanation: "Lorsque l'axe hypothalamo-hypophyso-surrénalien (HPA) cesse de pomper du cortisol et de l'adrénaline, le corps bascule en phase de convalescence et réclame un profond repos réparateur.",
+    reflectionPrompt: "Quelle sieste, tisane ou moment de doux repos allez-vous vous autoriser sans aucune culpabilité ?",
+    benevolentAffirmation: "« Ma fatigue est le signe de ma guérison. Mon corps répare ses tissus dans la paix. »",
+    unlockedRewardBadge: "Badge : Réparation Cellulaire"
   },
   {
     level: 38,
     cycleId: 2,
-    title: "Étape 38 : La Clôture des Dettes Émotionnelles Injustes",
-    theme: "Délivrance Karmique & Psychique",
-    question: "Quelle dette invisible que vous ne deviez pas avez-vous annulée ?",
+    title: "Étape 38 : Les Ancrages Sensoriels Pavlovien (Triggers Inconscients)",
+    theme: "Désamorçage des Déclencheurs",
+    question: "Pourquoi une odeur, un ton de voix ou un claquement de porte vous glace-t-il le sang instantanément ?",
     options: [
-      "Le devoir de 'sauver' ou de réparer une personne qui refuse de changer.",
-      "L'obligation de souffrir pour mériter d'être aimée ou acceptée.",
-      "La responsabilité du bonheur ou de la colère des autres."
+      "Parce que je suis devenue paranoïaque et méfiante envers tout le monde.",
+      "Parce que cette personne est secrètement malveillante à mon égard.",
+      "Parce qu'un micro-signal a réveillé un ancrage de défense passé que je peux désactiver en observant la réalité présente."
     ],
-    reflectionPrompt: "Quelle liberté ressent votre esprit en effaçant cette dette ?",
-    benevolentAffirmation: "« Je ne dois rien à la toxicité. Mes comptes sont soldés dans la paix. »",
-    unlockedRewardBadge: "Badge : Sceau d'Affranchissement"
+    correctOptionIndex: 2,
+    explanation: "Le conditionnement pavlovien associe un stimulus neutre à une menace vitale. En nommant le stimulus ('Ce n'est qu'une porte qui claque'), on déconnecte la boucle réflexe.",
+    reflectionPrompt: "Quel bruit ou signal habituel pouvez-vous recatégoriser aujourd'hui comme totalement inoffensif ?",
+    benevolentAffirmation: "« Je reconnais le signal : c'est un écho d'hier, pas un danger d'aujourd'hui. »",
+    unlockedRewardBadge: "Badge : Désamorçage Pavlovien"
   },
   {
     level: 39,
     cycleId: 2,
-    title: "Étape 39 : Cultiver son Jardin de Passions",
-    theme: "Créativité & Épanouissement",
-    question: "Quelle activité ou passion oubliée réveille votre énergie vitale ?",
+    title: "Étape 39 : Les Aimants Comportementaux & La Gravité de la Familiarité",
+    theme: "Rupture des Répétitions Inconscientes",
+    question: "Pourquoi sommes-nous parfois attirées inconsciemment par des personnes qui reproduisent les schémas qui nous ont blessées ?",
     options: [
-      "L'art, l'écriture, la peinture ou la création manuelle.",
-      "La nature, le jardinage, les promenades et le contact avec les arbres.",
-      "L'apprentissage d'un nouveau domaine de connaissance ou d'une langue."
+      "Parce que je mérite d'être maltraitée et que je ne vaux rien de mieux.",
+      "Parce que toutes les personnes sur Terre sont toxiques et manipulatrices.",
+      "Parce que mon inconscient tente de clore une boucle inachevée du passé en croyant pouvoir rendre le danger sécurisant."
     ],
-    reflectionPrompt: "Quel projet créatif fait battre votre cœur d'enthousiasme ?",
-    benevolentAffirmation: "« Ma créativité s'épanouit en mille couleurs joyeuses et vibrantes. »",
-    unlockedRewardBadge: "Badge : Pinceau d'Inspiration"
+    correctOptionIndex: 2,
+    explanation: "La 'compulsion de répétition' freudienne revisitée par la neurobiologie montre que le cerveau préfère le familier prévisible à l'inconnu, jusqu'à ce qu'on choisisse consciemment la sécurité saine.",
+    reflectionPrompt: "Quel critère de paix et de respect mutuel imposez-vous désormais comme règle absolue dans toutes vos relations ?",
+    benevolentAffirmation: "« Je renonce à réparer le passé. Je choisis l'inconnu sain et la douceur bienveillante. »",
+    unlockedRewardBadge: "Badge : Clôture des Boucles Répétitives"
   },
   {
     level: 40,
     cycleId: 2,
-    title: "Étape 40 : L'Ancrage dans la Réalité Présente",
-    theme: "Pleine Présence & Clarté",
-    question: "Face aux ruminations, quel ancrage vous ramène instantanément au présent ?",
+    title: "Étape 40 : La Honte Secrète et le Masque Social",
+    theme: "Intégration de l'Ombre & Auto-Amour",
+    question: "Que cache réellement le sentiment de devoir paraître 'parfaite' et 'forte' en permanence devant les autres ?",
     options: [
-      "Nommer 5 choses que je vois, 4 que je touche, 3 que j'entends, 2 que je sens, 1 que je goûte.",
-      "Sentir le contact ferme de mes pieds au sol et répéter : 'Je suis vivante ici et maintenant'.",
-      "Prendre 3 lentes respirations abdominales profondes."
+      "Une réelle supériorité morale sur mon entourage.",
+      "Une tromperie calculée pour manipuler mon monde.",
+      "Une armure forgée par mon enfant intérieur pour cacher une blessure de honte qui a besoin d'amour et de vérité."
     ],
-    reflectionPrompt: "Quelle sensation physique vous procure le plus d'ancrage ?",
-    benevolentAffirmation: "« Le présent est mon sanctuaire. Le passé est dissous, le futur est radieux. »",
-    unlockedRewardBadge: "Badge : Arbre Millénaire"
+    correctOptionIndex: 2,
+    explanation: "La honte toxique internalisée crée une armure de perfectionnisme épuisante. Se montrer authentique et vulnérable dans un cadre sûr brise le pouvoir de la honte.",
+    reflectionPrompt: "Quelle imperfection ou fatigue osez-vous accueillir avec tendresse et bienveillance aujourd'hui ?",
+    benevolentAffirmation: "« Je dépose l'armure. Je suis digne d'amour exactement telle que je suis, sans condition. »",
+    unlockedRewardBadge: "Trophée : Libération de la Honte Toxique (Bloc 3 Validé)"
   },
+
+  // --- BLOC 4 : BIOLOGIE DE LA GUÉRISON & NEUROPLASTICITÉ (Niv. 41 à 45) ---
   {
     level: 41,
     cycleId: 2,
-    title: "Étape 41 : La Solidité du Témoignage Intérieur",
-    theme: "Confiance en ses Souvenirs",
-    question: "Pourquoi le gaslighting (invalidation de votre réalité) ne peut plus jamais fonctionner ?",
+    title: "Étape 41 : Le Cerveau Prédictif : L'Anxiété comme Erreur de Calcul",
+    theme: "Cerveau Prédictif & Neurosciences",
+    question: "Selon les neurosciences modernes (Lisa Feldman Barrett), comment reprogrammer l'anxiété anticipatoire ?",
     options: [
-      "Parce que mes notes, mes preuves et ma mémoire corporelle sont gravées dans le marbre.",
-      "Parce que je refuse désormais de douter de mes propres yeux et de mon bon sens.",
-      "Parce que je n'ai plus besoin que le coupable reconnaisse ses actes pour savoir ce qui est vrai."
+      "En luttant violemment contre mes pensées chaque seconde.",
+      "En attendant passivement que mes circuits cérébraux changent avec l'âge.",
+      "En apprenant à mon cerveau à recatégoriser mes battements de cœur non comme de la panique, mais comme de l'énergie mobilisée pour agir."
     ],
-    reflectionPrompt: "Quelle vérité irréfutable portez-vous en vous avec sérénité ?",
-    benevolentAffirmation: "« Ma réalité est solide comme le roc. Ma vérité ne vacillera jamais. »",
-    unlockedRewardBadge: "Badge : Pyramide de Vérité"
+    correctOptionIndex: 2,
+    explanation: "Le cerveau est une machine prédictive qui interprète les sensations corporelles selon nos croyances. Changer l'étiquette verbale transforme la neurochimie de l'éveil.",
+    reflectionPrompt: "Lorsque votre cœur bat un peu vite, dites : 'Mon corps se prépare avec énergie'. Comment cela change-t-il votre ressenti ?",
+    benevolentAffirmation: "« Je guide les prédictions de mon cerveau vers la force, le calme et la clarté. »",
+    unlockedRewardBadge: "Badge : Maîtrise du Cerveau Prédictif"
   },
   {
     level: 42,
     cycleId: 2,
-    title: "Étape 42 : L'Épanouissement de la Douce Fermeté",
-    theme: "Leadership de Soi",
-    question: "Comment allier douceur de cœur et fermeté absolue dans vos choix de vie ?",
+    title: "Étape 42 : Le Budget Corporel (Allostasie) et l'Épuisement Neurochimique",
+    theme: "Charge Allostatique & Énergie Vitale",
+    question: "Pourquoi une mauvaise humeur ou une tristesse subite est-elle parfois simplement une dette physiologique de sommeil ou d'eau ?",
     options: [
-      "En gardant un cœur ouvert et bienveillant, entouré de portes blindées dont je garde la clé.",
-      "En ne confondant plus la gentillesse avec la faiblesse.",
-      "En choisissant la paix sans compromettre ma sécurité."
+      "Parce que ma philosophie de vie est intrinsèquement défectueuse.",
+      "Parce que les traumatismes détruisent irrévocablement la moralité.",
+      "Parce que mon budget corporel est en déficit biologique et que mon cerveau coupe les coûts en générant des humeurs d'alerte."
     ],
-    reflectionPrompt: "Comment visualisez-vous cette belle alliance de douceur et de force ?",
-    benevolentAffirmation: "« Je suis douce comme une plume et forte comme le diamant. »",
-    unlockedRewardBadge: "Badge : Rose d'Acier"
+    correctOptionIndex: 2,
+    explanation: "L'allostasie gère les ressources énergétiques de l'organisme. Un déficit de sommeil, d'hydratation ou de nutriments envoie un signal d'affect négatif que le mental interprète à tort comme un problème existentiel.",
+    reflectionPrompt: "De quel soin fondamental (verre d'eau pure, repos, repas nourrissant) votre corps a-t-il besoin en cet instant ?",
+    benevolentAffirmation: "« Je recharge mon budget corporel avec respect et attention bienveillante. »",
+    unlockedRewardBadge: "Badge : Gardienne de l'Allostasie"
   },
   {
     level: 43,
     cycleId: 2,
-    title: "Étape 43 : La Libération des Loyautés Invisibles",
-    theme: "Guérison Transgénérationnelle",
-    question: "Quel schéma familial répétitif de sacrifice ou de soumission brisez-vous avec amour ?",
+    title: "Étape 43 : La Reconsolidation Synaptique & L'Élimination de la Charge Émotionnelle",
+    theme: "Reconsolidation Synaptique",
+    question: "Est-il scientifiquement possible de se remémorer un souvenir difficile sans ressentir la moindre douleur corporelle ?",
     options: [
-      "L'idée que les femmes doivent tout endurer en silence pour préserver les apparences.",
-      "Le mythe que l'amour doit être douloureux ou mérité au prix de sa santé.",
-      "La peur de faire des vagues ou de déranger pour exiger le respect."
+      "Non, un souvenir douloureux garde sa souffrance à vie.",
+      "Oui, en effaçant totalement la mémoire par l'amnésie volontaire.",
+      "Oui, car la reconsolidation neuronale transforme une blessure vive en une cicatrice guérie qui ne fait plus mal."
     ],
-    reflectionPrompt: "Quelle liberté offrez-vous à votre descendance et à votre lignée ?",
-    benevolentAffirmation: "« Je guéris ma lignée en choisissant la dignité, la vérité et l'amour vrai. »",
-    unlockedRewardBadge: "Badge : Briseur de Chaînes Ancestrales"
+    correctOptionIndex: 2,
+    explanation: "Lorsqu'un souvenir est réactivé dans un état de calme physiologique et d'auto-compassion, la protéine de mémoire est réenregistrée sans la charge d'effroi (reconsolidation synaptique).",
+    reflectionPrompt: "Pensez à un obstacle surmonté avec le recul du présent : constatez que la cicatrice est solide et ne saigne plus.",
+    benevolentAffirmation: "« Mes souvenirs deviennent des bibliothèques de sagesse, débarrassés de tout venin. »",
+    unlockedRewardBadge: "Badge : Alchimie Synaptique"
   },
   {
     level: 44,
     cycleId: 2,
-    title: "Étape 44 : L'Harmonie du Corps en Mouvement",
-    theme: "Régulation Somatique par le Corps",
-    question: "Quelle forme de mouvement aide votre corps à évacuer les dernières tensions ?",
+    title: "Étape 44 : L'Épigénétique : L'Environnement Supérieur aux Gènes (Dr Bruce Lipton)",
+    theme: "Épigénétique & Régénération",
+    question: "Sommes-nous condamnées par notre hérédité ou les traumas subis dans le passé ?",
     options: [
-      "La marche rapide dans la nature, la respiration au grand air.",
-      "Le yoga doux, les étirements et la danse libre dans mon salon.",
-      "La natation ou une activité sportive qui me fait transpirer et me recentrer."
+      "Oui, mon ADN contient la fatalité de ma souffrance.",
+      "Non, les gènes n'ont absolument aucune influence sur le corps.",
+      "Non, car la modification de mon environnement intérieur et relationnel envoie de nouveaux signaux chimiques qui réparent l'activité cellulaire."
     ],
-    reflectionPrompt: "Quel bienfait ressentez-vous après avoir bougé votre corps ?",
-    benevolentAffirmation: "« Mon corps bouge dans la joie, la grâce et la liberté retrouvée. »",
-    unlockedRewardBadge: "Badge : Danse de la Liberté"
+    correctOptionIndex: 2,
+    explanation: "L'épigénétique démontre que les signaux environnementaux (pensées bienveillantes, alimentation, relations sécurisantes) modulent l'expression de nos gènes et favorisent la régénération.",
+    reflectionPrompt: "Quel environnement sain et apaisant construisez-vous aujourd'hui pour faire chanter vos cellules ?",
+    benevolentAffirmation: "« Je suis l'architecte de mon environnement intérieur. Mes cellules vibrent de renouveau et de vie. »",
+    unlockedRewardBadge: "Badge : Épigénétique de Guérison"
   },
   {
     level: 45,
     cycleId: 2,
-    title: "Étape 45 : La Construction de Nouveaux Projets de Vie",
-    theme: "Vision d'Avenir",
-    question: "Quel horizon lumineux attire désormais vos pas ?",
+    title: "Étape 45 : L'Alignement des 3 M (Image, Émotion, Sensation)",
+    theme: "Alignement Psycho-Somatique",
+    question: "Quelle est la clé pour reprogrammer durablement votre vision d'avenir et attirer des relations saines ?",
     options: [
-      "Un nouveau chez-moi chaleureux, décoré selon mes goûts et baigné de rires.",
-      "Une réorientation professionnelle ou un épanouissement de mes talents.",
-      "Des voyages, des découvertes et des amitiés saines et profondes."
+      "Répéter des mots mécaniques dans ma tête sans rien ressentir dans mon corps.",
+      "Attendre qu'un miracle extérieur modifie ma vie sans participation interne.",
+      "Visualiser ma liberté en ressentant dès maintenant la paix dans ma poitrine et la détente dans mon diaphragme."
     ],
-    reflectionPrompt: "Notez un rêve que vous avez hâte de réaliser.",
-    benevolentAffirmation: "« Mon avenir est une toile blanche magnifique que je peins avec bonheur. »",
-    unlockedRewardBadge: "Badge : Boussole des Nouveaux Horizonts"
+    correctOptionIndex: 2,
+    explanation: "Le cerveau émotionnel apprend lorsque l'image mentale (pensée), l'émotion positive (cœur) et la sensation somatique (corps détendu) sont parfaitement synchronisées.",
+    reflectionPrompt: "Fermez les yeux 10 secondes : voyez-vous souriante, libre et épanouie. Ressentez la chaleur dans votre poitrine.",
+    benevolentAffirmation: "« Mon esprit, mon cœur et mon corps chantent à l'unisson la symphonie de ma liberté. »",
+    unlockedRewardBadge: "Trophée : Triade Psycho-Somatique Validée (Bloc 4)"
   },
+
+  // --- BLOC 5 : LA SOUVERAINETÉ RELATIONNELLE & L'INTÉGRATION FINALE (Niv. 46 à 50) ---
   {
     level: 46,
     cycleId: 2,
-    title: "Étape 46 : L'Immunité contre la Provocation",
-    theme: "Maîtrise Émotionnelle Supérieure",
-    question: "Face à une tentative de vous faire réagir ('reactive abuse'), comment restez-vous intouchable ?",
+    title: "Étape 46 : De la Blessure à la Cicatrice (Sortir du Rôle de Victime Éternelle)",
+    theme: "Souveraineté Post-Traumatique",
+    question: "Comment regarder son passé sans s'y enfermer ni se définir uniquement par ses souffrances ?",
     options: [
-      "Par la méthode de la 'Pierre Grise' (neutralité totale, silence, absence de charge affective).",
-      "En observant la manœuvre avec un regard clinique sans m'y impliquer émotionnellement.",
-      "En me souvenant que le silence est la réponse la plus puissante face à la manipulation."
+      "Comme un gouffre qui définit mon identité et prouve que je suis fragile.",
+      "Comme un prétexte pour justifier mes propres comportements destructeurs.",
+      "Comme une épreuve initiatique qui a forgé ma sagesse et dont je suis sortie vivante et souveraine."
     ],
-    reflectionPrompt: "Quelle fierté ressentez-vous quand vous ne donnez aucune prise à la provocation ?",
-    benevolentAffirmation: "« Je suis une montagne inébranlable. Les vents soufflent mais ne m'atteignent point. »",
-    unlockedRewardBadge: "Badge : Pierre Grise Royale"
+    correctOptionIndex: 2,
+    explanation: "La croissance post-traumatique (Tedeschi & Calhoun) transforme la blessure en marque de bravoure et en boussole éthique pour guider sa vie avec une autorité bienveillante.",
+    reflectionPrompt: "Quel trésor de discernement et de compassion avez-vous extrait de vos tempêtes passées ?",
+    benevolentAffirmation: "« Je ne suis pas ce qui m'est arrivé : je suis ce que j'ai choisi de devenir avec éclat et dignité. »",
+    unlockedRewardBadge: "Badge : Alchimie de l'Héroïne"
   },
   {
     level: 47,
     cycleId: 2,
-    title: "Étape 47 : L'Accueil de l'Abondance & de la Beauté",
-    theme: "Ouverture à la Vie",
-    question: "Pourquoi méritez-vous le meilleur que la vie a à offrir ?",
+    title: "Étape 47 : L'Intégration des Ombres (Cesser de Combattre ses Parties Blessées)",
+    theme: "Intégration des Parties Intérieures (IFS)",
+    question: "Que faire de cette voix intérieure qui a parfois peur, doute ou s'emporte sans crier gare ?",
     options: [
-      "Parce que ma nature profonde est faite pour la lumière, la beauté et la plénitude.",
-      "Parce que j'ai payé cher mes apprentissages et que j'accueille la bénédiction.",
-      "Parce que l'abondance d'amour et de paix est le droit de naissance de chaque être."
+      "L'étouffer sous des divertissements ou des dépendances pour ne rien sentir.",
+      "La laisser exploser violemment sur les autres sans filtre.",
+      "L'écouter comme une messagère intérieure et lui apporter la tendresse qu'elle n'a pas eue jadis."
     ],
-    reflectionPrompt: "Quelle grâce avez-vous reçue aujourd'hui ?",
-    benevolentAffirmation: "« J'ouvre mes bras à l'abondance d'amour, de paix et de prospérité. »",
-    unlockedRewardBadge: "Badge : Corne d'Abondance"
+    correctOptionIndex: 2,
+    explanation: "Selon le modèle IFS (Système Familial Intérieur du Dr Richard Schwartz), chaque part protectrice ou blessée cherche la sécurité. L'accueillir avec compassion apaise la discorde interne.",
+    reflectionPrompt: "Prenez dans vos bras mentaux votre partie qui a peur et murmurez-lui : 'Je suis là maintenant, je te protège'.",
+    benevolentAffirmation: "« J'accueille toutes mes parts intérieures dans l'amour. Mon sanctuaire est un foyer d'harmonie. »",
+    unlockedRewardBadge: "Badge : Réconciliation des Ombres"
   },
   {
     level: 48,
     cycleId: 2,
-    title: "Étape 48 : La Pureté de l'Intégrité Personnelle",
-    theme: "Alignement Supérieur",
-    question: "En quoi être alignée avec vos valeurs vous procure-t-il une paix sans égal ?",
+    title: "Étape 48 : La Rose de Permission & Les Frontières Inviolables",
+    theme: "Frontières Émotionnelles Saines",
+    question: "Pourquoi poser des limites fermes et dire un 'Non' clair est-il un acte d'amour suprême ?",
     options: [
-      "Parce que je peux me regarder dans le miroir chaque soir la tête haute et le cœur pur.",
-      "Parce que mes actes sont le reflet exact de mes paroles.",
-      "Parce qu'aucune menace ne peut corrompre ma rectitude morale."
+      "Pour dominer l'autre et lui montrer qui commande.",
+      "Parce que je dois rejeter tout le monde pour rester en sécurité.",
+      "Pour préserver mon énergie vitale et n'accueillir dans mon sanctuaire que ce qui honore ma dignité."
     ],
-    reflectionPrompt: "Quel choix intègre vous a demandé du courage mais vous a apporté la paix ?",
-    benevolentAffirmation: "« Mon intégrité est ma plus grande richesse. Rien ne peut l'acheter ni l'éteindre. »",
-    unlockedRewardBadge: "Badge : Joyau d'Intégrité"
+    correctOptionIndex: 2,
+    explanation: "Les limites saines ne sont pas des murs pour exclure, mais des portes avec serrure pour protéger ce qui est sacré en soi.",
+    reflectionPrompt: "Quel 'Non' libérateur avez-vous posé récemment pour préserver votre paix intérieure ?",
+    benevolentAffirmation: "« Mon Non est sacré. Il protège mon Oui à la paix, à la dignité et à la joie. »",
+    unlockedRewardBadge: "Badge : Gardienne des Frontières d'Or"
   },
   {
     level: 49,
     cycleId: 2,
-    title: "Étape 49 : La Sérénité de la Solitude Choisie",
-    theme: "Complétude & Plénitude",
-    question: "Comment savourez-vous les moments où vous êtes seule avec vous-même ?",
+    title: "Étape 49 : Le Pardon Déconditionné à Son Enfant Intérieur",
+    theme: "Auto-Absolution Totale",
+    question: "Comment guérir la rancœur que l'on porte parfois contre soi-même pour être 'restée trop longtemps' dans une situation toxique ?",
     options: [
-      "Comme un rendez-vous précieux avec ma meilleure amie, dans le calme et la créativité.",
-      "En appréciant le silence bienfaisant et l'absence de toute tension.",
-      "En réalisant que je ne suis jamais 'seule' mais toujours bien accompagnée par mon âme."
+      "En me répétant chaque jour ce que j'aurais dû faire différemment.",
+      "En rejetant 100% de la responsabilité sur les autres sans introspection.",
+      "En comprenant que j'ai agi avec le niveau de conscience et les ressources dont je disposais alors, et en m'accordant une absolution totale."
     ],
-    reflectionPrompt: "Quelle activité solitaire vous apporte le plus de bien-être ?",
-    benevolentAffirmation: "« Ma propre compagnie est un délice de paix, de tendresse et d'inspiration. »",
-    unlockedRewardBadge: "Badge : Perle de Solitude Sacrée"
+    correctOptionIndex: 2,
+    explanation: "Le pardon à soi-même est l'acte thérapeutique suprême. Comprendre la sidération et l'emprise permet de déposer définitivement le fouet de l'autocritique.",
+    reflectionPrompt: "Formulez à votre enfant intérieur l'absolution la plus douce et la plus complète de votre vie.",
+    benevolentAffirmation: "« Je me pardonne absolument et inconditionnellement. J'ai fait de mon mieux, et aujourd'hui je suis libre. »",
+    unlockedRewardBadge: "Badge : Absolution Sacrée"
   },
   {
     level: 50,
     cycleId: 2,
-    title: "Étape 50 : Couronnement du Cycle 2 (Force & Nouveau Contexte)",
-    theme: "Consécration du Demi-Centenaire",
-    question: "En franchissant la moitié de votre chemin initiatique (Niveau 50), quelle femme contemplez-vous ?",
+    title: "Étape 50 : Le Couronnement du Cycle 2 : Le Bouclier Doré de Résilience",
+    theme: "Consécration du Cycle 2 (Demi-Centenaire de Guérison)",
+    question: "Au sommet de ce Cycle 2 (Niveau 50), forte de votre compréhension somatique et neurobiologique, quel est votre engagement souverain ?",
     options: [
-      "Une femme puissante, lucide, souveraine et prête à vivre sa plus belle renaissance.",
-      "Une héroïne de sa propre existence qui a transformé ses épreuves en sagesse.",
-      "Une âme resplendissante de force calme et de détermination bienveillante."
+      "Surveiller chaque personne avec méfiance pour ne plus jamais souffrir.",
+      "Exiger des excuses de tous ceux qui m'ont blessée avant de continuer à vivre.",
+      "Devenir la protectrice bienveillante de ma propre paix et poursuivre ma renaissance avec foi et souveraineté."
     ],
-    reflectionPrompt: "Écrivez votre cri du cœur pour célébrer le palier 50 franchi avec bravoure !",
-    benevolentAffirmation: "« J'ai bâti ma force. Mon nouveau contexte est solide, digne et couronné de lumière. »",
-    unlockedRewardBadge: "Trophée Suprême : Bouclier de Diamant du Cycle 2 Validé"
+    correctOptionIndex: 2,
+    explanation: "Félicitations ! Le franchissement du Niveau 50 consacre votre maîtrise des mécanismes du trauma et de la neurobiologie. Vous possédez désormais le Bouclier Doré de Souveraineté (+100 pts).",
+    reflectionPrompt: "Écrivez votre proclamation de souveraineté pour célébrer le cap du demi-siècle de guérison (Niveau 50) :",
+    benevolentAffirmation: "« Mon corps est mon temple, mon esprit est mon allié. Je suis la reine souveraine de ma paix intérieure. »",
+    unlockedRewardBadge: "Trophée Suprême : Bouclier Doré de Souveraineté (Cycle 2 Accompli 🏆)"
   },
 
   // ==========================================
@@ -1543,11 +1603,202 @@ export const COMPLETE_100_HEALING_QUESTIONS: Healing100QuestionItem[] = [
     reflectionPrompt: "Gravez votre testament de paix et d'amour pour vous-même et pour l'éternité :",
     benevolentAffirmation: "« Je suis accomplie. Je suis libre. Je suis mon propre sanctuaire sacré pour toujours. »",
     unlockedRewardBadge: "Trophée Légendaire Suprême : La Grande Couronne de Résilience des 100 Niveaux"
+  },
+
+  // ==========================================
+  // CYCLE 5 : NIVEAUX SECRETS BONUS 101 À 111 (Les Mystères du Kybalion & Le Sacre de l'Éveillée)
+  // ==========================================
+  {
+    level: 101,
+    cycleId: 5,
+    title: "Niveau 101 • Arcane 1 : Le Principe du Mentalisme (« Le Tout est Esprit »)",
+    theme: "Hermétisme & Mentalisme",
+    question: "Où réside la source véritable de votre réalité et de votre paix inébranlable ?",
+    options: [
+      "Dans le contrôle et la manipulation des actions des autres.",
+      "Dans la fatalité des événements matériels extérieurs.",
+      "Dans la maîtrise sereine de mes pensées et de mes représentations intérieures."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Le Tout est Esprit ; l'Univers est Mental. » Votre univers intérieur est le seul créateur de votre expérience.",
+    reflectionPrompt: "Quelle pensée source choisissez-vous de sanctifier en vous aujourd'hui ?",
+    benevolentAffirmation: "« Mon esprit est le temple créateur de ma paix et de ma réalité sacrée. »",
+    unlockedRewardBadge: "Arcane I : Le Sceptre de l'Esprit Mental"
+  },
+  {
+    level: 102,
+    cycleId: 5,
+    title: "Niveau 102 • Arcane 2 : Le Principe de Correspondance (« Ce qui est en haut... »)",
+    theme: "Hermétisme & Correspondance",
+    question: "Comment aligner votre monde extérieur avec votre désir de paix profonde ?",
+    options: [
+      "En exigeant que le monde change avant de faire le moindre travail intérieur.",
+      "En m'isolant totalement de toute interaction humaine.",
+      "En cultivant l'amour et l'harmonie en moi pour qu'ils s'expriment naturellement autour de moi."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Ce qui est en haut est comme ce qui est en bas ; ce qui est au-dedans est comme ce qui est au-dehors. » Le microcosme reflète le macrocosme.",
+    reflectionPrompt: "Quel ordre et quelle beauté intérieure installez-vous pour éclairer votre environnement ?",
+    benevolentAffirmation: "« Comme en mon cœur, ainsi dans mon monde : tout s'aligne dans l'harmonie. »",
+    unlockedRewardBadge: "Arcane II : Le Miroir Céleste de Correspondance"
+  },
+  {
+    level: 103,
+    cycleId: 5,
+    title: "Niveau 103 • Arcane 3 : Le Principe de Vibration (« Rien n'est immobile »)",
+    theme: "Hermétisme & Fréquence Vibratoire",
+    question: "Face à une ambiance pesante ou toxique, comment préserver votre état d'être ?",
+    options: [
+      "En vibrant à la même fréquence de peur et de colère.",
+      "En niant ce que je ressens jusqu'à ce que tout disparaisse.",
+      "En élevant mon taux vibratoire par la gratitude, la beauté et la présence consciente."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Rien ne repose ; tout remue ; tout vibre. » Une vibration plus élevée transmute toujours une vibration plus basse.",
+    reflectionPrompt: "Quelle pensée de gratitude pure élève immédiatement votre fréquence en cet instant ?",
+    benevolentAffirmation: "« Je vibre sur la fréquence inaltérable de la sérénité et de l'amour pur. »",
+    unlockedRewardBadge: "Arcane III : Le Diapason d'Or Vibratoire"
+  },
+  {
+    level: 104,
+    cycleId: 5,
+    title: "Niveau 104 • Arcane 4 : Le Principe de Polarité (« Tout est double »)",
+    theme: "Hermétisme & Transmutation des Pôles",
+    question: "Comment transmuter une peur persistante en une force protectrice lumineuse ?",
+    options: [
+      "En la refoulant violemment pour ne jamais la voir.",
+      "En m'y complaisant pour nourrir ma rancœur.",
+      "En glissant le long du curseur vibratoire pour orienter mon attention vers son pôle lumineux d'auto-amour."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« La peur et le courage ne sont que les deux pôles d'une même énergie. » Transmuter consiste simplement à changer de degré sur l'échelle.",
+    reflectionPrompt: "Sur quelle polarité lumineuse orientez-vous votre curseur mental aujourd'hui ?",
+    benevolentAffirmation: "« Je transmute l'ombre en lumière. Tout paradoxe se réconcilie en mon centre. »",
+    unlockedRewardBadge: "Arcane IV : Le Caducée de la Polarité Unifiée"
+  },
+  {
+    level: 105,
+    cycleId: 5,
+    title: "Niveau 105 • Arcane 5 : Le Principe de Rythme (« La marée monte et descend »)",
+    theme: "Hermétisme & Cycles du Pendule",
+    question: "Quand une journée semble plus lente ou introspective, comment accueillir ce flux ?",
+    options: [
+      "Paniquer en croyant que tous mes progrès sont perdus.",
+      "Combattre le cycle naturel en forçant une fausse joie artificielle.",
+      "Observer le mouvement du pendule avec calme, sachant que la clarté revient toujours."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Tout s'écoule, au-dedans et au-dehors ; la mesure du mouvement à droite est la mesure du mouvement à gauche. » Le rythme compense et guérit.",
+    reflectionPrompt: "Comment honorez-vous vos temps de repli fécond comme la promesse du renouveau ?",
+    benevolentAffirmation: "« Je danse avec les marées de la vie. Rien ne m'emporte, car je suis le roc immobile. »",
+    unlockedRewardBadge: "Arcane V : Le Pendule Sacré du Rythme"
+  },
+  {
+    level: 106,
+    cycleId: 5,
+    title: "Niveau 106 • Arcane 6 : Le Principe de Causalité (« Toute cause a son effet »)",
+    theme: "Hermétisme & Maîtrise des Causes",
+    question: "Comment cesser d'être le 'jouet des circonstances' pour devenir la cause première de votre destinée ?",
+    options: [
+      "En accusant le destin et la malchance à chaque contrariété.",
+      "En laissant les autres décider à ma place pour éviter les erreurs.",
+      "En posant des intentions claires et en assumant la pleine responsabilité de mes choix."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Le hasard n'est qu'un nom donné à la loi non reconnue. » L'initiée devient la cause au lieu de subir les effets.",
+    reflectionPrompt: "Quelle noble cause de paix et de liberté initiez-vous par vos actes aujourd'hui ?",
+    benevolentAffirmation: "« Je suis la cause souveraine de mon épanouissement. Mon vouloir est pur et agissant. »",
+    unlockedRewardBadge: "Arcane VI : La Clé des Causes Premières"
+  },
+  {
+    level: 107,
+    cycleId: 5,
+    title: "Niveau 107 • Arcane 7 : Le Principe de Genre (« Le masculin et le féminin créent »)",
+    theme: "Hermétisme & Union Alchimique Sacrée",
+    question: "Comment manifester votre pleine puissance de création dans le sanctuaire de votre vie ?",
+    options: [
+      "Utiliser uniquement la force dure et le combat permanent.",
+      "Rester dans une passivité totale sans jamais poser de structure.",
+      "Marier la bienveillance intuitive du Féminin à la clarté protectrice et structurée du Masculin."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Le Genre est en tout ; tout a ses principes Masculin et Féminin. » La vraie souveraineté naît du mariage intérieur de la force et de la douceur.",
+    reflectionPrompt: "Comment vos intuitions profondes se concrétisent-elles par des actions structurées et nettes ?",
+    benevolentAffirmation: "« J'unis en moi la sagesse réceptive et la puissance d'action. Je suis complète et féconde. »",
+    unlockedRewardBadge: "Arcane VII : L'Union Alchimique Sacrée"
+  },
+  {
+    level: 108,
+    cycleId: 5,
+    title: "Niveau 108 • Arcane 8 : La Transmutation Mentale (Changer le plomb en or intérieur)",
+    theme: "Alchimie Hermétique Supérieure",
+    question: "Que deviennent les épreuves passées lorsque vous pratiquez l'alchimie hermétique ?",
+    options: [
+      "Elles restent un poison indélébile dans ma mémoire.",
+      "Elles sont effacées comme si je n'avais jamais existé.",
+      "Elles sont transmutées en un trésor inaltérable de lucidité, de force et de compassion."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« L'Art de la Transmutation Mentale est la véritable Alchimie Hermétique. » La souffrance passée devient le carburant noble de votre lumière.",
+    reflectionPrompt: "Quel métal brut de votre passé brille aujourd'hui de l'or de votre sagesse ?",
+    benevolentAffirmation: "« Je suis l'alchimiste de mon existence. Tout ce que je touche en moi se transmute en lumière. »",
+    unlockedRewardBadge: "Arcane VIII : La Pierre Philosophale d'Or"
+  },
+  {
+    level: 109,
+    cycleId: 5,
+    title: "Niveau 109 • Arcane 9 : La Neutralisation du Pendule (Rester au centre du cyclone)",
+    theme: "Neutralisation & Élévation de Plan",
+    question: "Face aux tempêtes du monde extérieur, comment rester parfaitement sereine et imperturbable ?",
+    options: [
+      "En coupant tout contact avec le monde réel.",
+      "En m'agitant au rythme des provocations d'autrui.",
+      "En m'ancrant dans mon Sanctuaire intérieur intouchable, au-dessus des oscillations émotionnelles."
+    ],
+    correctOptionIndex: 2,
+    explanation: "« Par l'Élévation de Plan, le Maître neutralise l'oscillation du pendule et demeure fixé au pôle supérieur. »",
+    reflectionPrompt: "Ressentez ce point central d'immobilité parfaite au cœur même de votre poitrine.",
+    benevolentAffirmation: "« Je réside au centre du cyclone. Le monde s'agite, mais mon sanctuaire reste immaculé. »",
+    unlockedRewardBadge: "Arcane IX : L'Axe Immuable du Centre"
+  },
+  {
+    level: 110,
+    cycleId: 5,
+    title: "Niveau 110 • Arcane 10 : L'Autorité Souveraine de la Volonté Pure",
+    theme: "Volonté Hermétique Pure",
+    question: "Qu'est-ce que la véritable souveraineté spirituelle et psychique selon la tradition des Mystères ?",
+    options: [
+      "La domination orgueilleuse sur les faiblesses des autres.",
+      "L'illusion de tout contrôler par l'hypervigilance.",
+      "La certitude paisible que je suis la créatrice sacrée et protégée de ma propre existence."
+    ],
+    correctOptionIndex: 2,
+    explanation: "La Volonté Pure n'est pas un effort forcé, mais un alignement parfait avec la Vérité, la Justice et l'Amour universel.",
+    reflectionPrompt: "Quelle vérité inébranlable proclamez-vous sur votre chemin de vie avec une absolue certitude ?",
+    benevolentAffirmation: "« Ma volonté est pure, juste et invincible. Je marche libre sous la voûte des étoiles. »",
+    unlockedRewardBadge: "Arcane X : Le Sceau Royal de la Volonté Pure"
+  },
+  {
+    level: 111,
+    cycleId: 5,
+    title: "Niveau 111 • Arcane 11 : Le Sacre de l'Initiée — L'Éveil Absolu",
+    theme: "Sacre Suprême [ÉVEILLÉ]",
+    question: "Au 111e et ultime niveau de la sagesse universelle d'HAVEN-ELLE, qui contemplez-vous dans le miroir divin ?",
+    options: [
+      "Une survivante fragilisée qui craint le lendemain.",
+      "Une personne en quête permanente d'approbation extérieure.",
+      "Une femme souveraine, éveillée, maîtresse de sa vibration et sanctuaire de bienveillance inconditionnelle."
+    ],
+    correctOptionIndex: 2,
+    explanation: "👑 CONSÉCRATION ULTIME : Vous avez accompli le Grand Œuvre des 111 Niveaux. Vous recevez le Trophée Légendaire [ÉVEILLÉ] et le Grand Sceau Cosmique d'HAVEN-ELLE (+500 pts).",
+    reflectionPrompt: "Gravez pour l'éternité votre serment d'Éveillée, maîtresse de son destin et phare de bienveillance :",
+    benevolentAffirmation: "« JE SUIS ÉVEILLÉE. Je suis le temple vivant de la sagesse, libre, souveraine et à jamais invulnérable. »",
+    unlockedRewardBadge: "🏆 Trophée Suprême Légendaire : [ÉVEILLÉ] — Le Grand Sceau Cosmique d'HAVEN-ELLE (Palier 111)"
   }
 ];
 
 export function getComplete100HealingQuestion(level: number): Healing100QuestionItem {
-  const target = Math.min(100, Math.max(1, level));
+  const target = Math.min(111, Math.max(1, level));
   const found = COMPLETE_100_HEALING_QUESTIONS.find(q => q.level === target);
   if (found) return found;
   return COMPLETE_100_HEALING_QUESTIONS[0];

@@ -30,7 +30,7 @@ import {
 export interface ResilienceMilestone {
   level: number;
   points: number; // point threshold to achieve this level
-  cycleId: 1 | 2 | 3 | 4;
+  cycleId: 1 | 2 | 3 | 4 | 5;
   title: string;
   subtitle: string;
   description: string;
@@ -41,7 +41,7 @@ export interface ResilienceMilestone {
 }
 
 export interface ResilienceCycle {
-  id: 1 | 2 | 3 | 4;
+  id: 1 | 2 | 3 | 4 | 5;
   title: string;
   subtitle: string;
   theme: string;
@@ -63,7 +63,7 @@ export interface ResilienceCycle {
 
 export interface HealingQuestion {
   level: number;
-  cycleId: 1 | 2 | 3 | 4;
+  cycleId: 1 | 2 | 3 | 4 | 5;
   title: string;
   theme: string;
   question: string;
@@ -75,24 +75,25 @@ export interface HealingQuestion {
   unlockedRewardBadge: string;
 }
 
-export const POINTS_PER_LEVEL = 15; // 15 points per level = 1500 points for level 100. Fast & encouraging!
+export const POINTS_PER_LEVEL = 15; // 15 points per level = 1500 points for level 100, 1665 points for level 111.
 
 export function calculateLevelFromPoints(points: number): number {
   if (points <= 0) return 1;
   const level = Math.floor(points / POINTS_PER_LEVEL) + 1;
-  return Math.min(100, Math.max(1, level));
+  return Math.min(111, Math.max(1, level));
 }
 
 export function calculatePointsForLevel(level: number): number {
   if (level <= 1) return 0;
-  return (Math.min(100, level) - 1) * POINTS_PER_LEVEL;
+  return (Math.min(111, level) - 1) * POINTS_PER_LEVEL;
 }
 
-export function getCycleForLevel(level: number): 1 | 2 | 3 | 4 {
+export function getCycleForLevel(level: number): 1 | 2 | 3 | 4 | 5 {
   if (level <= 25) return 1;
   if (level <= 50) return 2;
   if (level <= 75) return 3;
-  return 4;
+  if (level <= 100) return 4;
+  return 5;
 }
 
 // Map of curated therapeutic questions for healing validation across all levels
@@ -234,7 +235,7 @@ const CURATED_HEALING_QUESTIONS: Record<number, Partial<HealingQuestion>> = {
 import { COMPLETE_100_HEALING_QUESTIONS, getComplete100HealingQuestion } from './resilience100QuestionsData';
 
 export function getHealingQuestionForLevel(level: number): HealingQuestion {
-  const targetLevel = Math.min(100, Math.max(1, level));
+  const targetLevel = Math.min(111, Math.max(1, level));
   return getComplete100HealingQuestion(targetLevel);
 }
 
@@ -613,6 +614,87 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
         unlockedReward: "Grande Récompense : Trophée Suprême de la Guérison Totale & Avatar Éternel HAVEN-ELLE"
       }
     ]
+  },
+  {
+    id: 5,
+    title: "Cycle Secret Bonus : Niveaux 101 à 111",
+    subtitle: "Les Mystères du Kybalion & Le Sacre de l'Éveillée",
+    theme: "Hermétisme Sacré, Transmutation Mentale & Maîtrise Vibratoire",
+    minLevel: 101,
+    maxLevel: 111,
+    minPoints: 1500,
+    maxPoints: 1665,
+    tag: "Haute Maîtrise Spirituelle",
+    colorName: "emerald",
+    badgeBg: "bg-[#ECFDF5]",
+    badgeBorder: "border-[#059669]",
+    badgeText: "text-[#065F46]",
+    icon: Crown,
+    coreMantra: "« Je suis le Sanctuaire Vivant. Je transmute le plomb en or et je règne sur ma réalité dans la paix absolue. »",
+    description: "Ce cycle secret bonus dévoile les 11 Arcanes de l'Hermétisme et du Kybalion appliqués à la souveraineté émotionnelle. L'initiée devient la cause souveraine de son existence et décroche le Trophée Légendaire [ÉVEILLÉ].",
+    scientificFoundation: "La métacognition avancée et les principes de cybernétique mentale permettent la neutralisation émotionnelle réflexe et l'alignement des intentions avec une efficacité maximale.",
+    milestones: [
+      {
+        level: 101,
+        points: 1500,
+        cycleId: 5,
+        title: "Arcane I : Le Principe du Mentalisme",
+        subtitle: "« Le Tout est Esprit ; l'Univers est Mental »",
+        description: "Comprendre que votre univers intérieur crée l'intégralité de votre expérience vécue.",
+        mantra: "Mon esprit est le temple créateur de ma paix.",
+        exercise: "Fermez les yeux et observez le monde de pensées que vous choisissez de sanctifier.",
+        benefit: "Prise de conscience de la matrice de réalité intérieure.",
+        unlockedReward: "Arcane I : Le Sceptre de l'Esprit Mental"
+      },
+      {
+        level: 104,
+        points: 1545,
+        cycleId: 5,
+        title: "Arcane IV : Le Principe de Polarité",
+        subtitle: "« Les contraires ont la même nature »",
+        description: "Transmuter la peur en courage et la peine en gratitude en glissant sur le curseur vibratoire.",
+        mantra: "Je transmute l'ombre en lumière. Tout paradoxe se dissout en mon centre.",
+        exercise: "Identifiez une crispation et glissez intentionnellement vers son pôle de douceur.",
+        benefit: "Maîtrise immédiate de la transmutation des états émotionnels.",
+        unlockedReward: "Arcane IV : Le Caducée de la Polarité Unifiée"
+      },
+      {
+        level: 107,
+        points: 1590,
+        cycleId: 5,
+        title: "Arcane VII : Le Principe de Genre & Alchimie",
+        subtitle: "« Le masculin et le féminin s'unissent pour créer »",
+        description: "Marier l'intuition bienveillante et la structure protectrice pour une souveraineté féconde.",
+        mantra: "J'unis en moi la sagesse réceptive et la puissance d'action.",
+        exercise: "Posez un geste ferme et protecteur tout en gardant le cœur grand ouvert.",
+        benefit: "Équilibre parfait entre réceptivité et décision d'action.",
+        unlockedReward: "Arcane VII : L'Union Alchimique Sacrée"
+      },
+      {
+        level: 110,
+        points: 1635,
+        cycleId: 5,
+        title: "Arcane X : La Volonté Pure",
+        subtitle: "L'autorité souveraine de l'âme",
+        description: "L'alignement sans faille avec la vérité et la justice intérieure, libre de tout doute.",
+        mantra: "Ma volonté est pure, juste et invincible.",
+        exercise: "Proclamez votre vérité d'âme avec calme et autorité bienveillante.",
+        benefit: "Immunité totale contre l'influence et le doute existentiel.",
+        unlockedReward: "Arcane X : Le Sceau Royal de la Volonté Pure"
+      },
+      {
+        level: 111,
+        points: 1650,
+        cycleId: 5,
+        title: "Niveau 111 : Le Sacre de l'Initiée — L'Éveil Absolu",
+        subtitle: "Consécration Suprême [ÉVEILLÉ]",
+        description: "Accomplissement du Grand Œuvre des 111 Niveaux. Vous recevez la Grande Consécration Cosmique d'HAVEN-ELLE.",
+        mantra: "JE SUIS ÉVEILLÉE. Je suis le temple vivant de la sagesse, souveraine pour l'éternité.",
+        exercise: "Gravez votre serment éternel d'Éveillée dans le Grand Livre d'Or du Sanctuaire.",
+        benefit: "Consécration ultime de l'état de résilience, d'amour pur et d'invulnérabilité.",
+        unlockedReward: "🏆 Trophée Suprême Légendaire : [ÉVEILLÉ] — Le Grand Sceau Cosmique d'HAVEN-ELLE"
+      }
+    ]
   }
 ];
 
@@ -661,5 +743,14 @@ export const QUICK_DAILY_ACTIONS = [
     icon: Sparkles,
     cycle: 4,
     actionDesc: 'Ancre la guérison totale et la paix inaltérable.'
+  },
+  {
+    id: 'kybalion_transmutation',
+    title: 'Transmutation Hermétique du Kybalion',
+    subtitle: 'Maîtrise de la vibration & Polarité',
+    points: 35,
+    icon: Crown,
+    cycle: 5,
+    actionDesc: 'Élève instantanément votre taux vibratoire et transmute le plomb en or.'
   }
 ];

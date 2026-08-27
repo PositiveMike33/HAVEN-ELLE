@@ -49,7 +49,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
   const profile: CompanionMemoryProfile = CompanionMemoryService.getProfile();
   
   // State for filters
-  const [selectedCycleFilter, setSelectedCycleFilter] = useState<0 | 1 | 2 | 3 | 4>(0); // 0 = All
+  const [selectedCycleFilter, setSelectedCycleFilter] = useState<0 | 1 | 2 | 3 | 4 | 5>(0); // 0 = All
   const [statusFilter, setStatusFilter] = useState<'all' | 'validated' | 'ready' | 'locked'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedLevelId, setExpandedLevelId] = useState<number | null>(currentValidatedLevel + 1);
@@ -57,7 +57,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
 
   // Determine current active unlock level
   const effectiveLevel = profile.validatedLevel ?? currentValidatedLevel ?? 10;
-  const nextUnlockableLevel = Math.min(100, effectiveLevel + 1);
+  const nextUnlockableLevel = Math.min(111, effectiveLevel + 1);
 
   // Filter questions
   const filteredQuestions = useMemo(() => {
@@ -93,36 +93,36 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
 
   // Statistics
   const validatedCount = Object.keys(profile.validatedQuestions || {}).length || effectiveLevel;
-  const progressPercent = Math.min(100, Math.round((validatedCount / 100) * 100));
+  const progressPercent = Math.min(100, Math.round((validatedCount / 111) * 100));
 
   const toggleExpand = (level: number) => {
     setExpandedLevelId(prev => prev === level ? null : level);
   };
 
-  const cycleIcons = {
+  const cycleIcons: Record<number, any> = {
     1: Heart,
     2: Flame,
     3: Shield,
-    4: Crown
+    4: Crown,
+    5: Sparkles
   };
 
   return (
     <div className="bg-[#FAF9F5] border-2 border-[#D5D0C2] rounded-3xl p-5 md:p-8 space-y-6 shadow-sm">
-      {/* Header of the 100 Questions Roadmap */}
+      {/* Header of the 111 Questions Roadmap */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#E5E2D9]">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5EED6] text-[#2E4313] text-xs font-bold uppercase tracking-wider mb-2 border border-[#8DA765]/30">
             <BookOpen className="w-3.5 h-3.5 text-[#385117]" />
-            Le Grand Livre des 100 Étapes de Guérison
+            Le Grand Livre des 111 Étapes de Guérison & Arcanes Secrets
           </div>
           <h3 className="text-xl md:text-2xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
             <Compass className="w-6 h-6 text-[#385117]" />
-            Cheminement Initiatique des 100 Niveaux
+            Cheminement Initiatique des 111 Niveaux
           </h3>
           <p className="text-xs md:text-sm text-[#5C5952] mt-1 max-w-3xl leading-relaxed">
-            Consultez à tout moment l'ensemble des 100 questions et réflexions thérapeutiques. 
-            Vos anciennes réponses et prises de conscience sont précieusement conservées pour vous servir de rappel d'ancrage, 
-            tandis que les étapes futures sont délicatement voilées sous cadenas pour stimuler votre curiosité et célébrer chaque palier franchi.
+            Consultez à tout moment l'ensemble des 111 questions et réflexions thérapeutiques, incluant les 11 Arcanes Secrets du Kybalion couronnés par le trophée « ÉVEILLÉ ». 
+            Vos anciennes réponses et prises de conscience sont précieusement conservées pour vous servir de rappel d'ancrage.
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
             </span>
           </div>
           <div className="text-2xl font-extrabold text-[#385117] font-mono">
-            {validatedCount} <span className="text-sm font-sans font-medium text-[#7A776F]">/ 100</span>
+            {validatedCount} <span className="text-sm font-sans font-medium text-[#7A776F]">/ 111</span>
           </div>
           <div className="w-full bg-[#E5E2D9] h-2 rounded-full overflow-hidden mt-2">
             <div 
@@ -159,16 +159,16 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            Tous les 100 Niveaux
+            Tous les 111 Niveaux
           </button>
 
           {RESILIENCE_CYCLES.map(cycle => {
-            const Icon = cycleIcons[cycle.id];
+            const Icon = cycleIcons[cycle.id] || Sparkles;
             const isSelected = selectedCycleFilter === cycle.id;
             return (
               <button
                 key={cycle.id}
-                onClick={() => setSelectedCycleFilter(cycle.id)}
+                onClick={() => setSelectedCycleFilter(cycle.id as 1 | 2 | 3 | 4 | 5)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                   isSelected
                     ? `${cycle.badgeBg} ${cycle.badgeBorder} ${cycle.badgeText} border-2 shadow-2xs font-extrabold`
@@ -247,7 +247,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
 
       {/* Results Count Helper */}
       <div className="flex items-center justify-between text-xs text-[#5C5952] px-1">
-        <span>Affichage de <strong>{filteredQuestions.length}</strong> étape{filteredQuestions.length > 1 ? 's' : ''} sur 100</span>
+        <span>Affichage de <strong>{filteredQuestions.length}</strong> étape{filteredQuestions.length > 1 ? 's' : ''} sur 111</span>
         {searchQuery && (
           <span className="italic">Filtré par : "{searchQuery}"</span>
         )}
