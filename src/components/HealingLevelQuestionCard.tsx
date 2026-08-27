@@ -10,7 +10,8 @@ import {
   Unlock, 
   MessageSquareHeart,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  AlertCircle
 } from 'lucide-react';
 import { 
   getHealingQuestionForLevel, 
@@ -49,6 +50,7 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
   const [customReflection, setCustomReflection] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [celebrationMessage, setCelebrationMessage] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const questionData = getHealingQuestionForLevel(selectedLevel);
   const cycleId = getCycleForLevel(selectedLevel);
@@ -60,10 +62,28 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
   const pointsRequiredForThisLevel = calculatePointsForLevel(selectedLevel);
   const hasPointsForThisLevel = resiliencePoints >= pointsRequiredForThisLevel;
 
+  const handleSelectOption = (option: string) => {
+    setSelectedOption(option);
+    setValidationError(null);
+  };
+
   const handleValidate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedOption && !customReflection.trim()) return;
 
+    // Check if question has a specific correct answer
+    if (questionData.correctOptionIndex !== undefined) {
+      const selectedIndex = questionData.options.indexOf(selectedOption);
+      if (selectedIndex !== -1 && selectedIndex !== questionData.correctOptionIndex) {
+        setValidationError(
+          questionData.explanation || 
+          "Cette réponse entretient le piège de la comparaison et du jugement. Pour valider ce niveau, choisissez la réponse C d'auto-compassion et de respect de votre rythme !"
+        );
+        return;
+      }
+    }
+
+    setValidationError(null);
     setIsSubmitting(true);
     const reflectionText = customReflection.trim() || selectedOption;
     
@@ -206,28 +226,59 @@ export const HealingLevelQuestionCard: React.FC<HealingLevelQuestionCardProps> =
           {/* Options Selection */}
           <div className="space-y-2.5 pt-2">
             {questionData.options.map((option, idx) => {
+              const letter = String.fromCharCode(65 + idx); // 'A', 'B', 'C'
               const isChecked = selectedOption === option || (alreadyAnswered && alreadyAnswered.answer === option);
+              const isCorrectOption = questionData.correctOptionIndex !== undefined && idx === questionData.correctOptionIndex;
+              const isWrongOption = questionData.correctOptionIndex !== undefined && idx !== questionData.correctOptionIndex;
+
               return (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => setSelectedOption(option)}
-                  className={`w-full text-left p-3.5 rounded-2xl border-2 transition-all flex items-start gap-3 ${
+                  onClick={() => handleSelectOption(option)}
+                  className={`w-full text-left p-3.5 rounded-2xl border-2 transition-all flex items-start gap-3 cursor-pointer ${
                     isChecked
-                      ? 'border-[#506B26] bg-[#F2F7EB] text-[#18210E] shadow-2xs font-semibold'
+                      ? 'border-[#506B26] bg-[#F2F7EB] text-[#18210E] shadow-xs font-semibold'
                       : 'border-[#E0DDD5] bg-[#FAF9F5] text-[#403E3A] hover:bg-[#F5F2ED] hover:border-[#CED6C1]'
                   }`}
                 >
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                    isChecked ? 'border-[#506B26] bg-[#385117] text-white' : 'border-[#A39E93] bg-white'
+                  <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center shrink-0 text-xs font-bold transition-all ${
+                    isChecked 
+                      ? 'border-[#506B26] bg-[#385117] text-white shadow-2xs' 
+                      : 'border-[#CED6C1] bg-white text-[#5A5852]'
                   }`}>
-                    {isChecked && <CheckCircle2 className="w-3.5 h-3.5" />}
+                    {letter}
                   </div>
-                  <span className="text-xs sm:text-sm leading-relaxed">{option}</span>
+                  <div className="flex-1 space-y-1">
+                    <span className="text-xs sm:text-sm leading-relaxed block">{option}</span>
+                    {isChecked && isWrongOption && (
+                      <span className="text-[11px] font-normal text-[#B45309] block flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        Posture de comparaison ou de jugement (Réponse réflexe à dépasser)
+                      </span>
+                    )}
+                    {isChecked && isCorrectOption && (
+                      <span className="text-[11px] font-bold text-[#2D5A1E] block flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 shrink-0 text-[#385117]" />
+                        Réponse constructive : Ancrage dans l'auto-compassion et votre rythme sacré ✨
+                      </span>
+                    )}
+                  </div>
                 </button>
               );
             })}
           </div>
+
+          {/* Validation Error / Gentle Guidance Alert */}
+          {validationError && (
+            <div className="bg-[#FFFBEB] border-2 border-[#F59E0B] p-4 rounded-2xl flex items-start gap-3 text-xs sm:text-sm text-[#92400E] animate-in fade-in duration-200">
+              <AlertCircle className="w-5 h-5 text-[#D97706] shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <div className="font-bold text-[#78350F]">Conseil d'Alignement Éthique HAVEN-ELLE</div>
+                <p className="leading-relaxed">{validationError}</p>
+              </div>
+            </div>
+          )}
 
           {/* Custom Reflection Text Area */}
           <div className="pt-2">

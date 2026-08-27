@@ -68,6 +68,8 @@ export interface HealingQuestion {
   theme: string;
   question: string;
   options: string[];
+  correctOptionIndex?: number;
+  explanation?: string;
   reflectionPrompt: string;
   benevolentAffirmation: string;
   unlockedRewardBadge: string;
@@ -178,10 +180,12 @@ const CURATED_HEALING_QUESTIONS: Record<number, Partial<HealingQuestion>> = {
     theme: "Singularité & Bienveillance",
     question: "Comment accueillir votre rythme unique de guérison sans vous comparer aux autres ?",
     options: [
-      "En reconnaissant que chaque fleur éclot à son propre moment.",
-      "En honorant la profondeur singulière de mes blessures et de mes victoires.",
-      "En célébrant chaque micro-pas sans exiger une perfection imaginaire."
+      "En regardant les meilleurs et juger mon parcours singulier ?",
+      "En voyant le monde comme des gens faibles et moi comme une personne meilleure ?",
+      "En célébrant chaque micro-pas sans exiger une perfection imaginaire et en honorant mon rythme."
     ],
+    correctOptionIndex: 2,
+    explanation: "La comparaison et le jugement (vers le haut comme vers le bas) nourrissent l'anxiété et le désalignement. Seule l'auto-compassion bienveillante et l'accueil de vos micro-pas honorent votre rythme sacré de guérison.",
     reflectionPrompt: "Quelle est votre plus belle petite victoire de ces derniers jours ?",
     benevolentAffirmation: "« Mon chemin de guérison est unique, sacré et avance à la perfection. »",
     unlockedRewardBadge: "Badge : Fleur de Singularité"
@@ -227,85 +231,15 @@ const CURATED_HEALING_QUESTIONS: Record<number, Partial<HealingQuestion>> = {
   }
 };
 
+import { COMPLETE_100_HEALING_QUESTIONS, getComplete100HealingQuestion } from './resilience100QuestionsData';
+
 export function getHealingQuestionForLevel(level: number): HealingQuestion {
   const targetLevel = Math.min(100, Math.max(1, level));
-  const cycleId = getCycleForLevel(targetLevel);
-  const cycle = RESILIENCE_CYCLES.find(c => c.id === cycleId) || RESILIENCE_CYCLES[0];
-
-  if (CURATED_HEALING_QUESTIONS[targetLevel]) {
-    const q = CURATED_HEALING_QUESTIONS[targetLevel];
-    return {
-      level: targetLevel,
-      cycleId,
-      title: q.title || `Étape ${targetLevel} : Bilan de Guérison`,
-      theme: q.theme || cycle.theme,
-      question: q.question || "Comment cette nouvelle étape nourrit-elle votre paix intérieure et votre bienveillance envers vous-même ?",
-      options: q.options || [
-        "En renforçant ma conviction que je mérite le respect et l'amour véritable.",
-        "En m'aidant à poser des limites claires et saines autour de ma vie.",
-        "En libérant les tensions émotionnelles résiduelles dans mon corps."
-      ],
-      reflectionPrompt: q.reflectionPrompt || "Notez une prise de conscience ou une émotion libératrice ressentie aujourd'hui :",
-      benevolentAffirmation: q.benevolentAffirmation || cycle.coreMantra,
-      unlockedRewardBadge: q.unlockedRewardBadge || `Badge : Maîtrise du Niveau ${targetLevel}`
-    };
-  }
-
-  // Generic dynamic generator for any level 1-100 structured by cycle theme
-  let defaultTheme = cycle.theme;
-  let defaultQuestion = "Quelle vérité bienveillante choisissez-vous d'honorer pour consolider ce nouveau palier ?";
-  let defaultOptions = [
-    "Je choisis d'honorer mes besoins profonds et de respecter mon espace vital.",
-    "Je choisis de me féliciter pour ma persévérance et mon courage quotidien.",
-    "Je choisis de laisser partir les jugements toxiques pour cultiver ma paix."
-  ];
-
-  if (cycleId === 1) {
-    defaultTheme = "Valeurs & Regard Bienveillant";
-    defaultQuestion = `Au niveau ${targetLevel}, comment votre liste de valeurs éclaire-t-elle la façon dont vous vous regardez aujourd'hui ?`;
-    defaultOptions = [
-      "Elle me rappelle que ma valeur est sacrée et indépendante des jugements d'autrui.",
-      "Elle m'aide à remplacer la sévérité intérieure par une infinie douceur.",
-      "Elle m'apporte la clarté et la fierté d'être restée fidèle à mes principes."
-    ];
-  } else if (cycleId === 2) {
-    defaultTheme = "Développement Personnel, Force & Limites";
-    defaultQuestion = `Au niveau ${targetLevel}, quelle force intérieure avez-vous réveillée pour bâtir votre nouveau contexte ?`;
-    defaultOptions = [
-      "La clarté de mon discernement face aux dynamiques de contrôle.",
-      "La fermeté inébranlable de mes limites protectrices.",
-      "La confiance retrouvée en ma capacité à diriger ma propre destinée."
-    ];
-  } else if (cycleId === 3) {
-    defaultTheme = "Pardon Libérateur & Détachement";
-    defaultQuestion = `Au niveau ${targetLevel}, quel fardeau émotionnel choisissez-vous de déposer pour vous libérer ?`;
-    defaultOptions = [
-      "Le poison de la rancœur qui retenait mon énergie captive.",
-      "Le besoin vain d'explications ou de remords de la part de l'autre.",
-      "La douleur du passé pour faire place à la sérénité du présent."
-    ];
-  } else {
-    defaultTheme = "Amour Inconditionnel & Sanctuaire de Paix";
-    defaultQuestion = `Au niveau ${targetLevel}, comment le sanctuaire de l'amour sans condition rayonne-t-il dans votre vie ?`;
-    defaultOptions = [
-      "Par un état de paix inaltérable où aucune tempête extérieure ne peut m'atteindre.",
-      "Par une bienveillance universelle qui commence par un amour total envers moi-même.",
-      "Par la certitude absolue que ma renaissance est accomplie et durable."
-    ];
-  }
-
-  return {
-    level: targetLevel,
-    cycleId,
-    title: `Étape ${targetLevel} : Validation de Guérison & Progression`,
-    theme: defaultTheme,
-    question: defaultQuestion,
-    options: defaultOptions,
-    reflectionPrompt: "Partagez votre réflexion ou le mot-clé de votre ancrage pour ce palier :",
-    benevolentAffirmation: cycle.coreMantra,
-    unlockedRewardBadge: `Badge : Étoile de Résilience (Niveau ${targetLevel})`
-  };
+  return getComplete100HealingQuestion(targetLevel);
 }
+
+export { COMPLETE_100_HEALING_QUESTIONS, getComplete100HealingQuestion };
+
 
 export const RESILIENCE_CYCLES: ResilienceCycle[] = [
   {
