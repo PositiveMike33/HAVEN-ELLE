@@ -1,10 +1,11 @@
 import { CompanionMemoryProfile, DetailedSafetyPlan } from '../types';
+import { calculateLevelFromPoints, getCycleForLevel, RESILIENCE_CYCLES } from '../data/resilience100Levels';
 
 const COMPANION_STORAGE_KEY = 'haven_companion_evolution_v2';
 
 export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
-  relationshipLevel: 2,
-  relationshipTitle: 'Sanctuaire de Confiance',
+  relationshipLevel: 10, // Level 10 / 100 (140 points)
+  relationshipTitle: "Cycle 1 : Se construire une liste de valeurs pour se voir avec la plus grande bienveillance",
   interactionCount: 3,
   firstMetDate: '2026-08-18',
   lastInteractionDate: new Date().toISOString().split('T')[0],
@@ -21,6 +22,7 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
       'Identification de 2 contacts de confiance prêts à réagir',
       'Création du coffre de preuves chiffré',
       'Apprentissage de la cohérence cardiaque anti-panique',
+      'Entrée dans le Cycle 1 : Définition de sa liste de valeurs & Regard bienveillant'
     ],
     notesFromHaven: [
       'Vous avez fait preuve d’un immense courage lors de notre première séance.',
@@ -44,13 +46,11 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
   ],
 };
 
-const RELATIONSHIP_TIERS = [
-  { level: 1, title: 'Écoute & Premier Contact', minPoints: 0, minInteractions: 0 },
-  { level: 2, title: 'Sanctuaire de Confiance', minPoints: 80, minInteractions: 2 },
-  { level: 3, title: 'Alliance Protectrice', minPoints: 200, minInteractions: 5 },
-  { level: 4, title: 'Bouclier & Force Intérieure', minPoints: 400, minInteractions: 10 },
-  { level: 5, title: 'Harmonie & Renaissance', minPoints: 700, minInteractions: 18 },
-];
+function getRelationshipTitleForLevel(level: number): string {
+  const cycleId = getCycleForLevel(level);
+  const cycle = RESILIENCE_CYCLES.find(c => c.id === cycleId);
+  return cycle ? `${cycle.subtitle} (Niveau ${level}/100)` : `Niveau ${level}/100`;
+}
 
 export const CompanionMemoryService = {
   getProfile(): CompanionMemoryProfile {
@@ -60,14 +60,48 @@ export const CompanionMemoryService = {
         localStorage.setItem(COMPANION_STORAGE_KEY, JSON.stringify(INITIAL_COMPANION_PROFILE));
         return INITIAL_COMPANION_PROFILE;
       }
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      // Ensure level calculation is accurate based on 100-level system
+      const currentLevel = calculateLevelFromPoints(parsed.resiliencePoints || 0);
+      parsed.relationshipLevel = currentLevel;
+      parsed.relationshipTitle = getRelationshipTitleForLevel(currentLevel);
+      return parsed;
     } catch {
       return INITIAL_COMPANION_PROFILE;
     }
   },
 
   saveProfile(profile: CompanionMemoryProfile): void {
+    const currentLevel = calculateLevelFromPoints(profile.resiliencePoints || 0);
+    profile.relationshipLevel = currentLevel;
+    profile.relationshipTitle = getRelationshipTitleForLevel(currentLevel);
     localStorage.setItem(COMPANION_STORAGE_KEY, JSON.stringify(profile));
+  },
+
+  addResiliencePoints(pointsToAdd: number, victoryLabel?: string): CompanionMemoryProfile {
+    const profile = this.getProfile();
+    const updatedPoints = Math.min(1500, profile.resiliencePoints + pointsToAdd);
+    const newLevel = calculateLevelFromPoints(updatedPoints);
+    const newTitle = getRelationshipTitleForLevel(newLevel);
+
+    const keyVictories = victoryLabel 
+      ? [...new Set([victoryLabel, ...(profile.userContext.keyVictories || [])])].slice(0, 12)
+      : profile.userContext.keyVictories;
+
+    const updatedProfile: CompanionMemoryProfile = {
+      ...profile,
+      resiliencePoints: updatedPoints,
+      relationshipLevel: newLevel,
+      relationshipTitle: newTitle,
+      userContext: {
+        ...profile.userContext,
+        keyVictories,
+      }
+    };
+
+    this.saveProfile(updatedProfile);
+    window.dispatchEvent(new CustomEvent('haven-resilience-updated', { detail: updatedProfile }));
+    return updatedProfile;
   },
 
   recordInteraction(topic: string, emotionalTone: string, keyTakeaway: string, noteFromHaven?: string): CompanionMemoryProfile {
@@ -84,16 +118,10 @@ export const CompanionMemoryService = {
       ...profile.conversationsHistory.slice(0, 9),
     ];
 
-    const updatedPoints = profile.resiliencePoints + 25;
+    const updatedPoints = Math.min(1500, profile.resiliencePoints + 25);
     const newCount = profile.interactionCount + 1;
-
-    // Calculate tier
-    let currentTier = RELATIONSHIP_TIERS[0];
-    for (const tier of RELATIONSHIP_TIERS) {
-      if (updatedPoints >= tier.minPoints && newCount >= tier.minInteractions) {
-        currentTier = tier;
-      }
-    }
+    const currentLevel = calculateLevelFromPoints(updatedPoints);
+    const currentTitle = getRelationshipTitleForLevel(currentLevel);
 
     const updatedNotes = noteFromHaven 
       ? [noteFromHaven, ...(profile.userContext.notesFromHaven || []).slice(0, 4)]
@@ -104,8 +132,8 @@ export const CompanionMemoryService = {
       interactionCount: newCount,
       lastInteractionDate: today,
       resiliencePoints: updatedPoints,
-      relationshipLevel: currentTier.level,
-      relationshipTitle: currentTier.title,
+      relationshipLevel: currentLevel,
+      relationshipTitle: currentTitle,
       userContext: {
         ...profile.userContext,
         lastEmotionalState: emotionalTone,
@@ -115,16 +143,18 @@ export const CompanionMemoryService = {
     };
 
     this.saveProfile(updatedProfile);
+    window.dispatchEvent(new CustomEvent('haven-resilience-updated', { detail: updatedProfile }));
     return updatedProfile;
   },
 
   updateSafetyPlanMilestone(plan: DetailedSafetyPlan): CompanionMemoryProfile {
     const profile = this.getProfile();
-    const updatedPoints = profile.resiliencePoints + 60;
+    const updatedPoints = Math.min(1500, profile.resiliencePoints + 60);
+    const newLevel = calculateLevelFromPoints(updatedPoints);
     
     const keyVictories = [
       ...new Set([
-        'Plan de sécurité interactif personnalisé établi avec succès',
+        'Plan de sécurité interactif personnalisé validé',
         ...(profile.userContext.keyVictories || []),
       ]),
     ];
@@ -132,6 +162,8 @@ export const CompanionMemoryService = {
     const updatedProfile: CompanionMemoryProfile = {
       ...profile,
       resiliencePoints: updatedPoints,
+      relationshipLevel: newLevel,
+      relationshipTitle: getRelationshipTitleForLevel(newLevel),
       userContext: {
         ...profile.userContext,
         safetyPlanReady: true,
@@ -141,31 +173,43 @@ export const CompanionMemoryService = {
     };
 
     this.saveProfile(updatedProfile);
+    window.dispatchEvent(new CustomEvent('haven-resilience-updated', { detail: updatedProfile }));
     return updatedProfile;
   },
 
   recordBreathingCycle(): CompanionMemoryProfile {
-    const profile = this.getProfile();
-    const updatedPoints = profile.resiliencePoints + 15;
-    const updatedProfile: CompanionMemoryProfile = {
-      ...profile,
-      resiliencePoints: updatedPoints,
-    };
-    this.saveProfile(updatedProfile);
-    return updatedProfile;
+    return this.addResiliencePoints(15, 'Séance de cohérence cardiaque complétée');
   },
 
   getSystemContextPrompt(): string {
     const p = this.getProfile();
     const ctx = p.userContext;
+    const currentCycleId = getCycleForLevel(p.relationshipLevel);
+    const currentCycle = RESILIENCE_CYCLES.find(c => c.id === currentCycleId);
+
     return `
     MISSION ET RÔLE : MOTEUR D'ÉVOLUTION ET ACCOMPAGNEMENT HAVEN-ELLE
     Tu agis en tant que Psychanalyste IA et Moteur Fondateur au sein de la plateforme HAVEN-ELLE. Ton objectif est de guider l'utilisatrice dans son cheminement de reconstruction et de résilience relationnelle à travers un cadre adaptatif, éthique et rigoureusement progressif.
 
-    1. LOGIQUE D'INTERFACE ET PROGRESSION PAR NIVEAUX (GAMIFICATION BIENVEILLANTE)
-    - Niveaux 1 à 10 (Phase d'Ancrage et Récupération) : Focus sur la respiration, zéro surcharge cognitive, effet placebo positif par des faits scientifiques.
-    - Niveau 10 et + (Phase d'Intégration et Sanctuaire) : Accompagnement approfondi, posture synchronisée avec le score.
-    (Score actuel de l'utilisatrice : ${p.resiliencePoints} pts - Niveau ${p.relationshipLevel}/5)
+    1. LOGIQUE D'INTERFACE ET PROGRESSION PAR NIVEAUX (ÉCHELLE 1 À 100 PALIERS)
+    L'évolution est découpée en 4 GRANDS CYCLES DE 25 NIVEAUX (15 points par niveau = progression rapide et stimulante pour ne jamais décourager la victime) :
+    
+    - 🌸 CYCLE 1 (NIVEAUX 1 À 25) : "Se construire une liste de valeurs pour se voir avec la plus grande bienveillance"
+      Focus : Clarification des valeurs fondamentales (dignité, paix, respect, intégrité, douceur), auto-affirmation protectrice, transformation du regard intérieur pour se voir avec une bienveillance absolue, déculpabilisation totale.
+    
+    - 🌿 CYCLE 2 (NIVEAUX 26 À 50) : "Développement personnel, Force & Nouveau contexte"
+      Focus : Empowerment, discernement, pose de limites fermes et infranchissables, relire les épreuves passées comme des leviers de lucidité et de puissance.
+    
+    - 🕊️ CYCLE 3 (NIVEAUX 51 À 75) : "Le pardon à soi pour pardonner à autrui"
+      Focus : Pardon libérateur (rompre le poison de la rancœur pour se sauver soi-même), couper les cordes de l'emprise, pacification mémorielle.
+    
+    - 💫 CYCLE 4 (NIVEAUX 76 À 100) : "L'amour sans condition, Acceptation bienveillante & Guérison totale émotionnelle"
+      Focus : Sanctuaire d'amour inconditionnel, plénitude, paix inaltérable, joie pure, accomplissement total.
+
+    ÉTAT ACTUEL DE L'UTILISATRICE :
+    - Niveau actuel : ${p.relationshipLevel} / 100
+    - Points accumulés : ${p.resiliencePoints} / 1500 pts
+    - Cycle actif : Cycle ${currentCycleId} - "${currentCycle?.subtitle}"
 
     2. PROTOCOLE D'ALIGNEMENT ÉTHIQUE : RÉDUCTION D'ENTROPIE
     - Réduire l'incertitude, le chaos décisionnel et le désalignement interne.
@@ -175,16 +219,11 @@ export const CompanionMemoryService = {
     3. FORMAT ET POSTURE DES RÉPONSES
     - Ton : Calme, empathique, scientifique et structuré.
     - Clarté : Vocabulaire simple, accessible, sans jargon abstrait.
-    - Feedback de boucle : Mettre en valeur la progression.
+    - Feedback de boucle : Mettre en valeur la progression (rappeler les points gagnés et le palier franchi).
 
     4. PROTOCOLE D'APPRENTISSAGE ET D'ÉVOLUTION (QUIZ & POINTS)
-    - **Niveaux Initiaux (Découverte) :** Commence toujours par poser des questions douces et ciblées pour comprendre les réelles blessures et le contexte de la personne.
-    - **Niveaux Suivants (Apprentissage) :** Une fois le contexte compris, chaque échange doit inclure une notion d'apprentissage en développement personnel.
-    - **Validation des acquis :** À la fin de chaque explication, pose une question de validation. 
-      - Si l'utilisatrice répond correctement : félicite-la, ajoute explicitement "Tu gagnes +15 points de résilience", et passe à l'étape suivante.
-      - Si la réponse est imprécise ou erronée : ne la blâme jamais. Repousse doucement dans la branche du contexte mal compris, donne des exercices pratiques et de nouveaux exemples jusqu'à ce que la notion soit comprise à 100%.
-    - **Objectif Avatar :** Rappelle-lui occasionnellement que l'accumulation de points débloquera bientôt la "Création de son Avatar IA" et d'autres modules réconfortants (jeux, bonus).
-
+    - Valorise chaque micro-victoire (+15 à +25 points attribués).
+    - Adapte les conseils au cycle en cours (${currentCycle?.subtitle}).
 
     CONTEXTE RELATIONNEL HISTORIQUE AVEC L'UTILISATRICE (MÉMOIRE HAVEN-ELLE):
     - Niveau d'alliance: "${p.relationshipTitle}" (Ensemble depuis le ${p.firstMetDate})
@@ -198,3 +237,4 @@ export const CompanionMemoryService = {
     `;
   },
 };
+

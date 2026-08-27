@@ -168,7 +168,14 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
               return 8;
             } else {
               setBreathingPhase('inspire');
-              setTotalCycles((c) => c + 1);
+              setTotalCycles((c) => {
+                const nextC = c + 1;
+                // Add points every 2 full breathing cycles to reward resilience
+                if (nextC % 2 === 0) {
+                  CompanionMemoryService.addResiliencePoints(15, `2 cycles de cohérence cardiaque (${nextC} au total)`);
+                }
+                return nextC;
+              });
               return 4;
             }
           }

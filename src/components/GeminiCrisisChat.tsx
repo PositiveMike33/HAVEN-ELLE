@@ -64,11 +64,24 @@ export const GeminiCrisisChat: React.FC = () => {
     scrollToBottom();
   }, [messages, loading]);
 
+  useEffect(() => {
+    const handleUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setProfile(customEvent.detail);
+      } else {
+        setProfile(CompanionMemoryService.getProfile());
+      }
+    };
+    window.addEventListener('haven-resilience-updated', handleUpdate);
+    return () => window.removeEventListener('haven-resilience-updated', handleUpdate);
+  }, []);
+
   const quickPrompts = [
+    { label: "💖 Ma Liste de Valeurs & Regard Bienveillant (Cycle 1)", prompt: "Aide-moi à identifier mes valeurs fondamentales (dignité, respect, douceur, sécurité) et à transformer mon regard intérieur pour me voir avec la plus haute bienveillance.", urgency: 'normal' },
     { label: "🕊️ Consultation Thérapeutique Holistique", prompt: "Je traverse une épreuve douloureuse et un blocage intérieur. Guide-moi avec le protocole thérapeutique intégral (Corps, Cœur, Esprit).", urgency: 'critical' },
     { label: "🌿 Régulation Somatique & Panique", prompt: "Je ressens une vive angoisse et des tensions physiques intenses, guide-moi avec une micro-action somatique immédiate.", urgency: 'fast' },
     { label: "💔 Guérison Enfant Intérieur", prompt: "Je ressens de la culpabilité et un profond sentiment de rejet/honte, aide-moi à déconstruire cette croyance racine.", urgency: 'normal' },
-    { label: "✨ Transmutation & Sens", prompt: "Comment puis-je bénir cette épreuve, élever ma conscience et retrouver ma souveraineté intérieure ?", urgency: 'normal' },
     { label: "⚖️ Protection & Sécurité Réelle", prompt: "Quelles sont les démarches d'urgence (ordonnance de protection, sac de départ, numéros utiles) pour me protéger ?", urgency: 'legal' },
   ];
 

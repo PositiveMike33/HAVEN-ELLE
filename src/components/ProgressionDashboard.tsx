@@ -1,155 +1,432 @@
-import React from 'react';
-import { Trophy, Heart, Users, Sliders, Scale, Eye, Volume2, Lock, Unlock, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  Trophy, 
+  Heart, 
+  Sparkles, 
+  Flame, 
+  Feather, 
+  CheckCircle2, 
+  Lock, 
+  Unlock, 
+  ChevronRight, 
+  Zap, 
+  Award, 
+  BookOpen, 
+  ArrowUpRight,
+  Info,
+  ShieldCheck,
+  Star,
+  Wind
+} from 'lucide-react';
+import { 
+  RESILIENCE_CYCLES, 
+  calculateLevelFromPoints, 
+  calculatePointsForLevel, 
+  getCycleForLevel, 
+  POINTS_PER_LEVEL,
+  QUICK_DAILY_ACTIONS,
+  ResilienceCycle
+} from '../data/resilience100Levels';
+import { CompanionMemoryService } from '../utils/companionMemory';
+import { ValuesAndBenevolenceBuilder } from './ValuesAndBenevolenceBuilder';
 
 interface ProgressionDashboardProps {
   resiliencePoints: number;
+  onPointsEarned?: (newTotal: number) => void;
 }
 
-export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({ resiliencePoints }) => {
-  const milestones = [
-    { points: 20, title: 'Soutien & Apprentissage', description: 'Ressources de psychologie positive', icon: Heart },
-    { points: 50, title: 'Réseau de Secours', description: 'Contacts et alertes de confiance', icon: Users },
-    { points: 80, title: 'Contrôle Visuel', description: 'Ajustement de l\'opacité et du confort', icon: Sliders },
-    { points: 100, title: 'Dossier Justice', description: 'Outils de documentation sécurisée', icon: Scale },
-    { points: 200, title: 'Immersion Visuelle', description: 'Environnement vidéo dynamique', icon: Eye },
-    { points: 400, title: 'Expérience Sensorielle', description: 'Ambiance sonore apaisante', icon: Volume2 },
-  ];
+export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({ 
+  resiliencePoints,
+  onPointsEarned 
+}) => {
+  const currentLevel = calculateLevelFromPoints(resiliencePoints);
+  const currentCycleId = getCycleForLevel(currentLevel);
+  const [selectedCycleId, setSelectedCycleId] = useState<1 | 2 | 3 | 4>(currentCycleId);
+  const [rewardToast, setRewardToast] = useState<{ message: string; points: number } | null>(null);
 
-  // Find current and next milestones
-  const nextMilestone = milestones.find(m => resiliencePoints < m.points) || milestones[milestones.length - 1];
-  const isMaxLevel = resiliencePoints >= milestones[milestones.length - 1].points;
-  
-  const currentLevel = milestones.filter(m => resiliencePoints >= m.points).length;
+  const selectedCycle = RESILIENCE_CYCLES.find(c => c.id === selectedCycleId) || RESILIENCE_CYCLES[0];
+  const activeCycle = RESILIENCE_CYCLES.find(c => c.id === currentCycleId) || RESILIENCE_CYCLES[0];
 
-  const progressToNext = isMaxLevel 
+  // Current level progress within its 15 pts interval
+  const pointsAtStartOfCurrentLevel = calculatePointsForLevel(currentLevel);
+  const pointsForNextLevel = calculatePointsForLevel(currentLevel + 1);
+  const pointsInCurrentLevel = Math.max(0, resiliencePoints - pointsAtStartOfCurrentLevel);
+  const percentToNextLevel = currentLevel >= 100 
     ? 100 
-    : (() => {
-        const previousPoints = currentLevel === 0 ? 0 : milestones[currentLevel - 1].points;
-        const totalReq = nextMilestone.points - previousPoints;
-        const currentProg = resiliencePoints - previousPoints;
-        return Math.min(100, Math.max(0, (currentProg / totalReq) * 100));
-      })();
+    : Math.min(100, Math.round((pointsInCurrentLevel / POINTS_PER_LEVEL) * 100));
+
+  // Global Progress to 100 levels
+  const globalProgress = Math.min(100, Math.round((resiliencePoints / 1500) * 100));
+
+  const handleExecuteQuickAction = (action: typeof QUICK_DAILY_ACTIONS[0]) => {
+    const updated = CompanionMemoryService.addResiliencePoints(action.points, action.title);
+    if (onPointsEarned) {
+      onPointsEarned(updated.resiliencePoints);
+    }
+    setRewardToast({
+      message: `${action.title} accomplie avec bienveillance !`,
+      points: action.points,
+    });
+    setTimeout(() => {
+      setRewardToast(null);
+    }, 4000);
+  };
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-md border-2 border-[#CED6C1]">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-2xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-[#385117]" />
-            Votre Évolution
-          </h2>
-          <p className="text-[#403E3A] font-medium mt-1 text-sm">
-            Chaque action positive renforce votre ancrage. Avancez à votre rythme.
-          </p>
-        </div>
-        <div className="text-right bg-[#F4F2EB] px-4 py-2 rounded-2xl border border-[#D5D0C2]">
-          <div className="text-3xl font-extrabold text-[#385117] font-mono">{resiliencePoints}</div>
-          <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#403E3A]">Points</div>
-        </div>
-      </div>
-
-      {/* Main Progress Bar */}
-      <div className="mb-10 bg-[#F4F2EB] p-5 rounded-2xl border-2 border-[#D5D0C2]">
-        <div className="flex justify-between items-end mb-3">
-          <div>
-            <div className="text-xs font-extrabold text-[#403E3A] uppercase tracking-wider mb-1">Niveau Actuel</div>
-            <div className="text-lg font-extrabold text-[#1F201C]">Niveau {currentLevel + 1}</div>
-          </div>
-          <div className="text-right">
-            {!isMaxLevel && (
-              <>
-                <div className="text-xs font-extrabold text-[#385117] uppercase tracking-wider mb-1">Prochain Palier</div>
-                <div className="text-sm font-extrabold text-[#1F201C]">{nextMilestone.points} pts</div>
-              </>
-            )}
-            {isMaxLevel && (
-              <div className="text-sm font-extrabold text-[#385117]">Harmonie Atteinte</div>
-            )}
-          </div>
-        </div>
-        <div className="h-3.5 w-full bg-[#DDD8CC] rounded-full overflow-hidden relative border border-[#C5BFB0]">
-          <div 
-            className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#4F6927] to-[#718E38] transition-all duration-1000 ease-out rounded-full"
-            style={{ width: `${progressToNext}%` }}
-          />
-        </div>
-        {!isMaxLevel && (
-          <p className="text-xs text-[#383632] text-center mt-3 font-medium">
-            Encore <strong className="text-[#1F201C] font-extrabold">{nextMilestone.points - resiliencePoints} points</strong> pour débloquer : <span className="font-bold text-[#385117]">{nextMilestone.title}</span>
-          </p>
-        )}
-      </div>
-
-      {/* Milestones Timeline */}
-      <div className="space-y-4 relative">
-        <div className="absolute left-[23px] top-4 bottom-4 w-1 bg-[#4F6927]/30 rounded-full" />
-        
-        {milestones.map((milestone, index) => {
-          const isUnlocked = resiliencePoints >= milestone.points;
-          const isNext = !isUnlocked && (index === 0 || resiliencePoints >= milestones[index - 1].points);
-          
-          return (
-            <div 
-              key={milestone.points} 
-              className={`relative flex items-center gap-4 p-4 rounded-2xl transition-all ${
-                isUnlocked 
-                  ? 'bg-[#E5EED6] border-2 border-[#506B26] shadow-sm' 
-                  : isNext 
-                    ? 'bg-white border-2 border-[#385117] shadow-md ring-2 ring-[#385117]/20' 
-                    : 'bg-[#F8F7F4] border-2 border-[#DDD8CC]'
-              }`}
-            >
-              <div className={`w-12 h-12 shrink-0 rounded-full flex items-center justify-center z-10 ${
-                isUnlocked 
-                  ? 'bg-[#385117] text-white shadow-md' 
-                  : isNext
-                    ? 'bg-[#F4F2EB] border-2 border-[#385117] text-[#385117]'
-                    : 'bg-[#ECE9DF] border-2 border-[#D0CABE] text-[#6A6860]'
-              }`}>
-                <milestone.icon className="w-5 h-5" />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-0.5">
-                  <h4 className={`font-bold text-sm truncate ${
-                    isUnlocked 
-                      ? 'text-[#18210E]' 
-                      : isNext 
-                        ? 'text-[#1F201C]' 
-                        : 'text-[#45433E]'
-                  }`}>
-                    {milestone.title}
-                  </h4>
-                  <div className="shrink-0 flex items-center gap-1.5 text-xs font-mono font-extrabold">
-                    <span className={isUnlocked ? 'text-[#385117]' : isNext ? 'text-[#385117]' : 'text-[#6A6860]'}>
-                      {milestone.points}
-                    </span>
-                    <span className="text-[9px] uppercase font-bold text-[#6A6860]">pts</span>
-                  </div>
-                </div>
-                <p className={`text-xs truncate font-medium ${
-                  isUnlocked 
-                    ? 'text-[#323928]' 
-                    : isNext 
-                      ? 'text-[#3E3C37]' 
-                      : 'text-[#5C5952]'
-                }`}>
-                  {milestone.description}
-                </p>
-              </div>
-
-              <div className="shrink-0 pl-2">
-                {isUnlocked ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#385117]" />
-                ) : isNext ? (
-                  <Unlock className="w-4 h-4 text-[#385117]" />
-                ) : (
-                  <Lock className="w-4 h-4 text-[#7A776E]" />
-                )}
-              </div>
+    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border-2 border-[#CED6C1] space-y-8">
+      {/* Toast Notification for Quick Points */}
+      {rewardToast && (
+        <div className="bg-[#E5EED6] border-2 border-[#506B26] p-4 rounded-2xl flex items-center justify-between shadow-md animate-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#385117] text-white flex items-center justify-center font-bold">
+              +{rewardToast.points}
             </div>
-          );
-        })}
+            <div>
+              <h4 className="text-sm font-bold text-[#18210E]">{rewardToast.message}</h4>
+              <p className="text-xs text-[#385117] font-medium">Points de résilience ajoutés immédiatement.</p>
+            </div>
+          </div>
+          <span className="text-xs font-bold px-3 py-1 bg-[#385117] text-white rounded-full">
+            Niveau {calculateLevelFromPoints(resiliencePoints)} / 100
+          </span>
+        </div>
+      )}
+
+      {/* Header: Title & Global Score */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5EED6] text-[#2E4313] text-xs font-bold uppercase tracking-wider mb-2 border border-[#8DA765]/30">
+            <Sparkles className="w-3.5 h-3.5 text-[#385117]" />
+            Évolution Échelonnée en 100 Niveaux
+          </div>
+          <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
+            <Trophy className="w-7 h-7 text-[#385117]" />
+            Votre Sanctuaire de Résilience
+          </h2>
+          <p className="text-[#403E3A] font-medium mt-1 text-sm max-w-2xl">
+            Un cheminement progressif en 4 grands cycles de 25 niveaux. Chaque micro-action vous apporte une récompense immédiate pour avancer sereinement et sans découragement.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 self-start md:self-auto">
+          <div className="bg-[#F4F2EB] px-5 py-3 rounded-2xl border-2 border-[#D5D0C2] text-right shadow-xs">
+            <div className="text-3xl font-extrabold text-[#385117] font-mono leading-none">
+              {resiliencePoints}
+              <span className="text-sm text-[#6A6860] font-sans font-medium">/1500</span>
+            </div>
+            <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#403E3A] mt-1">
+              Points de Résilience
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Status Banner: Current Level & Micro Progress */}
+      <div className="bg-gradient-to-br from-[#F8F7F4] to-[#ECE9DF] p-6 rounded-3xl border-2 border-[#D0CABE] shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl md:text-3xl font-extrabold text-[#1F201C]">
+                Niveau {currentLevel}
+              </span>
+              <span className="text-sm font-bold text-[#6A6860]">sur 100</span>
+              <span className={`text-xs font-extrabold px-3 py-1 rounded-full border ${activeCycle.badgeBg} ${activeCycle.badgeBorder} ${activeCycle.badgeText}`}>
+                {activeCycle.title} : {activeCycle.tag}
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-[#385117] mt-1 italic">
+              {activeCycle.subtitle}
+            </p>
+          </div>
+
+          <div className="text-left sm:text-right">
+            {currentLevel < 100 ? (
+              <div className="text-xs font-bold text-[#403E3A]">
+                Plus que <strong className="text-[#385117] font-extrabold">{POINTS_PER_LEVEL - pointsInCurrentLevel} pts</strong> pour atteindre le <span className="font-extrabold text-[#1F201C]">Niveau {currentLevel + 1}</span>
+              </div>
+            ) : (
+              <div className="text-sm font-extrabold text-[#385117] flex items-center gap-1">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                Guérison & Niveau Suprême Atteints
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Level Progress Bar (15 points cycle) */}
+        <div className="space-y-1.5 mb-4">
+          <div className="flex justify-between text-xs font-bold text-[#4A4742]">
+            <span>Progression du Niveau {currentLevel}</span>
+            <span>{percentToNextLevel}% ({pointsInCurrentLevel}/{POINTS_PER_LEVEL} pts)</span>
+          </div>
+          <div className="h-4 w-full bg-[#DDD8CC] rounded-full overflow-hidden p-0.5 border border-[#C5BFB0]">
+            <div 
+              className="h-full bg-gradient-to-r from-[#4F6927] to-[#718E38] rounded-full transition-all duration-700 ease-out shadow-xs"
+              style={{ width: `${percentToNextLevel}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Global Progress Bar (1500 points) */}
+        <div className="pt-2 border-t border-[#D5D0C2] flex items-center justify-between text-xs text-[#5C5952]">
+          <span className="font-medium">
+            Progression Globale (100 Niveaux) : <strong className="text-[#1F201C] font-bold">{globalProgress}%</strong>
+          </span>
+          <span className="font-mono font-bold text-[#385117]">
+            {resiliencePoints} / 1500 pts totaux
+          </span>
+        </div>
+      </div>
+
+      {/* Quick Positive Actions: Easy points to encourage without stress */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-base font-bold text-[#1F201C] flex items-center gap-2">
+              <Zap className="w-5 h-5 text-[#385117]" />
+              Micro-Récompenses Rapides & Exercices Bienveillants
+            </h3>
+            <p className="text-xs text-[#5C5952]">
+              Gagnez des points rapidement pour franchir vos étapes en toute légèreté.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {QUICK_DAILY_ACTIONS.map((action) => {
+            const Icon = action.icon;
+            return (
+              <button
+                key={action.id}
+                onClick={() => handleExecuteQuickAction(action)}
+                className="group text-left p-4 rounded-2xl bg-[#F8F7F4] hover:bg-[#E5EED6] border-2 border-[#D5D0C2] hover:border-[#506B26] transition-all flex flex-col justify-between shadow-xs hover:shadow-md cursor-pointer"
+              >
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-9 h-9 rounded-xl bg-white group-hover:bg-[#385117] text-[#385117] group-hover:text-white flex items-center justify-center border border-[#D5D0C2] group-hover:border-[#385117] transition-colors">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-mono font-extrabold bg-white text-[#385117] border border-[#CED6C1] group-hover:bg-[#385117] group-hover:text-white transition-colors">
+                    +{action.points} pts
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-[#1F201C] group-hover:text-[#18210E]">
+                    {action.title}
+                  </h4>
+                  <p className="text-xs text-[#5C5952] mt-0.5 group-hover:text-[#323928]">
+                    {action.subtitle}
+                  </p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-[#E5E2D9] group-hover:border-[#8DA765]/40 flex items-center justify-between text-[11px] font-bold text-[#385117]">
+                  <span>Activer l'exercice</span>
+                  <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* The 4 Major Resilience Cycles Tabs (25 levels each) */}
+      <div>
+        <div className="mb-4">
+          <h3 className="text-lg font-serif font-bold text-[#1F201C] flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-[#385117]" />
+            Les 4 Grands Cycles d'Ascension (100 Niveaux)
+          </h3>
+          <p className="text-xs text-[#5C5952]">
+            Explorez les 4 piliers de votre transformation et découvrez les paliers et récompenses de chaque étape.
+          </p>
+        </div>
+
+        {/* Cycle Selection Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+          {RESILIENCE_CYCLES.map((cycle) => {
+            const Icon = cycle.icon;
+            const isCurrent = currentCycleId === cycle.id;
+            const isSelected = selectedCycleId === cycle.id;
+            const isCompleted = currentLevel > cycle.maxLevel;
+            const isUnlocked = currentLevel >= cycle.minLevel;
+
+            return (
+              <button
+                key={cycle.id}
+                onClick={() => setSelectedCycleId(cycle.id)}
+                className={`p-4 rounded-2xl text-left border-2 transition-all flex flex-col justify-between relative overflow-hidden ${
+                  isSelected
+                    ? `${cycle.badgeBg} ${cycle.badgeBorder} shadow-md ring-2 ring-[#385117]/20`
+                    : isUnlocked
+                      ? 'bg-white border-[#D0CABE] hover:border-[#8DA765] hover:bg-[#FAF9F6]'
+                      : 'bg-[#F4F2EB] border-[#DDD8CC] opacity-80'
+                }`}
+              >
+                {isCompleted && (
+                  <span className="absolute top-2 right-2 text-xs font-bold text-[#385117] flex items-center gap-1 bg-white/80 px-2 py-0.5 rounded-full border border-[#506B26]/30">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#385117]" /> Validé
+                  </span>
+                )}
+                {isCurrent && !isCompleted && (
+                  <span className="absolute top-2 right-2 text-xs font-bold text-[#385117] flex items-center gap-1 bg-white/90 px-2 py-0.5 rounded-full border border-[#385117]">
+                    <span className="w-2 h-2 rounded-full bg-[#385117] animate-pulse" /> En cours
+                  </span>
+                )}
+
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                      isSelected ? 'bg-[#385117] text-white' : 'bg-[#E5EED6] text-[#385117]'
+                    }`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-mono font-extrabold text-[#4A4742]">
+                      Niv. {cycle.minLevel}-{cycle.maxLevel}
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-[#1F201C] line-clamp-1">
+                    Cycle {cycle.id}
+                  </h4>
+                  <p className="text-xs font-semibold text-[#385117] mt-0.5 line-clamp-2">
+                    {cycle.subtitle}
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-[#DDD8CC] text-[11px] font-medium text-[#5C5952]">
+                  {cycle.tag}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected Cycle Focus Card */}
+        <div className={`p-6 rounded-3xl border-2 ${selectedCycle.badgeBg} ${selectedCycle.badgeBorder} shadow-xs`}>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-black/10">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#385117] mb-1">
+                <span>Cycle {selectedCycle.id} • Niveaux {selectedCycle.minLevel} à {selectedCycle.maxLevel}</span>
+                <span>({selectedCycle.minPoints} à {selectedCycle.maxPoints} pts)</span>
+              </div>
+              <h3 className="text-xl md:text-2xl font-serif font-bold text-[#18210E]">
+                {selectedCycle.subtitle}
+              </h3>
+              <p className="text-sm text-[#323928] font-medium mt-1">
+                {selectedCycle.description}
+              </p>
+            </div>
+
+            <div className="bg-white/90 p-4 rounded-2xl border border-black/10 max-w-sm shrink-0">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#385117] mb-1">
+                <Info className="w-4 h-4" />
+                <span>Base Scientifique & Thérapeutique</span>
+              </div>
+              <p className="text-xs text-[#403E3A] leading-relaxed">
+                {selectedCycle.scientificFoundation}
+              </p>
+            </div>
+          </div>
+
+          {/* Mantra of the Cycle */}
+          <div className="bg-white/80 p-4 rounded-2xl border border-black/10 mb-6 text-center">
+            <span className="text-xs font-extrabold text-[#385117] uppercase tracking-wider block mb-1">
+              Mantra Thérapeutique du Cycle
+            </span>
+            <blockquote className="text-sm md:text-base font-serif italic text-[#1F201C] font-semibold">
+              {selectedCycle.coreMantra}
+            </blockquote>
+          </div>
+
+          {/* Interactive Core Values Builder for Cycle 1 */}
+          {selectedCycle.id === 1 && (
+            <div className="mb-8">
+              <ValuesAndBenevolenceBuilder 
+                onPointsEarned={onPointsEarned}
+              />
+            </div>
+          )}
+
+          {/* Milestones in this Cycle */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-extrabold uppercase tracking-wider text-[#18210E] mb-2 flex items-center gap-2">
+              <Award className="w-4 h-4 text-[#385117]" />
+              Paliers Clés & Récompenses Déblocables (Cycle {selectedCycle.id})
+            </h4>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {selectedCycle.milestones.map((milestone) => {
+                const isReached = resiliencePoints >= milestone.points;
+                const isNextInLine = !isReached && currentLevel >= (milestone.level - 4);
+
+                return (
+                  <div
+                    key={milestone.level}
+                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col justify-between ${
+                      isReached
+                        ? 'bg-white border-[#506B26] shadow-xs'
+                        : isNextInLine
+                          ? 'bg-white/95 border-[#385117] ring-1 ring-[#385117]'
+                          : 'bg-white/50 border-[#D0CABE]/60'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                            isReached
+                              ? 'bg-[#385117] text-white'
+                              : isNextInLine
+                                ? 'bg-[#E5EED6] text-[#385117] border border-[#385117]'
+                                : 'bg-[#ECE9DF] text-[#6A6860]'
+                          }`}>
+                            {milestone.level}
+                          </span>
+                          <span className="text-xs font-mono font-bold text-[#5C5952]">
+                            {milestone.points} pts
+                          </span>
+                        </div>
+
+                        <div>
+                          {isReached ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-bold text-[#385117] bg-[#E5EED6] px-2 py-0.5 rounded-full border border-[#506B26]/30">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Acquis
+                            </span>
+                          ) : isNextInLine ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-bold text-[#385117] bg-[#FAF9F6] px-2 py-0.5 rounded-full border border-[#385117]">
+                              <Unlock className="w-3.5 h-3.5" /> En approche
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-xs font-bold text-[#6A6860] bg-[#ECE9DF] px-2 py-0.5 rounded-full">
+                              <Lock className="w-3.5 h-3.5" /> À débloquer
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <h5 className="text-sm font-bold text-[#1F201C]">
+                        {milestone.title}
+                      </h5>
+                      <p className="text-xs text-[#403E3A] mt-0.5 font-medium">
+                        {milestone.description}
+                      </p>
+
+                      <div className="mt-3 p-2.5 rounded-xl bg-[#F8F7F4] border border-[#E5E2D9] text-xs space-y-1">
+                        <div className="font-semibold text-[#1F201C] flex items-center gap-1.5">
+                          <span className="text-[#385117]">🌱 Exercice :</span> {milestone.exercise}
+                        </div>
+                        <div className="text-[#5C5952] text-[11px]">
+                          <strong>Effet :</strong> {milestone.benefit}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t border-[#E5E2D9] flex items-center justify-between text-xs font-bold text-[#385117]">
+                      <span className="truncate">🎁 {milestone.unlockedReward}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

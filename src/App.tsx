@@ -84,7 +84,21 @@ export default function App() {
       },
       () => setIsAuthenticated(false)
     );
-    return () => unsubscribe();
+
+    const handleResilienceUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setCompanionProfile(customEvent.detail);
+      } else {
+        setCompanionProfile(CompanionMemoryService.getProfile());
+      }
+    };
+    window.addEventListener('haven-resilience-updated', handleResilienceUpdate);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('haven-resilience-updated', handleResilienceUpdate);
+    };
   }, []);
 
   // Sync to Cloud SQL and Google Drive whenever data changes
@@ -209,7 +223,10 @@ export default function App() {
 
         {activeTab === 'evaluation' && (
           <div className="space-y-6">
-            <ProgressionDashboard resiliencePoints={companionProfile.resiliencePoints} />
+            <ProgressionDashboard 
+              resiliencePoints={companionProfile.resiliencePoints} 
+              onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
+            />
             <MainScreenVideoAndQuestions onPlanGenerated={() => setActiveTab('wellness')} />
           </div>
         )}
