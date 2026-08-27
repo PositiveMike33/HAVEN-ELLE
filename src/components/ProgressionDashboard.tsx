@@ -131,26 +131,26 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
       {/* Header: Title & Global Score */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5EED6] text-[#2E4313] text-xs font-bold uppercase tracking-wider mb-2 border border-[#8DA765]/30">
-            <Sparkles className="w-3.5 h-3.5 text-[#385117]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#DCFCE7] text-[#14532D] text-xs font-black uppercase tracking-wider mb-2 border-2 border-[#86EFAC]">
+            <Sparkles className="w-4 h-4 text-[#15803D]" />
             Évolution Échelonnée en 111 Niveaux
           </div>
-          <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
-            <Trophy className="w-7 h-7 text-[#385117]" />
+          <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#0F172A] flex items-center gap-2.5">
+            <Trophy className="w-7 h-7 text-[#15803D]" />
             Votre Sanctuaire de Résilience
           </h2>
-          <p className="text-[#403E3A] font-medium mt-1 text-sm max-w-2xl">
+          <p className="text-[#334155] font-semibold mt-1 text-sm max-w-2xl leading-relaxed">
             Un cheminement progressif en 4 grands cycles de 25 niveaux couronnés par le Cycle Secret du Kybalion (Niveaux 101 à 111) et le Trophée Légendaire « ÉVEILLÉ ».
           </p>
         </div>
 
         <div className="flex items-center gap-3 self-start md:self-auto">
-          <div className="bg-[#F4F2EB] px-5 py-3 rounded-2xl border-2 border-[#D5D0C2] text-right shadow-xs">
-            <div className="text-3xl font-extrabold text-[#385117] font-mono leading-none">
+          <div className="bg-white px-5 py-3 rounded-2xl border-2 border-[#CBD5E1] text-right shadow-xs">
+            <div className="text-3xl font-black text-[#15803D] font-mono leading-none">
               {resiliencePoints}
-              <span className="text-sm text-[#6A6860] font-sans font-medium">/1665</span>
+              <span className="text-sm text-[#475569] font-sans font-bold">/1665</span>
             </div>
-            <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#403E3A] mt-1">
+            <div className="text-[11px] uppercase font-black tracking-wider text-[#0F172A] mt-1">
               Points de Résilience
             </div>
           </div>
@@ -159,34 +159,34 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowResetConfirm(true)}
-              className="p-3 bg-[#F4F2EB] hover:bg-[#E5EAD9] text-[#6A6860] hover:text-[#385117] rounded-2xl border-2 border-[#D5D0C2] transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs"
+              className="p-3 bg-white hover:bg-[#F8FAFC] text-[#0F172A] rounded-2xl border-2 border-[#CBD5E1] transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs"
               title="Réinitialiser au Niveau 1 (Remise à zéro pour tester le parcours et remplir les 111 questions)"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-4 h-4 text-[#15803D]" />
               <span className="hidden sm:inline">Niveau 1</span>
             </button>
 
             {showResetConfirm && (
-              <div className="absolute right-0 top-full mt-2 w-72 p-4 bg-white rounded-2xl shadow-xl border-2 border-[#D5D0C2] z-50 animate-in fade-in zoom-in-95">
+              <div className="absolute right-0 top-full mt-2 w-72 p-4 bg-white rounded-2xl shadow-xl border-2 border-[#CBD5E1] z-50 animate-in fade-in zoom-in-95">
                 <div className="flex items-start gap-2">
-                  <RotateCcw className="w-5 h-5 text-[#8A5A1E] shrink-0 mt-0.5" />
+                  <RotateCcw className="w-5 h-5 text-[#854D0E] shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="text-xs font-bold text-[#1F201C]">Remise à zéro (Niveau 1) ?</h5>
-                    <p className="text-[11px] text-[#5C5952] mt-1 leading-snug">
+                    <h5 className="text-xs font-black text-[#0F172A]">Remise à zéro (Niveau 1) ?</h5>
+                    <p className="text-xs text-[#334155] mt-1 leading-snug">
                       Voulez-vous remettre votre profil à <strong>0 point et Niveau 1</strong> pour remplir manuellement toutes les 111 questions de guérison ?
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-2 mt-3 pt-2 border-t border-[#E5E2D9]">
+                <div className="flex items-center justify-end gap-2 mt-3 pt-2 border-t-2 border-[#E2E8F0]">
                   <button
                     onClick={() => setShowResetConfirm(false)}
-                    className="px-3 py-1 text-xs font-bold text-[#6A6860] hover:bg-[#F5F2ED] rounded-lg"
+                    className="px-3 py-1.5 text-xs font-bold text-[#475569] hover:bg-[#F1F5F9] rounded-lg"
                   >
                     Annuler
                   </button>
                   <button
                     onClick={handleResetToLevelOne}
-                    className="px-3 py-1 text-xs font-bold bg-[#8A5A1E] hover:bg-[#6D4717] text-white rounded-lg shadow-2xs"
+                    className="px-3.5 py-1.5 text-xs font-black bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-lg shadow-xs"
                   >
                     Oui, recommencer à 1
                   </button>
@@ -198,13 +198,13 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
       </div>
 
       {/* Navigation Switcher Tabs between Dashboard Views */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-[#F4F2EB] rounded-2xl border-2 border-[#D5D0C2]">
+      <div className="flex flex-wrap items-center gap-2 p-2 bg-[#F1F5F9] rounded-2xl border-2 border-[#CBD5E1]">
         <button
           onClick={() => setActiveDashboardView('toltec_cards')}
-          className={`flex-1 min-w-[200px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 min-w-[200px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 border-2 ${
             activeDashboardView === 'toltec_cards'
-              ? 'bg-[#385117] text-white shadow-xs'
-              : 'text-[#5C5952] hover:bg-white/50'
+              ? 'bg-[#15803D] text-white border-[#15803D] shadow-sm'
+              : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -213,28 +213,28 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
 
         <button
           onClick={() => setActiveDashboardView('overview')}
-          className={`flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 border-2 ${
             activeDashboardView === 'overview'
-              ? 'bg-white text-[#1F201C] shadow-xs border border-[#CED6C1]'
-              : 'text-[#5C5952] hover:bg-white/50'
+              ? 'bg-[#15803D] text-white border-[#15803D] shadow-sm'
+              : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
           }`}
         >
-          <Trophy className="w-4 h-4 text-[#385117]" />
+          <Trophy className="w-4 h-4" />
           Vue Tableau de Bord
         </button>
 
         <button
           onClick={() => setActiveDashboardView('roadmap100')}
-          className={`flex-1 min-w-[210px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 relative ${
+          className={`flex-1 min-w-[210px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 relative border-2 ${
             activeDashboardView === 'roadmap100'
-              ? 'bg-[#385117] text-white shadow-xs'
-              : 'text-[#5C5952] hover:bg-white/50'
+              ? 'bg-[#15803D] text-white border-[#15803D] shadow-sm'
+              : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
           }`}
         >
           <BookOpen className="w-4 h-4" />
           <span>Grand Livre des 111 Questions</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${
-            activeDashboardView === 'roadmap100' ? 'bg-white/20 text-white' : 'bg-[#E5EED6] text-[#385117]'
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-black ${
+            activeDashboardView === 'roadmap100' ? 'bg-white/25 text-white' : 'bg-[#DCFCE7] text-[#14532D]'
           }`}>
             {validatedLevel}/111
           </span>
@@ -242,13 +242,13 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
 
         <button
           onClick={() => setActiveDashboardView('values')}
-          className={`flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 border-2 ${
             activeDashboardView === 'values'
-              ? 'bg-white text-[#1F201C] shadow-xs border border-[#CED6C1]'
-              : 'text-[#5C5952] hover:bg-white/50'
+              ? 'bg-[#15803D] text-white border-[#15803D] shadow-sm'
+              : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
           }`}
         >
-          <Compass className="w-4 h-4 text-[#385117]" />
+          <Compass className="w-4 h-4" />
           Mes 5 Valeurs & Audios
         </button>
       </div>

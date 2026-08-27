@@ -327,21 +327,21 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
       >
         <div
           ref={iframeContainerRef}
-          className="absolute inset-0 w-full h-full flex items-center justify-center bg-black"
+          className="absolute inset-0 w-full h-full flex items-center justify-center bg-[#F8FAFC]"
         >
           {!isVideoUnfrozen ? (
             <img 
               src="https://img.youtube.com/vi/hgHwXM7GYuk/maxresdefault.jpg" 
               alt="Background" 
-              className="w-full h-full object-cover opacity-80" 
-              style={{ filter: 'contrast(105%) saturate(110%)' }}
+              className="w-full h-full object-cover opacity-60" 
+              style={{ filter: 'contrast(100%) saturate(100%)' }}
             />
           ) : (
             <div
               id="haven-persistent-bg-player"
-              className="w-[150vw] h-[150vh] min-w-full min-h-full object-cover scale-[1.3] pointer-events-none border-0"
+              className="w-[150vw] h-[150vh] min-w-full min-h-full object-cover scale-[1.3] pointer-events-none border-0 opacity-60"
               style={{
-                filter: 'contrast(105%) saturate(110%)',
+                filter: 'contrast(100%) saturate(100%)',
               }}
             />
           )}
@@ -351,8 +351,8 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         <div
           className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
             isNightMode
-              ? 'bg-gradient-to-b from-black/40 via-transparent to-black/60 mix-blend-multiply'
-              : 'bg-gradient-to-b from-[#F8F7F2]/10 via-transparent to-[#F8F7F2]/40 mix-blend-overlay'
+              ? 'bg-gradient-to-b from-[#0B0F19]/40 via-transparent to-[#0B0F19]/60'
+              : 'bg-gradient-to-b from-[#F8FAFC]/40 via-transparent to-[#F8FAFC]/60'
           }`}
         />
       </div>
@@ -365,13 +365,13 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         >
           {/* Expanded settings menu */}
           {showControls && (
-            <div className={`p-3.5 rounded-2xl shadow-2xl border text-xs w-80 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200 backdrop-blur-xl ${
+            <div className={`p-4 rounded-2xl shadow-2xl border-2 text-xs w-80 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200 ${
               isNightMode 
-                ? 'bg-[#1E201B]/95 border-[#3E4633] text-[#D6D4CD]' 
-                : 'bg-white/95 border-[#CED6C1] text-[#3E3B39]'
+                ? 'bg-[#1E293B] border-[#475569] text-[#F8FAFC]' 
+                : 'bg-white border-[#CBD5E1] text-[#0F172A]'
             }`}>
-              <div className="flex items-center justify-between border-b border-inherit/30 pb-2">
-                <div className="flex items-center gap-1.5 font-bold text-[#8A9A5B]">
+              <div className="flex items-center justify-between border-b-2 border-inherit/20 pb-2">
+                <div className="flex items-center gap-1.5 font-bold text-[#15803D]">
                   <Sliders className="w-4 h-4" />
                   <span>Paramètres Visuels {canControlAudio ? '& Sonores' : ''}</span>
                 </div>

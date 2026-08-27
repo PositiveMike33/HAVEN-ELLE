@@ -2,37 +2,39 @@
 
 @layer base {
   :root {
-    --ui-surface-opacity: 0.85;
-    --ui-bg-opacity: 0.25;
-    --ui-blur: 16px;
-    --video-opacity: 0.45;
+    --ui-surface-opacity: 1.0;
+    --ui-bg-opacity: 0.15;
+    --ui-blur: 0px;
+    --video-opacity: 0.25;
 
-    --color-canvas: #F8F7F2;
+    --color-canvas: #F8FAFC;
     --color-surface: #FFFFFF;
-    --color-surface-soft: #F5F2ED;
-    --color-surface-muted: #F0EEE6;
-    --color-moss: #8A9A5B;
-    --color-moss-dark: #5A5A40;
-    --color-moss-light: #E5EAD9;
-    --color-moss-border: #CED6C1;
-    --color-terracotta: #A64D4D;
-    --color-terracotta-soft: #F5E6E0;
-    --color-sand-border: #E5E2D9;
-    --color-sand-muted: #D9D4C7;
-    --color-text-main: #3E3B39;
-    --color-text-muted: #8E8B82;
+    --color-surface-soft: #F1F5F9;
+    --color-surface-muted: #E2E8F0;
+    --color-moss: #15803D;
+    --color-moss-dark: #14532D;
+    --color-moss-light: #DCFCE7;
+    --color-moss-border: #86EFAC;
+    --color-terracotta: #DC2626;
+    --color-terracotta-soft: #FEE2E2;
+    --color-sand-border: #CBD5E1;
+    --color-sand-muted: #94A3B8;
+    --color-text-main: #0F172A;
+    --color-text-muted: #334155;
   }
 
   body {
-    background-color: #F8F7F2;
-    color: #3E3B39;
+    background-color: #F8FAFC;
+    color: #0F172A;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    font-size: 15px;
+    line-height: 1.6;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   body.night-mode {
-    background-color: #121311;
-    color: #D6D4CD;
+    background-color: #0B0F19;
+    color: #F8FAFC;
   }
 
   h1, h2, h3, .font-serif-natural {
@@ -40,218 +42,150 @@
   }
 }
 
-/* Base Light Theme Translucent Surfaces */
+/* High Contrast Root Container */
 #haven-app-root {
-  background-color: rgba(248, 247, 242, calc(var(--ui-surface-opacity) * 0.35 + 0.05));
-  transition: background-color 0.25s ease, color 0.25s ease;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 header {
-  background-color: rgba(255, 255, 255, calc(var(--ui-surface-opacity) * 0.95)) !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
-  transition: background-color 0.2s ease;
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
 }
 
-/* Translucent Cards & Fiches in Light Mode */
+/* High Contrast Crisp Cards */
 .bg-white,
 .bg-\[\#FFFFFF\],
 .bg-\[\#FFFFFF\]\/90,
 .bg-\[\#FFFFFF\]\/92,
 .bg-\[\#FFFFFF\]\/95 {
-  background-color: rgba(255, 255, 255, var(--ui-surface-opacity)) !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
-  transition: background-color 0.2s ease;
+  background-color: #FFFFFF !important;
+  color: #0F172A;
 }
 
-.bg-\[\#F8F7F2\],
-.bg-\[\#F5F2ED\],
-.bg-\[\#F0EEE6\] {
-  background-color: rgba(245, 242, 237, var(--ui-surface-opacity)) !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+/* Ensure all text is high-contrast and zero visual strain */
+.text-\[\#1F201C\],
+.text-\[\#2A2825\],
+.text-\[\#3E3B39\],
+.text-\[\#403E3A\],
+.text-\[\#55524B\],
+.text-\[\#5C5952\],
+.text-\[\#6A6860\],
+.text-\[\#716E65\] {
+  color: #0F172A !important;
 }
 
-.bg-\[\#E5EAD9\],
-.bg-\[\#EBF1E4\],
-.bg-\[\#F2F6EC\],
-.bg-\[\#EAF2DE\] {
-  background-color: rgba(229, 234, 217, var(--ui-surface-opacity)) !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+.text-\[\#8E8B82\],
+.text-\[\#7A776F\] {
+  color: #334155 !important;
 }
 
-/* Translucent Hero Banner in Light Mode */
-#trusted-contacts-section > div.bg-\[\#5A5A40\],
-.bg-\[\#5A5A40\] {
-  background-color: rgba(90, 90, 64, var(--ui-surface-opacity)) !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+/* Crisp Green Accents */
+.text-\[\#385117\],
+.text-\[\#2E4313\],
+.text-\[\#18210E\] {
+  color: #14532D !important;
 }
 
-/* Low-contrast Night Mode Overrides */
+/* Crisp High-Contrast Night Mode (When Activated) */
 .night-mode {
-  --color-canvas: #121311;
-  --color-surface: #1E201B;
-  --color-surface-soft: #252721;
-  --color-surface-muted: #2C2F27;
-  --color-moss: #7A8D50;
-  --color-moss-dark: #A5B67D;
-  --color-moss-light: #2A3122;
-  --color-moss-border: #3E4633;
-  --color-sand-border: #363932;
-  --color-sand-muted: #484C42;
-  --color-text-main: #D6D4CD;
-  --color-text-muted: #9E9C94;
+  --color-canvas: #0B0F19;
+  --color-surface: #1E293B;
+  --color-surface-soft: #334155;
+  --color-surface-muted: #475569;
+  --color-moss: #22C55E;
+  --color-moss-dark: #4ADE80;
+  --color-moss-light: #14532D;
+  --color-moss-border: #166534;
+  --color-sand-border: #475569;
+  --color-sand-muted: #94A3B8;
+  --color-text-main: #F8FAFC;
+  --color-text-muted: #E2E8F0;
 }
 
 .night-mode #haven-app-root {
-  background-color: rgba(18, 19, 17, calc(var(--ui-surface-opacity) * 0.45 + 0.1));
-  color: #D6D4CD;
+  background-color: #0B0F19;
+  color: #F8FAFC;
 }
 
 .night-mode header {
-  background-color: rgba(28, 30, 25, calc(var(--ui-surface-opacity) * 0.95)) !important;
-  border-color: #363932 !important;
-  color: #D6D4CD !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
-}
-
-.night-mode header .border-b {
-  border-color: #31342D !important;
+  background-color: #1E293B !important;
+  border-color: #475569 !important;
+  color: #F8FAFC !important;
 }
 
 .night-mode footer {
-  background-color: rgba(26, 28, 24, calc(var(--ui-surface-opacity) * 0.95)) !important;
-  border-color: #363932 !important;
-  color: #9E9C94 !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+  background-color: #1E293B !important;
+  border-color: #475569 !important;
+  color: #E2E8F0 !important;
 }
 
-.night-mode #header-global-audio-pill {
-  background-color: rgba(39, 41, 36, var(--ui-surface-opacity)) !important;
-  border-color: #3A3E34 !important;
-  color: #D6D4CD !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
-}
-
-/* Translucent Cards & Fiches in Night Mode */
 .night-mode .bg-white,
 .night-mode .bg-\[\#FFFFFF\],
-.night-mode .bg-\[\#FFFFFF\]\/90,
-.night-mode .bg-\[\#FFFFFF\]\/92,
-.night-mode .bg-\[\#FFFFFF\]\/95 {
-  background-color: rgba(30, 32, 27, var(--ui-surface-opacity)) !important;
-  color: #D6D4CD;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
-}
-
+.night-mode .bg-\[\#FAF9F5\],
 .night-mode .bg-\[\#F8F7F2\],
 .night-mode .bg-\[\#F5F2ED\],
-.night-mode .bg-\[\#F0EEE6\],
-.night-mode .bg-\[\#FAF9F5\] {
-  background-color: rgba(37, 39, 33, var(--ui-surface-opacity)) !important;
-  color: #D6D4CD;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+.night-mode .bg-\[\#FAF8F2\] {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: #475569 !important;
 }
 
-.night-mode .bg-\[\#E5EAD9\],
-.night-mode .bg-\[\#EBF1E4\],
-.night-mode .bg-\[\#F2F6EC\],
-.night-mode .bg-\[\#EAF2DE\] {
-  background-color: rgba(42, 49, 34, var(--ui-surface-opacity)) !important;
-  color: #C8D8B0 !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+.night-mode .text-\[\#1F201C\],
+.night-mode .text-\[\#2A2825\],
+.night-mode .text-\[\#3E3B39\],
+.night-mode .text-\[\#403E3A\],
+.night-mode .text-\[\#0F172A\] {
+  color: #F8FAFC !important;
 }
 
-.night-mode .bg-\[\#5A5A40\] {
-  background-color: rgba(55, 58, 48, var(--ui-surface-opacity)) !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+.night-mode .text-\[\#5C5952\],
+.night-mode .text-\[\#6A6860\],
+.night-mode .text-\[\#7A776F\],
+.night-mode .text-\[\#8E8B82\],
+.night-mode .text-\[\#334155\] {
+  color: #CBD5E1 !important;
 }
 
-.night-mode .bg-\[\#F5E6E0\] {
-  background-color: rgba(56, 37, 37, var(--ui-surface-opacity)) !important;
-  color: #E29F9F !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
-}
-
-/* Translucent buttons in night mode */
-.night-mode button:not(#open-emergency-sos-btn):not(#header-emergency-sos-button):not(#header-audio-play-pause-btn):not(.bg-\[\#8A9A5B\]):not(.bg-\[\#A64D4D\]) {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.night-mode .border-\[\#E5E2D9\],
-.night-mode .border-\[\#F0EEE6\],
-.night-mode .border-\[\#D9D4C7\],
-.night-mode .border-\[\#CED6C1\],
-.night-mode .border-\[\#CEDEC0\],
-.night-mode .border-\[\#DDD8CB\],
-.night-mode .border-\[\#BDCEAA\] {
-  border-color: rgba(62, 66, 56, 0.7) !important;
-}
-
-.night-mode .text-\[\#3E3B39\] {
-  color: #D6D4CD !important;
-}
-
-.night-mode .text-\[\#5A5A40\],
-.night-mode .text-\[\#4F6331\] {
-  color: #B5C09B !important;
-}
-
-.night-mode .text-\[\#716E65\],
-.night-mode .text-\[\#8E8B82\] {
-  color: #9C9A91 !important;
+.night-mode .text-\[\#385117\],
+.night-mode .text-\[\#2E4313\],
+.night-mode .text-\[\#14532D\] {
+  color: #4ADE80 !important;
 }
 
 .night-mode input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
 .night-mode textarea,
 .night-mode select {
-  background-color: rgba(26, 28, 24, calc(var(--ui-surface-opacity) * 0.95)) !important;
-  border-color: #3B3E36 !important;
-  color: #E2E0D8 !important;
-  backdrop-filter: blur(var(--ui-blur));
-  -webkit-backdrop-filter: blur(var(--ui-blur));
+  background-color: #0F172A !important;
+  border-color: #475569 !important;
+  color: #F8FAFC !important;
 }
 
 .night-mode input::placeholder,
 .night-mode textarea::placeholder {
-  color: #78776F !important;
+  color: #94A3B8 !important;
 }
 
-/* Natural Tones custom scrollbars */
+/* Custom crisp scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #F1F5F9;
 }
 .night-mode ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #0B0F19;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D9D4C7;
+  background: #94A3B8;
   border-radius: 9999px;
 }
 .night-mode ::-webkit-scrollbar-thumb {
-  background: #3B3E36;
+  background: #475569;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8E8B82;
+  background: #64748B;
 }
-.night-mode ::-webkit-scrollbar-thumb:hover {
-  background: #5A5E53;
-}
-
-

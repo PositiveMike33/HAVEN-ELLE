@@ -266,89 +266,89 @@ export const ValuesAndBenevolenceBuilder: React.FC<ValuesBuilderProps> = ({
       : PRESET_CORE_VALUES.filter(v => v.category === categoryFilter);
 
   return (
-    <div className="bg-[#FAF9F6] rounded-3xl border-2 border-[#CED6C1] p-6 md:p-8 space-y-6 shadow-xs">
+    <div className="bg-white rounded-3xl border-2 border-[#CBD5E1] p-6 md:p-8 space-y-6 shadow-xs">
       {/* Toast Feedback */}
       {actionFeedback && (
-        <div className="bg-[#E5EED6] border-2 border-[#506B26] p-3.5 rounded-2xl flex items-center justify-between text-xs font-bold text-[#18210E] shadow-xs animate-in fade-in">
+        <div className="bg-[#DCFCE7] border-2 border-[#16A34A] p-3.5 rounded-2xl flex items-center justify-between text-xs font-black text-[#14532D] shadow-xs animate-in fade-in">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#385117]" />
+            <Sparkles className="w-4 h-4 text-[#15803D]" />
             <span>{actionFeedback}</span>
           </div>
-          <span className="bg-[#385117] text-white px-2.5 py-0.5 rounded-full text-[11px]">
+          <span className="bg-[#15803D] text-white px-2.5 py-0.5 rounded-full text-[11px] font-black">
             Bienveillance Active
           </span>
         </div>
       )}
 
       {/* Header of the Values Builder Module */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D5D0C2] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-[#E2E8F0] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5EED6] text-[#2E4313] text-xs font-bold uppercase tracking-wider mb-2 border border-[#8DA765]/30">
-            <Heart className="w-3.5 h-3.5 text-[#385117]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#DCFCE7] text-[#14532D] text-xs font-black uppercase tracking-wider mb-2 border-2 border-[#86EFAC]">
+            <Heart className="w-4 h-4 text-[#15803D]" />
             Cycle 1 (Niveaux 1 à 25) • Socle Fondateur & Sagesse Toltèque
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
-            <Crown className="w-6 h-6 text-[#385117]" />
+          <h3 className="text-2xl font-serif font-bold text-[#0F172A] flex items-center gap-2.5">
+            <Crown className="w-6 h-6 text-[#15803D]" />
             Ma Boussole de Valeurs & Les 5 Accords Toltèques
           </h3>
-          <p className="text-sm text-[#403E3A] font-medium mt-1 max-w-2xl">
+          <p className="text-sm text-[#334155] font-semibold mt-1 max-w-2xl leading-relaxed">
             Construisez votre boussole de valeurs sacrées inspirée des 2 chefs-d'œuvre audio de Don Miguel Ruiz et Don Jose Ruiz. Elles constituent votre bouclier d'amour et de paix intérieure.
           </p>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center bg-[#EAE7DE] p-1 rounded-2xl border border-[#D0CABE] gap-1 self-start md:self-auto">
+        <div className="flex flex-wrap items-center bg-[#F1F5F9] p-1.5 rounded-2xl border-2 border-[#CBD5E1] gap-1.5 self-start md:self-auto">
           <button
             onClick={() => setActiveTab('my_list')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all border-2 ${
               activeTab === 'my_list'
-                ? 'bg-white text-[#1F201C] shadow-xs'
-                : 'text-[#5C5952] hover:text-[#1F201C]'
+                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
             }`}
           >
             Ma Charte ({selectedValues.length})
           </button>
           <button
             onClick={() => setActiveTab('toltec_wisdom')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 border-2 ${
               activeTab === 'toltec_wisdom'
-                ? 'bg-[#385117] text-white shadow-xs'
-                : 'text-[#5C5952] hover:text-[#1F201C]'
+                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
             }`}
           >
-            <Headphones className="w-3.5 h-3.5" />
+            <Headphones className="w-3.5 h-3.5 text-[#15803D]" />
             Les 5 Accords (Résumés & Clés)
           </button>
           <button
             onClick={() => setActiveTab('toltec_exam')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 border-2 ${
               activeTab === 'toltec_exam'
-                ? 'bg-[#2E6930] text-white shadow-xs font-extrabold'
-                : 'text-[#2E6930] bg-[#E5EED6] hover:bg-[#D5E4C0]'
+                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                : 'bg-[#DCFCE7] text-[#14532D] border-[#86EFAC] hover:bg-[#BBF7D0]'
             }`}
           >
-            <FileQuestion className="w-3.5 h-3.5" />
+            <FileQuestion className="w-3.5 h-3.5 text-[#15803D]" />
             Examen des 5 Accords (+50 pts)
           </button>
           <button
             onClick={() => setActiveTab('preset_gallery')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all border-2 ${
               activeTab === 'preset_gallery'
-                ? 'bg-white text-[#1F201C] shadow-xs'
-                : 'text-[#5C5952] hover:text-[#1F201C]'
+                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
             }`}
           >
             Catalogue des Valeurs
           </button>
           <button
             onClick={() => setActiveTab('benevolent_mirror')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 border-2 ${
               activeTab === 'benevolent_mirror'
-                ? 'bg-white text-[#1F201C] shadow-xs'
-                : 'text-[#5C5952] hover:text-[#1F201C]'
+                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
             }`}
           >
-            <Eye className="w-3.5 h-3.5 text-[#385117]" />
+            <Eye className="w-3.5 h-3.5 text-[#15803D]" />
             Miroir Bienveillant
           </button>
         </div>

@@ -134,22 +134,22 @@ export const Header: React.FC<HeaderProps> = ({
 
 
   return (
-    <header className="bg-[#FFFFFF]/92 backdrop-blur-md text-[#3E3B39] sticky top-0 z-40 shadow-[0_2px_12px_-2px_rgba(90,90,64,0.06)] border-b border-[#E5E2D9]">
+    <header className="bg-white text-[#0F172A] sticky top-0 z-40 shadow-xs border-b-2 border-[#CBD5E1]">
       {/* Top Urgent Action Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-[#F0EEE6]">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#F1F5F9]">
         {/* Brand */}
         <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-2xl bg-[#8A9A5B] text-white flex items-center justify-center font-bold shadow-xs">
-            <ShieldCheck className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-2xl bg-[#15803D] text-white flex items-center justify-center font-bold shadow-xs">
+            <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-base tracking-tight text-[#3E3B39] font-serif-natural">HAVEN-ELLE</span>
-              <span className="text-[10px] bg-[#E5EAD9] text-[#5A5A40] font-semibold px-2.5 py-0.5 rounded-full border border-[#CED6C1]">
+              <span className="font-bold text-lg tracking-tight text-[#0F172A] font-serif-natural">HAVEN-ELLE</span>
+              <span className="text-[10px] bg-[#DCFCE7] text-[#14532D] font-extrabold px-2.5 py-0.5 rounded-full border border-[#86EFAC]">
                 Sanctuaire Sécurisé
               </span>
             </div>
-            <p className="text-[11px] text-[#8E8B82] hidden sm:block">Protection, Écoute & Réseau d'Alerte pour Femmes</p>
+            <p className="text-xs text-[#475569] font-medium hidden sm:block">Protection, Écoute & Réseau d'Alerte pour Femmes</p>
           </div>
         </div>
 
@@ -158,38 +158,38 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Level & Cycle Badge */}
           <button
             onClick={() => onSelectTab('evaluation')}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 ${userCycle.badgeBg} ${userCycle.badgeBorder} ${userCycle.badgeText} shadow-2xs`}
+            className={`px-3.5 py-1.5 rounded-xl border-2 text-xs font-black flex items-center gap-1.5 transition-all hover:scale-105 ${userCycle.badgeBg} ${userCycle.badgeBorder} ${userCycle.badgeText} shadow-xs`}
             title={`Niveau validé ${userLevel}/111 (${currentPts} pts) - ${userCycle.subtitle}${isPendingValidation ? ' • Question de palier débloquée !' : ''}`}
           >
-            <Trophy className="w-3.5 h-3.5 text-[#385117]" />
+            <Trophy className="w-3.5 h-3.5 text-[#15803D]" />
             <span>Niveau {userLevel}/111</span>
             {isPendingValidation && (
-              <span className="w-2 h-2 rounded-full bg-[#9FE870] animate-ping inline-block ml-0.5" />
+              <span className="w-2 h-2 rounded-full bg-[#15803D] animate-ping inline-block ml-0.5" />
             )}
-            <span className="hidden md:inline font-normal text-[11px] opacity-90">• Cycle {userCycleId}</span>
+            <span className="hidden md:inline font-bold text-[11px] opacity-90">• Cycle {userCycleId}</span>
           </button>
 
           {/* Guide & Bilan Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="px-3 py-1.5 bg-[#F8F7F2] hover:bg-[#E5EAD9] text-[#5A5A40] border border-[#E5E2D9] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs"
+              className="px-3.5 py-1.5 bg-white hover:bg-[#F8FAFC] text-[#0F172A] border-2 border-[#CBD5E1] rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs"
             >
-              <BookOpen className="w-3.5 h-3.5 text-[#8A9A5B]" />
+              <BookOpen className="w-3.5 h-3.5 text-[#15803D]" />
               <span className="hidden sm:inline">Guide & Bilan</span>
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#E5E2D9] overflow-hidden z-50 flex flex-col p-1">
+              <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-2 w-56 bg-white rounded-xl shadow-xl border-2 border-[#CBD5E1] overflow-hidden z-50 flex flex-col p-1.5">
                 {/* 1. Bilan Confidentiel */}
                 <button
                   id="header-assessment-btn"
                   onClick={() => { onOpenAssessment(); setIsDropdownOpen(false); }}
-                  className={`px-3 py-2 text-left rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors ${
+                  className={`px-3 py-2 text-left rounded-lg text-xs font-bold flex items-center gap-2 transition-colors ${
                     isAssessmentCompleted
-                      ? 'text-[#5A5A40] hover:bg-[#E5EAD9]'
-                      : 'bg-[#5A5A40] text-white hover:bg-[#4a4a35]'
+                      ? 'text-[#0F172A] hover:bg-[#F1F5F9]'
+                      : 'bg-[#15803D] text-white hover:bg-[#14532D]'
                   }`}
                   title="Bilan confidentiel chiffré : enfants, impacts, stress & violences subies"
                 >
@@ -201,10 +201,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   id="header-onboarding-btn"
                   onClick={() => { onOpenOnboarding(); setIsDropdownOpen(false); }}
-                  className="px-3 py-2 text-left hover:bg-[#F5F2ED] text-[#5A5A40] rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors"
+                  className="px-3 py-2 text-left hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg text-xs font-bold flex items-center gap-2 transition-colors"
                   title="Ouvrir le guide d'accueil et consignes de sécurité"
                 >
-                  <HelpCircle className="w-3.5 h-3.5 text-[#8A9A5B]" />
+                  <HelpCircle className="w-3.5 h-3.5 text-[#15803D]" />
                   <span>Guide d'Utilisation</span>
                 </button>
 
@@ -212,17 +212,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   id="header-camouflage-btn"
                   onClick={() => { onActivateCamouflage(); setIsDropdownOpen(false); }}
-                  className="px-3 py-2 text-left hover:bg-[#F5F2ED] text-[#5A5A40] rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors border-t border-[#F0EEE6] mt-1 pt-2"
+                  className="px-3 py-2 text-left hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg text-xs font-bold flex items-center gap-2 transition-colors border-t border-[#E2E8F0] mt-1 pt-2"
                   title="Masquer immédiatement l'écran sous une fausse application de recettes"
                 >
-                  <EyeOff className="w-3.5 h-3.5 text-[#8A9A5B]" />
+                  <EyeOff className="w-3.5 h-3.5 text-[#15803D]" />
                   <span>Camouflage (Recettes)</span>
                 </button>
               </div>
             )}
           </div>
-
-          
         </div>
 
         {/* Action Buttons */}
@@ -231,21 +229,21 @@ export const Header: React.FC<HeaderProps> = ({
           {onLogin && (
             <button
               onClick={isAuthenticated ? undefined : onLogin}
-              className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs border-2 ${
                 isNightMode
-                  ? 'bg-[#2A2C28] text-[#D8E4C7] border border-[#3E4238] hover:bg-[#343630]'
-                  : 'bg-[#F8F7F2] text-[#5A5A40] border border-[#E5E2D9] hover:bg-[#E5EAD9]'
+                  ? 'bg-[#1E293B] text-[#F8FAFC] border-[#475569] hover:bg-[#334155]'
+                  : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
               }`}
               title={isAuthenticated ? 'Sauvegarde Google Drive / Cloud active' : 'Se connecter pour sauvegarder (Drive / Cloud)'}
             >
               {isSyncing ? (
-                <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#8A9A5B]" />
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#15803D]" />
               ) : isAuthenticated ? (
-                <Cloud className="w-3.5 h-3.5 text-[#8A9A5B]" />
+                <Cloud className="w-3.5 h-3.5 text-[#15803D]" />
               ) : (
-                <CloudOff className="w-3.5 h-3.5" />
+                <CloudOff className="w-3.5 h-3.5 text-[#475569]" />
               )}
-              <span className="hidden sm:inline text-[11px]">
+              <span className="hidden sm:inline text-xs font-bold">
                 {isSyncing ? 'Sync...' : isAuthenticated ? 'Sauvegardé' : 'Se connecter'}
               </span>
             </button>
@@ -257,19 +255,19 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="relative" ref={settingsRef}>
             <button
               onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-              className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs border-2 ${
                 isNightMode
-                  ? 'bg-[#2A2C28] text-[#D8E4C7] border border-[#3E4238] hover:bg-[#343630]'
-                  : 'bg-[#F8F7F2] text-[#5A5A40] border border-[#E5E2D9] hover:bg-[#E5EAD9]'
+                  ? 'bg-[#1E293B] text-[#F8FAFC] border-[#475569] hover:bg-[#334155]'
+                  : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
               }`}
               title="Paramètres d'affichage et de sortie"
             >
-              <Settings className="w-3.5 h-3.5" />
+              <Settings className="w-4 h-4 text-[#0F172A]" />
             </button>
             
             {isSettingsOpen && (
-              <div className={`absolute top-full right-0 mt-2 p-2 rounded-xl shadow-xl z-50 flex flex-col gap-2 min-w-[140px] border ${
-                isNightMode ? 'bg-[#1E201B] border-[#3E4633]' : 'bg-white border-[#E5E2D9]'
+              <div className={`absolute top-full right-0 mt-2 p-2 rounded-xl shadow-xl z-50 flex flex-col gap-2 min-w-[160px] border-2 ${
+                isNightMode ? 'bg-[#1E293B] border-[#475569]' : 'bg-white border-[#CBD5E1]'
               }`}>
                 {/* UI & Fiches Transparency Controller */}
                 <div className="w-full [&>div]:w-full [&_button]:w-full [&_button]:justify-center">
@@ -282,22 +280,22 @@ export const Header: React.FC<HeaderProps> = ({
                     type="button"
                     id="header-night-mode-toggle-btn"
                     onClick={() => { onToggleNightMode(); setIsSettingsOpen(false); }}
-                    className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-2xs ${
+                    className={`w-full px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-2xs border-2 ${
                       isNightMode
-                        ? 'bg-[#2A2C28] text-[#D8E4C7] border border-[#3E4238] hover:bg-[#343630]'
-                        : 'bg-[#F8F7F2] text-[#5A5A40] border border-[#E5E2D9] hover:bg-[#E5EAD9]'
+                        ? 'bg-[#0F172A] text-[#F8FAFC] border-[#475569] hover:bg-[#1E293B]'
+                        : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
                     }`}
-                    title={isNightMode ? 'Désactiver le Mode Nuit (revenir au thème clair)' : 'Activer le Mode Nuit Discret (contraste réduit pour l\'obscurité)'}
+                    title={isNightMode ? 'Désactiver le Mode Nuit (revenir au thème clair)' : 'Activer le Mode Nuit'}
                   >
                     {isNightMode ? (
                       <>
-                        <Sun className="w-3.5 h-3.5 text-[#E6B800]" />
-                        <span className="text-[11px]">Mode Jour</span>
+                        <Sun className="w-4 h-4 text-[#EAB308]" />
+                        <span>Mode Jour</span>
                       </>
                     ) : (
                       <>
-                        <Moon className="w-3.5 h-3.5 text-[#728642]" />
-                        <span className="text-[11px]">Mode Nuit</span>
+                        <Moon className="w-4 h-4 text-[#15803D]" />
+                        <span>Mode Nuit</span>
                       </>
                     )}
                   </button>
@@ -307,11 +305,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   id="header-quick-exit-btn"
                   onClick={onQuickExit}
-                  className="w-full px-2.5 py-1.5 bg-[#F5E6E0] hover:bg-[#EBD3CC] border border-[#A64D4D]/30 text-[#A64D4D] rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-colors shadow-2xs"
+                  className="w-full px-3 py-2 bg-[#FEE2E2] hover:bg-[#FECACA] border-2 border-[#FCA5A5] text-[#DC2626] rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
                   title="Quitter immédiatement vers un site externe neutre"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="text-[11px]">Quitter le site</span>
+                  <LogOut className="w-4 h-4" />
+                  <span>Quitter le site</span>
                 </button>
               </div>
             )}
@@ -321,10 +319,10 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="header-panic-mode-btn"
             onClick={onTriggerPanic}
-            className="px-3.5 py-1.5 bg-[#A64D4D] hover:bg-[#8F3F3F] text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95"
+            className="px-3.5 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95"
             title="Basculer instantanément en mode camouflage et couper le son (Touche Échap)"
           >
-            <AlertOctagon className="w-3.5 h-3.5 animate-pulse" />
+            <AlertOctagon className="w-4 h-4 animate-pulse" />
             <span>MODE PANIQUE (Échap)</span>
           </button>
 
@@ -332,10 +330,10 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="header-quick-sos-btn"
             onClick={onTriggerSOS}
-            className="px-3.5 py-1.5 bg-[#5A5A40] hover:bg-[#4a4a35] text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 transition-transform hover:scale-105 active:scale-95"
+            className="px-3.5 py-1.5 bg-[#15803D] hover:bg-[#14532D] text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition-transform hover:scale-105 active:scale-95"
             title="Déclencher l'alerte d'urgence aux contacts de confiance"
           >
-            <ShieldAlert className="w-3.5 h-3.5 text-[#E5EAD9]" />
+            <ShieldAlert className="w-4 h-4 text-[#DCFCE7]" />
             <span>SOS Réseau</span>
           </button>
         </div>
@@ -343,7 +341,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Navigation Tabs */}
       <div className="max-w-7xl mx-auto px-4">
-        <nav className="flex items-center space-x-1.5 overflow-x-auto py-2.5 scrollbar-none">
+        <nav className="flex items-center space-x-2 overflow-x-auto py-2.5 scrollbar-none">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -352,17 +350,17 @@ export const Header: React.FC<HeaderProps> = ({
                 key={item.id}
                 id={`nav-tab-${item.id}`}
                 onClick={() => onSelectTab(item.id)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-medium whitespace-nowrap flex items-center gap-2 transition-all shrink-0 ${
+                className={`px-4 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-2 transition-all shrink-0 border-2 ${
                   isActive
-                    ? 'bg-[#8A9A5B] text-white shadow-xs font-semibold'
-                    : 'text-[#5A5A40] hover:bg-[#F5F2ED] hover:text-[#3E3B39]'
+                    ? 'bg-[#15803D] text-white border-[#15803D] shadow-sm font-black'
+                    : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC] font-bold'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-[#8A9A5B]'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#15803D]'}`} />
                 <span>{item.label}</span>
                 {item.badge && (
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                    isActive ? 'bg-white/25 text-white' : 'bg-[#E5EAD9] text-[#5A5A40]'
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
+                    isActive ? 'bg-white/30 text-white' : 'bg-[#DCFCE7] text-[#14532D]'
                   }`}>
                     {item.badge}
                   </span>

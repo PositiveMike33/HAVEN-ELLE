@@ -343,34 +343,34 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
   const completedCount = Object.keys(completedCards).length;
 
   return (
-    <div id="toltec-flashcards-questionnaire" className="bg-[#FAF9F5] border-2 border-[#D5D0C2] rounded-3xl p-5 md:p-8 space-y-6 shadow-sm">
+    <div id="toltec-flashcards-questionnaire" className="bg-white border-2 border-[#CBD5E1] rounded-3xl p-5 md:p-8 space-y-6 shadow-sm">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#E5E2D9]">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5EED6] text-[#2E4313] text-xs font-bold uppercase tracking-wider border border-[#8DA765]/30">
-            <Sparkles className="w-3.5 h-3.5 text-[#385117]" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b-2 border-[#E2E8F0]">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#DCFCE7] text-[#14532D] text-xs font-black uppercase tracking-wider border-2 border-[#86EFAC]">
+            <Sparkles className="w-4 h-4 text-[#15803D]" />
             Fiches Interactives des 5 Accords & Mentalité de Croissance
           </div>
-          <h2 className="text-xl md:text-2xl font-serif font-bold text-[#1F201C] flex items-center gap-2 pt-1">
-            <BookOpen className="w-6 h-6 text-[#385117]" />
+          <h2 className="text-xl md:text-2xl font-serif font-bold text-[#0F172A] flex items-center gap-2.5 pt-1">
+            <BookOpen className="w-6 h-6 text-[#15803D]" />
             Questionnaire Toltèque : Découverte des Réponses & Résilience au Réel
           </h2>
-          <p className="text-xs md:text-sm text-[#5C5952] max-w-2xl leading-relaxed">
+          <p className="text-sm text-[#334155] max-w-2xl leading-relaxed">
             Testez vos réflexes face aux situations délicates du quotidien et aux refus (« Non ») du monde réel. 
             Les explications et l’alchimie toltèque sont <strong>voilées sous la fiche</strong> : choisissez votre réponse en toute sincérité pour révéler l’analyse et faire de chaque hésitation un <strong>apprentissage sain et valorisant</strong>.
           </p>
         </div>
 
         {/* Card Progress Stats */}
-        <div className="bg-white px-4 py-3 rounded-2xl border-2 border-[#CED6C1] shadow-2xs shrink-0 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#E5EED6] text-[#385117] flex items-center justify-center font-bold font-mono">
+        <div className="bg-[#F8FAFC] px-4 py-3 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs shrink-0 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#DCFCE7] text-[#14532D] border-2 border-[#86EFAC] flex items-center justify-center font-black font-mono text-base">
             {currentCardIndex + 1}/{totalCards}
           </div>
           <div>
-            <div className="text-[11px] uppercase tracking-wider font-extrabold text-[#7A776F]">Accords Explorés</div>
-            <div className="text-sm font-bold text-[#1F201C] flex items-center gap-1.5">
-              <span className="text-[#385117]">{completedCount}</span> sur {totalCards} validés
-              {completedCount === totalCards && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
+            <div className="text-[11px] uppercase tracking-wider font-black text-[#64748B]">Accords Explorés</div>
+            <div className="text-sm font-bold text-[#0F172A] flex items-center gap-1.5">
+              <span className="text-[#15803D] font-extrabold">{completedCount}</span> sur {totalCards} validés
+              {completedCount === totalCards && <CheckCircle2 className="w-4 h-4 text-[#15803D]" />}
             </div>
           </div>
         </div>
@@ -385,40 +385,40 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
             <button
               key={item.id}
               onClick={() => setCurrentCardIndex(idx)}
-              className={`px-3.5 py-2 rounded-2xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer border-2 ${
                 isCurrent
-                  ? 'bg-[#385117] text-white shadow-xs'
+                  ? 'bg-[#15803D] text-white border-[#15803D] shadow-sm'
                   : isDone
-                  ? 'bg-[#E5EED6] text-[#2E4313] hover:bg-[#D8E6C2] border border-[#B8CE9E]'
-                  : 'bg-white text-[#5A5852] hover:bg-[#F2EFE8] border border-[#D5D0C2]'
+                  ? 'bg-[#DCFCE7] text-[#14532D] hover:bg-[#BBF7D0] border-[#86EFAC]'
+                  : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#F1F5F9] border-[#CBD5E1]'
               }`}
             >
               <span>Accord {item.agreementNumber}</span>
-              {isDone && <Check className="w-3 h-3 text-[#385117]" />}
+              {isDone && <Check className="w-3.5 h-3.5 text-[#15803D] stroke-[3]" />}
             </button>
           );
         })}
       </div>
 
       {/* Main Active Flashcard Box */}
-      <div className="bg-white rounded-3xl border-2 border-[#D0CABE] shadow-sm overflow-hidden transition-all">
+      <div className="bg-white rounded-3xl border-2 border-[#CBD5E1] shadow-sm overflow-hidden transition-all">
         {/* Card Header */}
-        <div className="bg-gradient-to-r from-[#F4F8EE] to-[#FAF8F2] px-6 py-4 border-b border-[#D5D0C2] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-xl bg-[#385117] text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+        <div className="bg-[#F8FAFC] px-6 py-4 border-b-2 border-[#CBD5E1] flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="w-9 h-9 rounded-xl bg-[#15803D] text-white flex items-center justify-center font-black text-sm shadow-xs">
               {card.agreementNumber}
             </span>
             <div>
-              <h3 className="text-base font-bold text-[#1F201C] font-serif">{card.agreementName}</h3>
-              <span className="text-[11px] font-semibold text-[#5A5852]">{card.agreementTag}</span>
+              <h3 className="text-lg font-bold text-[#0F172A] font-serif">{card.agreementName}</h3>
+              <span className="text-xs font-bold text-[#475569]">{card.agreementTag}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleSpeak(`${card.realWorldScenario}. Question : ${card.question}`)}
-              className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                isSpeaking ? 'bg-[#385117] text-white border-[#385117]' : 'bg-white hover:bg-[#F5F2ED] text-[#5A5852] border-[#D5D0C2]'
+              className={`p-2.5 rounded-xl border-2 text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                isSpeaking ? 'bg-[#15803D] text-white border-[#15803D]' : 'bg-white hover:bg-[#F1F5F9] text-[#0F172A] border-[#CBD5E1]'
               }`}
               title="Écouter la situation à voix haute"
             >
@@ -431,23 +431,23 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
         {/* Card Body */}
         <div className="p-6 md:p-8 space-y-6">
           {/* Real-World Scenario Box */}
-          <div className="bg-[#FAF8F2] border-2 border-[#E5E0D5] p-4 sm:p-5 rounded-2xl space-y-2">
-            <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#8A5A1E]">
+          <div className="bg-[#FEFCE8] border-2 border-[#FDE047] p-5 rounded-2xl space-y-2">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#854D0E]">
               <Flame className="w-4 h-4 text-[#D97706]" />
               Mise en Situation Réelle & Épreuve du « Non »
             </div>
-            <p className="text-sm sm:text-base text-[#2A2825] font-medium leading-relaxed">
+            <p className="text-sm sm:text-base text-[#0F172A] font-semibold leading-relaxed">
               « {card.realWorldScenario} »
             </p>
           </div>
 
           {/* Prompt Question */}
           <div className="space-y-1">
-            <h4 className="text-base sm:text-lg font-bold text-[#1F201C] flex items-center gap-2">
-              <HelpCircle className="w-5 h-5 text-[#385117]" />
+            <h4 className="text-base sm:text-lg font-black text-[#0F172A] flex items-center gap-2">
+              <HelpCircle className="w-5 h-5 text-[#15803D]" />
               {card.question}
             </h4>
-            <p className="text-xs text-[#7A776F] italic">
+            <p className="text-xs text-[#475569] font-medium">
               Sélectionnez la posture qui vous inspire pour dévoiler la fiche pédagogique cachée.
             </p>
           </div>
@@ -461,25 +461,25 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                   key={opt.id}
                   type="button"
                   onClick={() => handleSelectOption(opt.id)}
-                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3.5 cursor-pointer ${
+                  className={`w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all flex items-start gap-3.5 cursor-pointer ${
                     isSelected
                       ? opt.isResilientToltec
-                        ? 'border-[#506B26] bg-[#F2F7EB] text-[#18210E] shadow-xs'
-                        : 'border-[#D97706] bg-[#FFFBEB] text-[#78350F] shadow-xs'
-                      : 'border-[#E0DDD5] bg-[#FAF9F5] text-[#3E3B39] hover:bg-[#F5F2ED] hover:border-[#CED6C1]'
+                        ? 'border-[#16A34A] bg-[#DCFCE7] text-[#14532D] shadow-sm ring-2 ring-[#16A34A]/30 font-bold'
+                        : 'border-[#D97706] bg-[#FEF3C7] text-[#78350F] shadow-sm ring-2 ring-[#D97706]/30 font-bold'
+                      : 'border-[#CBD5E1] bg-white text-[#0F172A] hover:bg-[#F8FAFC] hover:border-[#94A3B8]'
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center shrink-0 text-sm font-bold transition-all ${
+                  <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center shrink-0 text-sm font-black transition-all ${
                     isSelected
                       ? opt.isResilientToltec
-                        ? 'border-[#506B26] bg-[#385117] text-white'
+                        ? 'border-[#15803D] bg-[#15803D] text-white'
                         : 'border-[#D97706] bg-[#D97706] text-white'
-                      : 'border-[#CED6C1] bg-white text-[#5A5852]'
+                      : 'border-[#CBD5E1] bg-[#F1F5F9] text-[#0F172A]'
                   }`}>
                     {opt.id}
                   </div>
                   <div className="flex-1">
-                    <span className="text-xs sm:text-sm font-medium leading-relaxed block">
+                    <span className="text-xs sm:text-sm font-semibold leading-relaxed block text-inherit">
                       {opt.text}
                     </span>
                   </div>
@@ -492,80 +492,80 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
           {isAnswerRevealed && selectedOption && (
             <div className={`p-5 md:p-6 rounded-2xl border-2 space-y-4 animate-in fade-in zoom-in duration-300 ${
               selectedOption.isResilientToltec
-                ? 'bg-[#F4F9EC] border-[#506B26]'
-                : 'bg-[#FFFDF5] border-[#EAB308]'
+                ? 'bg-[#F0FDF4] border-2 border-[#16A34A]'
+                : 'bg-[#FFFBEB] border-2 border-[#F59E0B]'
             }`}>
               {/* Badge & Feedback Title */}
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
-                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                  <div className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black ${
                     selectedOption.isResilientToltec
-                      ? 'bg-[#E5EED6] text-[#2E4313] border border-[#8DA765]'
-                      : 'bg-[#FEF3C7] text-[#92400E] border border-[#F59E0B]'
+                      ? 'bg-[#DCFCE7] text-[#14532D] border-2 border-[#86EFAC]'
+                      : 'bg-[#FEF3C7] text-[#92400E] border-2 border-[#FCD34D]'
                   }`}>
                     {selectedOption.isResilientToltec ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#385117]" />
+                      <CheckCircle2 className="w-4 h-4 text-[#15803D]" />
                     ) : (
-                      <TrendingUp className="w-3.5 h-3.5 text-[#D97706]" />
+                      <TrendingUp className="w-4 h-4 text-[#D97706]" />
                     )}
                     {selectedOption.revealedTitle}
                   </div>
-                  <h5 className="text-base font-bold text-[#1F201C] pt-1">
+                  <h5 className="text-lg font-black text-[#0F172A] pt-1">
                     Analyse Pédagogique & Décodage Toltèque
                   </h5>
                 </div>
 
-                <div className="text-xs font-mono font-bold px-3 py-1 bg-white rounded-xl border border-[#D5D0C2] text-[#385117] shrink-0">
+                <div className="text-xs font-mono font-black px-3.5 py-1.5 bg-white rounded-xl border-2 border-[#CBD5E1] text-[#15803D] shrink-0">
                   +{selectedOption.isResilientToltec ? '30' : '20'} pts
                 </div>
               </div>
 
               {/* Analysis Text */}
-              <p className="text-xs sm:text-sm text-[#3E3B39] leading-relaxed">
+              <p className="text-sm sm:text-base text-[#0F172A] font-medium leading-relaxed bg-white/80 p-4 rounded-xl border border-inherit/40">
                 {selectedOption.revealedAnalysis}
               </p>
 
               {/* Special Growth Mindset Box if Less Optimal / Mistake */}
               {selectedOption.growthMindsetForMistake && (
-                <div className="bg-[#FFFBEB] border-2 border-[#F59E0B]/40 p-4 rounded-xl space-y-1.5">
-                  <div className="text-xs font-extrabold text-[#92400E] flex items-center gap-1.5">
+                <div className="bg-[#FFFBEB] border-2 border-[#F59E0B] p-4 rounded-xl space-y-1.5">
+                  <div className="text-xs font-black text-[#92400E] flex items-center gap-1.5">
                     <Lightbulb className="w-4 h-4 text-[#D97706]" />
                     L’Échec & le « Non » comme Enseignement Sain (Mentalité de Croissance)
                   </div>
-                  <p className="text-xs text-[#78350F] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#78350F] font-semibold leading-relaxed">
                     {selectedOption.growthMindsetForMistake}
                   </p>
                 </div>
               )}
 
               {/* Somatic Shift Prompt */}
-              <div className="bg-white/90 border border-[#D5D0C2] p-3.5 rounded-xl flex items-center gap-3">
-                <Heart className="w-4 h-4 text-[#385117] shrink-0" />
-                <p className="text-xs font-serif italic text-[#2E4313] leading-relaxed">
+              <div className="bg-white border-2 border-[#86EFAC] p-4 rounded-xl flex items-center gap-3 shadow-2xs">
+                <Heart className="w-5 h-5 text-[#15803D] shrink-0" />
+                <p className="text-xs sm:text-sm font-semibold text-[#14532D] leading-relaxed">
                   <strong>Ancrage Somatique :</strong> {selectedOption.somaticShiftPrompt}
                 </p>
               </div>
 
               {/* Scientific Note & Mantra */}
-              <div className="pt-2 border-t border-[#D5D0C2]/60 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                <div className="bg-white p-3 rounded-xl border border-[#E5E2D9]">
-                  <span className="font-bold text-[#385117] block mb-0.5">🧠 Fait Scientifique :</span>
-                  <span className="text-[#5A5852]">{card.scientificGrowthLesson}</span>
+              <div className="pt-2 border-t-2 border-[#CBD5E1]/60 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
+                <div className="bg-white p-4 rounded-xl border-2 border-[#86EFAC] shadow-2xs">
+                  <span className="font-black text-[#15803D] block mb-1 text-xs uppercase tracking-wider">🧠 Fait Scientifique :</span>
+                  <span className="text-[#0F172A] font-medium leading-relaxed block">{card.scientificGrowthLesson}</span>
                 </div>
-                <div className="bg-white p-3 rounded-xl border border-[#E5E2D9]">
-                  <span className="font-bold text-[#385117] block mb-0.5">📜 Mantra de Souveraineté :</span>
-                  <span className="italic text-[#1F201C] font-serif">{card.toltecMantra}</span>
+                <div className="bg-[#FEFCE8] p-4 rounded-xl border-2 border-[#EAB308] shadow-2xs">
+                  <span className="font-black text-[#854D0E] block mb-1 text-xs uppercase tracking-wider">📜 Mantra de Souveraineté :</span>
+                  <span className="italic text-[#713F12] font-serif font-bold text-sm sm:text-base leading-relaxed block">{card.toltecMantra}</span>
                 </div>
               </div>
             </div>
           )}
 
           {/* Navigation Controls */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#E5E2D9]">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t-2 border-[#E2E8F0]">
             <button
               onClick={() => setCurrentCardIndex(Math.max(0, currentCardIndex - 1))}
               disabled={currentCardIndex === 0}
-              className="px-4 py-2 rounded-xl border border-[#D5D0C2] bg-white hover:bg-[#F5F2ED] disabled:opacity-30 text-xs font-bold text-[#5A5852] flex items-center gap-1.5 transition-all"
+              className="px-4 py-2.5 rounded-xl border-2 border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] disabled:opacity-40 text-xs font-bold text-[#334155] flex items-center gap-1.5 transition-all"
             >
               <ChevronLeft className="w-4 h-4" />
               Accord Précédent
@@ -575,7 +575,7 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
               {isAnswerRevealed && !selectedOption?.isResilientToltec && (
                 <button
                   onClick={() => setIsAnswerRevealed(false)}
-                  className="px-3.5 py-2 rounded-xl bg-[#FAF8F2] border border-[#D5D0C2] hover:bg-[#F0EEE6] text-xs font-bold text-[#5A5852] flex items-center gap-1.5 transition-all"
+                  className="px-3.5 py-2.5 rounded-xl bg-[#F8FAFC] border-2 border-[#CBD5E1] hover:bg-[#F1F5F9] text-xs font-bold text-[#0F172A] flex items-center gap-1.5 transition-all"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   Réessayer
@@ -590,7 +590,7 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                     onNavigateToRoadmap();
                   }
                 }}
-                className="px-5 py-2 rounded-xl bg-[#385117] hover:bg-[#2B3E12] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all hover:scale-105"
+                className="px-5 py-2.5 rounded-xl bg-[#15803D] hover:bg-[#14532D] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all hover:scale-105"
               >
                 {currentCardIndex < totalCards - 1 ? (
                   <>
