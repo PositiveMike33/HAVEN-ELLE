@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+const fs = require('fs');
+const content = `import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX, Music, Eye, EyeOff, Sliders, RotateCcw, Repeat, Layers } from 'lucide-react';
 import { StorageService } from '../utils/storage';
 
@@ -311,7 +312,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
   const formatTrackTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return \`\${mins}:\${secs.toString().padStart(2, '0')}\`;
   };
 
   return (
@@ -319,9 +320,9 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
       {/* Background Video Layer */}
       <div
         id="music-video-background-layer"
-        className={`fixed inset-0 pointer-events-none -z-20 overflow-hidden select-none transition-opacity duration-700 ${
+        className={\`fixed inset-0 pointer-events-none -z-20 overflow-hidden select-none transition-opacity duration-700 \${
           !isVideoVisible || isPanicOrCamouflage ? 'opacity-0 invisible' : ''
-        }`}
+        }\`}
         style={{ opacity: isVideoVisible && !isPanicOrCamouflage ? opacity / 100 : 0 }}
         aria-hidden="true"
       >
@@ -349,11 +350,11 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
 
         {/* Ambient gradient overlay */}
         <div
-          className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+          className={\`absolute inset-0 pointer-events-none transition-colors duration-500 \${
             isNightMode
               ? 'bg-gradient-to-b from-black/40 via-transparent to-black/60 mix-blend-multiply'
               : 'bg-gradient-to-b from-[#F8F7F2]/10 via-transparent to-[#F8F7F2]/40 mix-blend-overlay'
-          }`}
+          }\`}
         />
       </div>
 
@@ -365,11 +366,11 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
         >
           {/* Expanded settings menu */}
           {showControls && (
-            <div className={`p-3.5 rounded-2xl shadow-2xl border text-xs w-80 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200 backdrop-blur-xl ${
+            <div className={\`p-3.5 rounded-2xl shadow-2xl border text-xs w-80 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200 backdrop-blur-xl \${
               isNightMode 
                 ? 'bg-[#1E201B]/95 border-[#3E4633] text-[#D6D4CD]' 
                 : 'bg-white/95 border-[#CED6C1] text-[#3E3B39]'
-            }`}>
+            }\`}>
               <div className="flex items-center justify-between border-b border-inherit/30 pb-2">
                 <div className="flex items-center gap-1.5 font-bold text-[#8A9A5B]">
                   <Sliders className="w-4 h-4" />
@@ -384,7 +385,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                       {isMuted || volume === 0 ? <VolumeX className="w-3 h-3 text-[#A64D4D]" /> : <Volume2 className="w-3 h-3 text-[#8A9A5B]" />}
                       Volume ambiant
                     </span>
-                    <span className="font-bold text-[#8A9A5B]">{isMuted ? 'Muet' : `${volume}%`}</span>
+                    <span className="font-bold text-[#8A9A5B]">{isMuted ? 'Muet' : \`\${volume}%\`}</span>
                   </div>
                   <input
                     type="range"
@@ -477,7 +478,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
           {/* Main Floating Pill Player */}
           <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3 py-2 rounded-full shadow-lg border border-[#CED6C1] text-xs text-[#3E3B39] transition-all hover:bg-white">
             <div className="w-6 h-6 rounded-full bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center shrink-0">
-              <Music className={`w-3.5 h-3.5 text-[#8A9A5B] ${isPlaying && !isMuted ? 'animate-bounce' : ''}`} />
+              <Music className={\`w-3.5 h-3.5 text-[#8A9A5B] \${isPlaying && !isMuted ? 'animate-bounce' : ''}\`} />
             </div>
 
             <div className="flex flex-col text-left pr-1 max-w-[140px] sm:max-w-[200px]">
@@ -503,9 +504,9 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
                 <button
                   type="button"
                   onClick={toggleMute}
-                  className={`p-1.5 rounded-full transition-colors ${
+                  className={\`p-1.5 rounded-full transition-colors \${
                     isMuted ? 'bg-[#A64D4D]/15 text-[#A64D4D] hover:bg-[#A64D4D]/25' : 'hover:bg-[#E5EAD9] text-[#5A5A40]'
-                  }`}
+                  }\`}
                   title={isMuted ? 'Activer le son' : 'Couper le son'}
                 >
                   {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -516,9 +517,9 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
             <button
               type="button"
               onClick={() => setShowControls(!showControls)}
-              className={`p-1.5 rounded-full transition-colors ${
+              className={\`p-1.5 rounded-full transition-colors \${
                 showControls ? 'bg-[#5A5A40] text-white' : 'hover:bg-[#E5EAD9] text-[#8E8B82]'
-              }`}
+              }\`}
               title="Ajuster l'opacité et les options du clip vidéo"
             >
               <Sliders className="w-3.5 h-3.5" />
@@ -529,3 +530,5 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
     </>
   );
 };
+`;
+fs.writeFileSync('src/components/BackgroundMusicVideo.tsx', content);

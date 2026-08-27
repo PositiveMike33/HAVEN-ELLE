@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CamouflageApp } from './components/CamouflageApp';
+import { MainScreenVideoAndQuestions } from './components/MainScreenVideoAndQuestions';
 import { ContactsEtConsultations } from './components/ContactsEtConsultations';
 import { AlertTriggerModal } from './components/AlertTriggerModal';
 import { SoutienBienEtre } from './components/SoutienBienEtre';
@@ -9,9 +10,11 @@ import { UpcomingAppointmentsWidget } from './components/UpcomingAppointmentsWid
 import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
 import { BackgroundMusicVideo } from './components/BackgroundMusicVideo';
+import { ProgressionDashboard } from './components/ProgressionDashboard';
 import { StorageService } from './utils/storage';
 import { TrustedContact, EmergencyAlert, IncidentRecord, DiscreetAppointment, UserAssessmentProfile } from './types';
 import { ShieldCheck, Lock, AlertCircle, HeartHandshake } from 'lucide-react';
+import { CompanionMemoryService } from './utils/companionMemory';
 import { initAuth, getAccessToken, googleSignIn } from './utils/auth';
 
 export default function App() {
@@ -19,7 +22,8 @@ export default function App() {
   const [isNightMode, setIsNightMode] = useState<boolean>(() => {
     return StorageService.isNightMode();
   });
-  const [activeTab, setActiveTab] = useState('network');
+  const [activeTab, setActiveTab] = useState('evaluation');
+  const [companionProfile, setCompanionProfile] = useState(() => CompanionMemoryService.getProfile());
   const [networkSubTab, setNetworkSubTab] = useState<'contacts' | 'appointments'>('contacts');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -137,6 +141,7 @@ export default function App() {
         onOpenAssessment={() => setShowAssessmentModal(true)}
         isAssessmentCompleted={assessmentProfile.isCompleted}
         contactsCount={contacts.filter((c) => c.isActive).length}
+        resiliencePoints={companionProfile.resiliencePoints}
         isNightMode={isNightMode}
         onToggleNightMode={handleToggleNightMode}
       />
@@ -152,6 +157,13 @@ export default function App() {
               setNetworkSubTab('appointments');
             }}
           />
+        )}
+
+        {activeTab === 'evaluation' && (
+          <div className="space-y-6">
+            <ProgressionDashboard resiliencePoints={companionProfile.resiliencePoints} />
+            <MainScreenVideoAndQuestions onPlanGenerated={() => setActiveTab('wellness')} />
+          </div>
         )}
 
         {activeTab === 'network' && (

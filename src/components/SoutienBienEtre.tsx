@@ -3,7 +3,7 @@ import { MessageCircle, Compass, Heart } from 'lucide-react';
 import { GeminiCrisisChat } from './GeminiCrisisChat';
 import { SheltersMapDirectory } from './SheltersMapDirectory';
 import { TherapeuticRelaxation } from './TherapeuticRelaxation';
-import { HistoryOfViolenceVideo } from './HistoryOfViolenceVideo';
+import { WellnessPodcastSection } from './WellnessPodcastSection';
 
 interface SoutienBienEtreProps {
   isNightMode: boolean;
@@ -15,7 +15,7 @@ export const SoutienBienEtre: React.FC<SoutienBienEtreProps> = ({ isNightMode })
   return (
     <div className="space-y-4 animate-in fade-in zoom-in duration-300">
       {/* Offical Video Clip (Moved from Justice Dossier) */}
-      <HistoryOfViolenceVideo />
+      <WellnessPodcastSection />
 
       {/* Sub-Navigation for Wellness & Support */}
       <div className="bg-[#FFFFFF]/92 backdrop-blur-md border border-[#E5E2D9] rounded-2xl p-2 flex items-center gap-2 overflow-x-auto scrollbar-none shadow-sm">

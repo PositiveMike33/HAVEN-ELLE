@@ -22,7 +22,6 @@ import {
   BookOpen,
   Settings
 } from 'lucide-react';
-import { HeaderAudioPlayer } from './HeaderAudioPlayer';
 import { QuickLocationShare } from './QuickLocationShare';
 import { UiOpacityControl } from './UiOpacityControl';
 
@@ -39,6 +38,7 @@ interface HeaderProps {
   contactsCount: number;
   isNightMode?: boolean;
   onToggleNightMode?: () => void;
+  resiliencePoints?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -54,6 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
   contactsCount,
   isNightMode = false,
   onToggleNightMode,
+  resiliencePoints = 0,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -85,11 +86,27 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onTriggerPanic]);
 
-  const navItems = [
-    { id: 'network', label: 'Contacts & Téléconsultations', icon: Users, badge: contactsCount > 0 ? `${contactsCount}` : undefined },
-    { id: 'wellness', label: 'Soutien & Bien-être', icon: Heart },
-    { id: 'justice', label: 'Dossier Justice', icon: Scale },
-  ];
+  
+  const navItems = [];
+  
+  // Niveau 1: Bilan et Q&A
+  navItems.push({ id: 'evaluation', label: 'Bilan & Questions', icon: ClipboardList });
+
+  // Dès qu'on a un peu de points (niveau 2+)
+  if (resiliencePoints >= 20) {
+    navItems.push({ id: 'wellness', label: 'Soutien & Apprentissage', icon: Heart });
+  }
+  
+  // Niveau 3+
+  if (resiliencePoints >= 50) {
+    navItems.push({ id: 'network', label: 'Réseau de Secours', icon: Users, badge: contactsCount > 0 ? `${contactsCount}` : undefined });
+  }
+
+  // Niveau 4+
+  if (resiliencePoints >= 100) {
+    navItems.push({ id: 'justice', label: 'Dossier Justice', icon: Scale });
+  }
+
 
   return (
     <header className="bg-[#FFFFFF]/92 backdrop-blur-md text-[#3E3B39] sticky top-0 z-40 shadow-[0_2px_12px_-2px_rgba(90,90,64,0.06)] border-b border-[#E5E2D9]">
@@ -166,7 +183,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          <HeaderAudioPlayer />
+          
         </div>
 
         {/* Action Buttons */}

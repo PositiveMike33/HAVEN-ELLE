@@ -4,6 +4,7 @@ import {
   Image as ImageIcon, Video, Volume2, UserCheck, Check, Music, Activity, CalendarPlus
 } from 'lucide-react';
 import { WellnessCalendarTracker } from './WellnessCalendarTracker';
+import { CompanionMemoryService } from '../utils/companionMemory';
 import { googleSignIn, initAuth } from '../utils/firebaseAuth';
 import { createCalendarEvent } from '../utils/workspaceApi';
 
@@ -140,6 +141,8 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
 
   // Calming Video State (Veo 3.1)
   const [videoActive, setVideoActive] = useState(false);
+  const companionProfile = CompanionMemoryService.getProfile();
+  const isAvatarUnlocked = companionProfile.resiliencePoints >= 200;
 
   const startBreathingSession = () => {
     setBreathingActive(true);
@@ -306,14 +309,15 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
           </div>
           <div>
             <h3 className="text-lg font-bold text-[#3E3B39] font-serif-natural">
-              Art-Thérapie & Avatars Anonymes de Protection
+              {isAvatarUnlocked ? "Bonus: Art-Thérapie & Avatars Anonymes de Protection" : "Module Verrouillé"}
             </h3>
             <p className="text-xs text-[#8E8B82]">
-              Générez une identité visuelle artistique pour préserver votre anonymat et exprimer vos émotions par l'art IA.
+              {isAvatarUnlocked ? "Bravo ! Vous avez débloqué votre espace Bonus. Générez une identité visuelle artistique." : "Ce module ludique se débloquera lorsque vous aurez accumulé au moins 200 points."}
             </p>
           </div>
         </div>
 
+        {isAvatarUnlocked && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <div className="space-y-3">
             <div>
@@ -380,8 +384,8 @@ export const TherapeuticRelaxation: React.FC<TherapeuticRelaxationProps> = ({ is
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
 };
-
