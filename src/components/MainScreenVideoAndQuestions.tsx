@@ -154,31 +154,31 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
     <div id="main-screen-video-questions-hub" className="space-y-6">
       {/* Centered Assessment Form */}
       <div className="max-w-4xl mx-auto w-full">
-        <div className="bg-[#FFFFFF]/95 backdrop-blur-md rounded-3xl border border-[#CED6C1] p-6 shadow-md space-y-6">
+        <div className="bg-white rounded-3xl border-2 border-[#CED6C1] p-6 shadow-md space-y-6">
           
           {/* Form Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E5E2D9]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b-2 border-[#E5E2D9]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center shadow-2xs">
+                <div className="w-10 h-10 rounded-2xl bg-[#E5EED6] text-[#385117] border border-[#B8CCA2] flex items-center justify-center shadow-xs">
                   <Brain className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A9A5B]">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#385117]">
                     Formulaire Principal d'Évaluation
                   </span>
-                  <h2 className="text-lg font-bold text-[#3E3B39]">
+                  <h2 className="text-xl font-extrabold text-[#1F201C]">
                     Questions Clés de Sûreté & Autonomie
                   </h2>
                 </div>
               </div>
 
               {/* Progress steps */}
-              <div className="flex items-center gap-1.5 text-xs bg-[#F8F7F2] px-3 py-1.5 rounded-xl border border-[#E5E2D9]">
+              <div className="flex items-center gap-2 text-xs bg-[#F4F2EB] px-3 py-1.5 rounded-xl border border-[#D5D0C2]">
                 <button
                   type="button"
                   onClick={() => setActiveStep(1)}
-                  className={`w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center transition-colors ${
-                    activeStep === 1 ? 'bg-[#5A5A40] text-white' : 'text-[#8E8B82] hover:bg-[#E5EAD9]'
+                  className={`w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center transition-colors ${
+                    activeStep === 1 ? 'bg-[#385117] text-white shadow-xs' : 'text-[#33312C] bg-[#FAF9F5] border border-[#D0CABE] hover:bg-[#E5EED6]'
                   }`}
                 >
                   1
@@ -186,8 +186,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                 <button
                   type="button"
                   onClick={() => setActiveStep(2)}
-                  className={`w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center transition-colors ${
-                    activeStep === 2 ? 'bg-[#5A5A40] text-white' : 'text-[#8E8B82] hover:bg-[#E5EAD9]'
+                  className={`w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center transition-colors ${
+                    activeStep === 2 ? 'bg-[#385117] text-white shadow-xs' : 'text-[#33312C] bg-[#FAF9F5] border border-[#D0CABE] hover:bg-[#E5EED6]'
                   }`}
                 >
                   2
@@ -195,8 +195,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                 <button
                   type="button"
                   onClick={() => setActiveStep(3)}
-                  className={`w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center transition-colors ${
-                    activeStep === 3 ? 'bg-[#5A5A40] text-white' : 'text-[#8E8B82] hover:bg-[#E5EAD9]'
+                  className={`w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center transition-colors ${
+                    activeStep === 3 ? 'bg-[#385117] text-white shadow-xs' : 'text-[#33312C] bg-[#FAF9F5] border border-[#D0CABE] hover:bg-[#E5EED6]'
                   }`}
                 >
                   3
@@ -208,8 +208,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
             {activeStep === 1 && (
               <div className="space-y-4 animate-in fade-in duration-200">
                 <div>
-                  <label className="block text-xs font-bold text-[#5A5A40] mb-2 flex items-center gap-1.5">
-                    <User className="w-4 h-4 text-[#8A9A5B]" />
+                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
+                    <User className="w-4 h-4 text-[#385117]" />
                     1. Quelle est votre situation de résidence actuelle ?
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -223,10 +223,10 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                         key={opt}
                         type="button"
                         onClick={() => setLivingSituation(opt)}
-                        className={`p-3 rounded-2xl border text-left text-xs transition-all ${
+                        className={`p-3 rounded-2xl border-2 text-left text-xs transition-all ${
                           livingSituation === opt
-                            ? 'bg-[#E5EAD9] border-[#8A9A5B] text-[#3E3B39] font-bold shadow-xs ring-1 ring-[#8A9A5B]'
-                            : 'bg-white border-[#E5E2D9] text-[#5A5A40] hover:bg-[#F8F7F2]'
+                            ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                            : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE] hover:border-[#BDB7A6]'
                         }`}
                       >
                         {opt}
@@ -236,22 +236,22 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                 </div>
 
                 <div className="pt-2">
-                  <label className="block text-xs font-bold text-[#5A5A40] mb-2 flex items-center gap-1.5">
-                    <Baby className="w-4 h-4 text-[#8A9A5B]" />
+                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
+                    <Baby className="w-4 h-4 text-[#385117]" />
                     2. Y a-t-il des enfants à charge ou des mineurs dans le foyer ?
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() => setHasChildren(false)}
-                      className={`p-3 rounded-2xl border text-left text-xs transition-all ${
+                      className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all ${
                         !hasChildren
-                          ? 'bg-[#E5EAD9] border-[#8A9A5B] text-[#3E3B39] font-bold shadow-xs'
-                          : 'bg-white border-[#E5E2D9] text-[#5A5A40] hover:bg-[#F8F7F2]'
+                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                          : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
                       }`}
                     >
-                      <div className="font-bold">Non (Sans enfant)</div>
-                      <div className="text-[11px] text-[#8E8B82] mt-0.5">Focus sur l'autonomie personnelle</div>
+                      <div className="font-extrabold text-sm text-[#1F201C]">Non (Sans enfant)</div>
+                      <div className="text-xs text-[#4A4843] font-medium mt-0.5">Focus sur l'autonomie personnelle</div>
                     </button>
 
                     <button
@@ -260,30 +260,30 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                         setHasChildren(true);
                         if (childrenCount === 0) setChildrenCount(1);
                       }}
-                      className={`p-3 rounded-2xl border text-left text-xs transition-all ${
+                      className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all ${
                         hasChildren
-                          ? 'bg-[#E5EAD9] border-[#8A9A5B] text-[#3E3B39] font-bold shadow-xs'
-                          : 'bg-white border-[#E5E2D9] text-[#5A5A40] hover:bg-[#F8F7F2]'
+                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                          : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
                       }`}
                     >
-                      <div className="font-bold">Oui (Avec enfant·s)</div>
-                      <div className="text-[11px] text-[#8E8B82] mt-0.5">Protection conjointe requise</div>
+                      <div className="font-extrabold text-sm text-[#1F201C]">Oui (Avec enfant·s)</div>
+                      <div className="text-xs text-[#4A4843] font-medium mt-0.5">Protection conjointe requise</div>
                     </button>
                   </div>
 
                   {hasChildren && (
-                    <div className="mt-3 p-3 rounded-2xl bg-[#F8F7F2] border border-[#E5E2D9] flex items-center gap-3">
-                      <span className="text-xs text-[#5A5A40] font-medium">Nombre d'enfants :</span>
+                    <div className="mt-3 p-3.5 rounded-2xl bg-[#F4F2EB] border-2 border-[#D5D0C2] flex items-center gap-3">
+                      <span className="text-xs text-[#1F201C] font-bold">Nombre d'enfants :</span>
                       <div className="flex items-center gap-2">
                         {[1, 2, 3, 4].map((num) => (
                           <button
                             key={num}
                             type="button"
                             onClick={() => setChildrenCount(num)}
-                            className={`w-7 h-7 rounded-lg text-xs font-bold transition-all ${
+                            className={`w-8 h-8 rounded-xl text-xs font-extrabold transition-all ${
                               childrenCount === num
-                                ? 'bg-[#5A5A40] text-white'
-                                : 'bg-white border border-[#E5E2D9] text-[#5A5A40] hover:bg-[#E5EAD9]'
+                                ? 'bg-[#385117] text-white shadow-xs'
+                                : 'bg-white border-2 border-[#D8D4C7] text-[#2D2B27] hover:bg-[#E7EEDB]'
                             }`}
                           >
                             {num}
@@ -294,14 +294,14 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   )}
                 </div>
 
-                <div className="flex justify-end pt-2">
+                <div className="flex justify-end pt-3">
                   <button
                     type="button"
                     onClick={() => setActiveStep(2)}
-                    className="px-4 py-2 bg-[#5A5A40] hover:bg-[#484833] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
+                    className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
                   >
                     <span>Étape suivante</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -311,11 +311,11 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
             {activeStep === 2 && (
               <div className="space-y-4 animate-in fade-in duration-200">
                 <div>
-                  <label className="block text-xs font-bold text-[#5A5A40] mb-2 flex items-center gap-1.5">
+                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-[#A64D4D]" />
                     3. Sélectionnez les indicateurs ou pressions constatés :
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {riskOptions.map((risk) => {
                       const isSelected = selectedRisks.includes(risk);
                       return (
@@ -323,20 +323,20 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                           key={risk}
                           type="button"
                           onClick={() => handleToggleRisk(risk)}
-                          className={`p-2.5 rounded-xl border text-left text-xs transition-all flex items-start gap-2 ${
+                          className={`p-3 rounded-2xl border-2 text-left text-xs transition-all flex items-start gap-2.5 ${
                             isSelected
-                              ? 'bg-[#E5EAD9] border-[#8A9A5B] text-[#3E3B39] font-medium'
-                              : 'bg-white border-[#E5E2D9] text-[#5A5A40] hover:bg-[#F8F7F2]'
+                              ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold ring-2 ring-[#385117]/25'
+                              : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
                           }`}
                         >
                           <div
                             className={`w-4 h-4 rounded-md mt-0.5 shrink-0 flex items-center justify-center ${
-                              isSelected ? 'bg-[#5A5A40] text-white' : 'border border-[#CED6C1]'
+                              isSelected ? 'bg-[#385117] text-white' : 'border-2 border-[#9C9686] bg-white'
                             }`}
                           >
-                            {isSelected && <CheckCircle2 className="w-3 h-3" />}
+                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
                           </div>
-                          <span>{risk}</span>
+                          <span className="leading-snug">{risk}</span>
                         </button>
                       );
                     })}
@@ -345,13 +345,13 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
-                    <label className="block text-xs font-bold text-[#5A5A40] mb-1.5">
+                    <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5">
                       Contrôle financier :
                     </label>
                     <select
                       value={financialAutonomy}
                       onChange={(e) => setFinancialAutonomy(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#CED6C1] bg-white text-[#3E3B39] focus:outline-none focus:ring-1 focus:ring-[#8A9A5B]"
+                      className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
                     >
                       <option value="Autonomie financière totale">Autonomie financière totale</option>
                       <option value="Autonomie financière partielle">Autonomie financière partielle</option>
@@ -360,13 +360,13 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#5A5A40] mb-1.5">
+                    <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5">
                       Niveau de surveillance tech :
                     </label>
                     <select
                       value={surveillanceLevel}
                       onChange={(e) => setSurveillanceLevel(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#CED6C1] bg-white text-[#3E3B39] focus:outline-none focus:ring-1 focus:ring-[#8A9A5B]"
+                      className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
                     >
                       <option value="Pas de surveillance détectée">Pas de surveillance détectée</option>
                       <option value="Surveillance modérée">Surveillance modérée</option>
@@ -375,21 +375,21 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   </div>
                 </div>
 
-                <div className="flex justify-between pt-2">
+                <div className="flex justify-between pt-3">
                   <button
                     type="button"
                     onClick={() => setActiveStep(1)}
-                    className="px-3.5 py-2 bg-white border border-[#E5E2D9] hover:bg-[#F8F7F2] text-[#5A5A40] text-xs font-bold rounded-xl transition-colors"
+                    className="px-4 py-2.5 bg-white border-2 border-[#D8D4C7] hover:bg-[#F2EFE9] text-[#2D2B27] text-xs font-extrabold rounded-xl transition-colors"
                   >
                     Retour
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveStep(3)}
-                    className="px-4 py-2 bg-[#5A5A40] hover:bg-[#484833] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
+                    className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
                   >
                     <span>Étape suivante</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -399,11 +399,11 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
             {activeStep === 3 && (
               <div className="space-y-4 animate-in fade-in duration-200">
                 <div>
-                  <label className="block text-xs font-bold text-[#5A5A40] mb-2 flex items-center gap-1.5">
-                    <BookmarkCheck className="w-4 h-4 text-[#8A9A5B]" />
+                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
+                    <BookmarkCheck className="w-4 h-4 text-[#385117]" />
                     4. Quel est votre objectif prioritaire aujourd'hui ?
                   </label>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     {[
                       'Préparer un départ sécurisé et préserver mes droits',
                       'Sécuriser mes preuves et documents confidentiels',
@@ -414,40 +414,40 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                         key={goal}
                         type="button"
                         onClick={() => setPrimaryGoal(goal)}
-                        className={`w-full p-3 rounded-2xl border text-left text-xs transition-all flex items-center justify-between ${
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left text-xs transition-all flex items-center justify-between ${
                           primaryGoal === goal
-                            ? 'bg-[#E5EAD9] border-[#8A9A5B] text-[#3E3B39] font-bold shadow-xs'
-                            : 'bg-white border-[#E5E2D9] text-[#5A5A40] hover:bg-[#F8F7F2]'
+                            ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                            : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
                         }`}
                       >
-                        <span>{goal}</span>
-                        {primaryGoal === goal && <CheckCircle2 className="w-4 h-4 text-[#5A5A40]" />}
+                        <span className="font-semibold">{goal}</span>
+                        {primaryGoal === goal && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Summary summary pill */}
-                <div className="p-3.5 rounded-2xl bg-[#F8F7F2] border border-[#E5E2D9] text-xs text-[#5A5A40] space-y-1.5">
-                  <div className="font-bold text-[#3E3B39]">Récapitulatif de votre profil :</div>
-                  <div className="flex flex-wrap gap-2 text-[11px]">
-                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#CED6C1]">
+                {/* Summary pill */}
+                <div className="p-4 rounded-2xl bg-[#F4F2EB] border-2 border-[#D5D0C2] text-xs text-[#2D2B27] space-y-2">
+                  <div className="font-extrabold text-[#1F201C]">Récapitulatif de votre profil :</div>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-[#CED6C1] text-[#1F201C] font-bold">
                       {livingSituation}
                     </span>
-                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#CED6C1]">
+                    <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-[#CED6C1] text-[#1F201C] font-bold">
                       {hasChildren ? `${childrenCount} enfant(s)` : 'Sans enfant'}
                     </span>
-                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#CED6C1]">
+                    <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-[#CED6C1] text-[#1F201C] font-bold">
                       {selectedRisks.length} facteur(s) de risque
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center justify-between pt-3">
                   <button
                     type="button"
                     onClick={() => setActiveStep(2)}
-                    className="px-3.5 py-2 bg-white border border-[#E5E2D9] hover:bg-[#F8F7F2] text-[#5A5A40] text-xs font-bold rounded-xl transition-colors"
+                    className="px-4 py-2.5 bg-white border-2 border-[#D8D4C7] hover:bg-[#F2EFE9] text-[#2D2B27] text-xs font-extrabold rounded-xl transition-colors"
                   >
                     Retour
                   </button>
@@ -456,7 +456,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     type="button"
                     onClick={handleSaveAndGenerate}
                     disabled={isGenerating}
-                    className="px-5 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] text-white text-xs font-bold rounded-2xl flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
+                    className="px-6 py-3 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-2xl flex items-center gap-2 shadow-md transition-all disabled:opacity-50"
                   >
                     {isGenerating ? (
                       <>
@@ -472,15 +472,15 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                   </button>
                 </div>
 
-                <div className="pt-4 border-t border-[#E5E2D9] flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="text-xs text-[#5A5A40]">
-                    <span className="font-bold block">Alternative sécurisée :</span>
+                <div className="pt-4 border-t-2 border-[#E5E2D9] flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="text-xs text-[#2D2B27]">
+                    <span className="font-extrabold block text-[#1F201C]">Alternative sécurisée :</span>
                     Générez ce formulaire sur Google Forms pour le partager avec votre avocate ou assistance sociale.
                   </div>
                   {needsAuth ? (
                     <button
                       onClick={handleLogin}
-                      className="px-4 py-2 bg-[#4285F4] hover:bg-[#3367D6] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap"
+                      className="px-4 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap shadow-xs"
                     >
                       <User className="w-4 h-4" />
                       Connexion Google
@@ -489,7 +489,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     <button
                       onClick={handleCreateGoogleForm}
                       disabled={isCreatingForm}
-                      className="px-4 py-2 bg-[#34A853] hover:bg-[#2c8f46] text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap disabled:opacity-50"
+                      className="px-4 py-2.5 bg-[#2D8E47] hover:bg-[#247339] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap shadow-xs disabled:opacity-50"
                     >
                       {isCreatingForm ? <RefreshCw className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
                       Exporter vers Google Forms
@@ -498,8 +498,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                 </div>
 
                 {isSaved && (
-                  <div className="p-3 rounded-xl bg-[#E5EAD9] text-[#5A5A40] text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                    <CheckCircle2 className="w-4 h-4 text-[#8A9A5B]" />
+                  <div className="p-3.5 rounded-xl bg-[#E7EEDB] border-2 border-[#385117] text-[#121B0A] text-xs font-bold flex items-center gap-2 animate-in fade-in">
+                    <CheckCircle2 className="w-4 h-4 text-[#385117]" />
                     <span>Vos réponses ont été enregistrées localement et votre protocole a été actualisé !</span>
                   </div>
                 )}

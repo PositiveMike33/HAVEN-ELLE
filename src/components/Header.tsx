@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { 
   ShieldCheck, 
-  LogOut, 
+  LogOut,
+  Cloud,
+  CloudOff,
+  RefreshCw, 
   EyeOff, 
   ShieldAlert, 
   Sparkles, 
@@ -38,6 +41,9 @@ interface HeaderProps {
   contactsCount: number;
   isNightMode?: boolean;
   onToggleNightMode?: () => void;
+  isAuthenticated?: boolean;
+  isSyncing?: boolean;
+  onLogin?: () => void;
   resiliencePoints?: number;
 }
 
@@ -55,6 +61,9 @@ export const Header: React.FC<HeaderProps> = ({
   isNightMode = false,
   onToggleNightMode,
   resiliencePoints = 0,
+  isAuthenticated = false,
+  isSyncing = false,
+  onLogin,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -188,6 +197,29 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Sync/Login Button */}
+          {onLogin && (
+            <button
+              onClick={isAuthenticated ? undefined : onLogin}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
+                isNightMode
+                  ? 'bg-[#2A2C28] text-[#D8E4C7] border border-[#3E4238] hover:bg-[#343630]'
+                  : 'bg-[#F8F7F2] text-[#5A5A40] border border-[#E5E2D9] hover:bg-[#E5EAD9]'
+              }`}
+              title={isAuthenticated ? 'Sauvegarde Google Drive / Cloud active' : 'Se connecter pour sauvegarder (Drive / Cloud)'}
+            >
+              {isSyncing ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#8A9A5B]" />
+              ) : isAuthenticated ? (
+                <Cloud className="w-3.5 h-3.5 text-[#8A9A5B]" />
+              ) : (
+                <CloudOff className="w-3.5 h-3.5" />
+              )}
+              <span className="hidden sm:inline text-[11px]">
+                {isSyncing ? 'Sync...' : isAuthenticated ? 'Sauvegardé' : 'Se connecter'}
+              </span>
+            </button>
+          )}
           {/* Quick Geolocation Sharing Button */}
           <QuickLocationShare isNightMode={isNightMode} />
 

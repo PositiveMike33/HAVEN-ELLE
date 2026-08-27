@@ -127,6 +127,77 @@ Assurez-vous que l'ensemble respecte l'équilibre entre **compassion absolue** e
 * **Étape 2 [Transmuter le Discours Intérieur]** : [Pratique d'auto-compassion ou de reprogrammation pour les 24 heures]
 * **Étape 3 [Ancrer la Paix & les Limites]** : [Rituel d'alignement, pose de limites saines ou reliance durable]`;
 
+import { db } from './src/db/index';
+import { users, appState } from './src/db/schema';
+import { eq } from 'drizzle-orm';
+import { requireAuth, AuthRequest } from './src/middleware/auth';
+
+// Add the auth middleware (we'll create it next)
+
+// 1. Get user state
+app.get('/api/state', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    if (!uid) return res.status(401).json({ error: 'Unauthorized' });
+
+    // Find user
+    let user = await db.query.users.findFirst({
+      where: eq(users.uid, uid),
+    });
+
+    if (!user) {
+      // Create user if they don't exist
+      const inserted = await db.insert(users).values({ uid, email: req.user?.email || '' }).returning();
+      user = inserted[0];
+    }
+
+    const state = await db.query.appState.findFirst({
+      where: eq(appState.userId, user.id),
+      orderBy: (appState, { desc }) => [desc(appState.updatedAt)],
+    });
+
+    res.json({ state: state ? state.stateData : null });
+  } catch (error: any) {
+    console.error('Failed to fetch state:', error);
+    res.status(500).json({ error: 'Failed to fetch state from server' });
+  }
+});
+
+// 2. Save user state
+app.post('/api/state', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    const { stateData } = req.body;
+    if (!uid) return res.status(401).json({ error: 'Unauthorized' });
+
+    let user = await db.query.users.findFirst({
+      where: eq(users.uid, uid),
+    });
+
+    if (!user) {
+      const inserted = await db.insert(users).values({ uid, email: req.user?.email || '' }).returning();
+      user = inserted[0];
+    }
+
+    // Upsert app state (we could keep a history or just overwrite)
+    // We'll just insert a new state and keep history, or update. Let's just update if exists, insert if not.
+    const existing = await db.query.appState.findFirst({
+      where: eq(appState.userId, user.id),
+    });
+
+    if (existing) {
+      await db.update(appState).set({ stateData, updatedAt: new Date() }).where(eq(appState.id, existing.id));
+    } else {
+      await db.insert(appState).values({ userId: user.id, stateData });
+    }
+
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('Failed to save state:', error);
+    res.status(500).json({ error: 'Failed to save state to server' });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
@@ -724,7 +795,7 @@ async function setupServer() {
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    app.get('*all', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
