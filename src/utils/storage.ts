@@ -1,4 +1,4 @@
-import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile, VoiceRecordingEvidence, WellnessDailyEntry } from '../types';
+import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile, VoiceRecordingEvidence, WellnessDailyEntry, VeroCustomQuestion, IntakeQuestionnaireState } from '../types';
 
 const STORAGE_KEYS = {
   CONTACTS: 'haven_trusted_contacts_v3',
@@ -15,6 +15,97 @@ const STORAGE_KEYS = {
   VIDEO_OPACITY: 'haven_video_opacity_v1',
   BG_VOLUME: 'haven_bg_volume_v1',
   WELLNESS_ENTRIES: 'haven_wellness_tracker_entries_v1',
+  INTAKE_10Q: 'haven_intake_10questions_v2',
+};
+
+export const DEFAULT_VERO_QUESTIONS: Record<number, VeroCustomQuestion> = {
+  5: {
+    id: 5,
+    title: 'Question 5 (Espace réservé pour Véro)',
+    subtitle: 'Emplacement libre pour intégrer la question thérapeutique ou relationnelle de Véro.',
+    isConfigured: false,
+    questionType: 'multiple_choice',
+    options: [
+      'Option 1 (À personnaliser selon Véro)',
+      'Option 2 (À personnaliser selon Véro)',
+      'Option 3 (À personnaliser selon Véro)',
+    ],
+    userAnswer: '',
+    userNote: '',
+  },
+  6: {
+    id: 6,
+    title: 'Question 6 (Espace réservé pour Véro)',
+    subtitle: 'Emplacement libre pour intégrer la question thérapeutique ou relationnelle de Véro.',
+    isConfigured: false,
+    questionType: 'text_reflection',
+    options: [],
+    userAnswer: '',
+    userNote: '',
+  },
+  7: {
+    id: 7,
+    title: 'Question 7 (Espace réservé pour Véro)',
+    subtitle: 'Emplacement libre pour intégrer la question thérapeutique ou relationnelle de Véro.',
+    isConfigured: false,
+    questionType: 'yes_no',
+    options: ['Oui', 'Non', 'Incertain / En réflexion'],
+    userAnswer: '',
+    userNote: '',
+  },
+  8: {
+    id: 8,
+    title: 'Question 8 (Espace réservé pour Véro)',
+    subtitle: 'Emplacement libre pour intégrer la question thérapeutique ou relationnelle de Véro.',
+    isConfigured: false,
+    questionType: 'rating_scale',
+    options: ['1 - Très faible', '2 - Faible', '3 - Modéré', '4 - Élevé', '5 - Très intense'],
+    userAnswer: 3,
+    userNote: '',
+  },
+  9: {
+    id: 9,
+    title: 'Question 9 (Espace réservé pour Véro)',
+    subtitle: 'Emplacement libre pour intégrer la question thérapeutique ou relationnelle de Véro.',
+    isConfigured: false,
+    questionType: 'text_reflection',
+    options: [],
+    userAnswer: '',
+    userNote: '',
+  },
+  10: {
+    id: 10,
+    title: 'Question 10 (Espace réservé pour Véro)',
+    subtitle: 'Emplacement libre pour intégrer la question finale ou de bilan de Véro.',
+    isConfigured: false,
+    questionType: 'text_reflection',
+    options: [],
+    userAnswer: '',
+    userNote: '',
+  },
+};
+
+export const DEFAULT_INTAKE_STATE: IntakeQuestionnaireState = {
+  currentStep: 1,
+  livingSituation: 'Cohabitation sous le même toit',
+  hasChildren: false,
+  childrenCount: 0,
+  selectedRisks: [
+    'Menaces de violences ou escalade de tension',
+    'Contrôle des communications et du téléphone',
+    'Isolement relationnel et familial',
+  ],
+  financialAutonomy: 'Autonomie financière partielle',
+  surveillanceLevel: 'Surveillance modérée',
+  toxicRelationshipPatterns: [
+    'Emprise psychologique & manipulation (gaslighting)',
+    'Imprévisibilité & climat de tension permanente',
+  ],
+  toxicRelationshipDescription: '',
+  toxicRelationshipInsight: 'Reconnaissance des dynamiques d\'emprise pour restaurer ma souveraineté',
+  veroQuestions: DEFAULT_VERO_QUESTIONS,
+  isCompleted: false,
+  lastUpdated: new Date().toISOString(),
 };
 
 export const DEFAULT_ASSESSMENT_PROFILE: UserAssessmentProfile = {
@@ -525,5 +616,62 @@ export const StorageService = {
 
   clearWellnessEntries(): void {
     localStorage.removeItem(STORAGE_KEYS.WELLNESS_ENTRIES);
+  },
+
+  getIntakeQuestionnaire(): IntakeQuestionnaireState {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.INTAKE_10Q);
+      if (!data) return DEFAULT_INTAKE_STATE;
+      const parsed = JSON.parse(data) as IntakeQuestionnaireState;
+      // Merge with default vero questions to ensure questions 5-10 exist
+      const mergedVero = { ...DEFAULT_VERO_QUESTIONS, ...(parsed.veroQuestions || {}) };
+      return {
+        ...DEFAULT_INTAKE_STATE,
+        ...parsed,
+        veroQuestions: mergedVero,
+      };
+    } catch {
+      return DEFAULT_INTAKE_STATE;
+    }
+  },
+
+  saveIntakeQuestionnaire(state: IntakeQuestionnaireState): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.INTAKE_10Q, JSON.stringify(state));
+      window.dispatchEvent(new CustomEvent('haven-intake-updated', { detail: state }));
+    } catch (e) {
+      console.error('Failed to save intake questionnaire', e);
+    }
+  },
+
+  updateVeroQuestion(id: number, questionData: Partial<VeroCustomQuestion>): IntakeQuestionnaireState {
+    const current = this.getIntakeQuestionnaire();
+    const existing = current.veroQuestions[id] || DEFAULT_VERO_QUESTIONS[id] || {
+      id,
+      title: `Question ${id}`,
+      subtitle: '',
+      isConfigured: true,
+      questionType: 'text_reflection',
+    };
+
+    const updatedVero = {
+      ...current.veroQuestions,
+      [id]: {
+        ...existing,
+        ...questionData,
+        id,
+        isConfigured: true,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    const updatedState: IntakeQuestionnaireState = {
+      ...current,
+      veroQuestions: updatedVero,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    this.saveIntakeQuestionnaire(updatedState);
+    return updatedState;
   },
 };

@@ -222,14 +222,14 @@ export default function App() {
           />
         )}
 
-        {/* TAB 1: Questionnaire & 5 Accords */}
+        {/* TAB 1: Questionnaire Principal & Parcours */}
         {(activeTab === 'evaluation' || activeTab === 'toltec') && (
           <div className="space-y-6">
+            <MainScreenVideoAndQuestions onPlanGenerated={() => setActiveTab('wellness')} />
             <ProgressionDashboard 
               resiliencePoints={companionProfile.resiliencePoints} 
               onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
             />
-            <MainScreenVideoAndQuestions onPlanGenerated={() => setActiveTab('wellness')} />
           </div>
         )}
 

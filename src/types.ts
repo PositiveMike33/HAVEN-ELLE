@@ -267,6 +267,34 @@ export interface SubstituteAgent {
   recommendedPrompts: { label: string; text: string }[];
 }
 
+export interface VeroCustomQuestion {
+  id: number; // 5 to 10
+  title: string;
+  subtitle: string;
+  isConfigured: boolean;
+  questionType: 'multiple_choice' | 'text_reflection' | 'yes_no' | 'rating_scale';
+  options?: string[];
+  userAnswer?: string | string[] | number;
+  userNote?: string;
+  updatedAt?: string;
+}
+
+export interface IntakeQuestionnaireState {
+  currentStep: number;
+  livingSituation: string;
+  hasChildren: boolean;
+  childrenCount: number;
+  selectedRisks: string[];
+  financialAutonomy: string;
+  surveillanceLevel: string;
+  toxicRelationshipPatterns: string[];
+  toxicRelationshipDescription: string;
+  toxicRelationshipInsight: string;
+  veroQuestions: Record<number, VeroCustomQuestion>;
+  isCompleted: boolean;
+  lastUpdated: string;
+}
+
 export type TherapeuticAgentId = 'somatic_trauma' | 'financial_sovereignty' | 'gaslighting_clarity';
 
 export interface TherapeuticPerspectiveAgent {

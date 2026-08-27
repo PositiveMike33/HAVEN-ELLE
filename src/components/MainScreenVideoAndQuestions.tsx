@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Music,
-  Tv,
   Brain,
   ShieldCheck,
   CheckCircle2,
@@ -16,18 +10,24 @@ import {
   Baby,
   User,
   ArrowRight,
+  ArrowLeft,
   BookmarkCheck,
-  Layers,
+  FileSpreadsheet,
+  Edit3,
+  Plus,
+  Trash2,
   HelpCircle,
-  Eye,
-  Sliders,
-  Maximize2,
+  Check,
   RotateCcw,
-  Repeat,
-  FileSpreadsheet
+  Info,
+  Layers,
+  HeartHandshake,
+  MessageSquareHeart,
+  Settings
 } from 'lucide-react';
 import { StorageService } from '../utils/storage';
-import { UserAssessmentProfile } from '../types';
+import { UserAssessmentProfile, VeroCustomQuestion, IntakeQuestionnaireState } from '../types';
+import { CompanionMemoryService } from '../utils/companionMemory';
 import { googleSignIn, initAuth } from '../utils/firebaseAuth';
 import { createGoogleForm } from '../utils/workspaceApi';
 
@@ -41,41 +41,37 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
   onOpenDetailedAssessment,
 }) => {
   const [profile, setProfile] = useState<UserAssessmentProfile>(() => StorageService.getAssessmentProfile());
-  const [activeStep, setActiveStep] = useState<number>(1);
+  const [intakeState, setIntakeState] = useState<IntakeQuestionnaireState>(() => StorageService.getIntakeQuestionnaire());
+  const [activeQuestion, setActiveQuestion] = useState<number>(1);
   const [isSaved, setIsSaved] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const [livingSituation, setLivingSituation] = useState(
-    profile?.personalInfo?.livingSituation || 'Cohabitation sous le même toit'
-  );
-  const [hasChildren, setHasChildren] = useState(
-    profile?.childrenInfo?.hasChildren ?? false
-  );
-  const [childrenCount, setChildrenCount] = useState(
-    profile?.childrenInfo?.childrenCount || 0
-  );
-  const [financialAutonomy, setFinancialAutonomy] = useState<string>(
-    profile?.problemTypes?.financialControl ? 'Contrôle financier sévère' : 'Autonomie financière partielle'
-  );
-  const [surveillanceLevel, setSurveillanceLevel] = useState<string>(
-    profile?.problemTypes?.cyberHarassment ? 'Espionnage numérique actif' : 'Surveillance modérée'
-  );
-  const [selectedRisks, setSelectedRisks] = useState<string[]>([
-    'Menaces de violences ou escalade de tension',
-    'Contrôle des communications et du téléphone',
-    'Isolement relationnel et familial',
-  ]);
-  const [primaryGoal, setPrimaryGoal] = useState<string>(
-    'Préparer un départ sécurisé et préserver mes droits'
-  );
+  // Auth state for Google Forms export
   const [needsAuth, setNeedsAuth] = useState(true);
   const [isCreatingForm, setIsCreatingForm] = useState(false);
+
+  // Editor Modal for Vero's custom questions (5 to 10)
+  const [editingVeroId, setEditingVeroId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editSubtitle, setEditSubtitle] = useState('');
+  const [editQuestionType, setEditQuestionType] = useState<'multiple_choice' | 'text_reflection' | 'yes_no' | 'rating_scale'>('multiple_choice');
+  const [editOptions, setEditOptions] = useState<string[]>([]);
+  const [newOptionText, setNewOptionText] = useState('');
 
   useEffect(() => {
     initAuth(
       () => setNeedsAuth(false),
       () => setNeedsAuth(true)
     );
+
+    const handleIntakeSync = (e: Event) => {
+      const customEvent = e as CustomEvent<IntakeQuestionnaireState>;
+      if (customEvent.detail) {
+        setIntakeState(customEvent.detail);
+      }
+    };
+    window.addEventListener('haven-intake-updated', handleIntakeSync);
+    return () => window.removeEventListener('haven-intake-updated', handleIntakeSync);
   }, []);
 
   const handleLogin = async () => {
@@ -89,7 +85,7 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
 
   const handleCreateGoogleForm = async () => {
     setIsCreatingForm(true);
-    const formUrl = await createGoogleForm('Dossier d\'Évaluation Sécurisé - Haven', 'Questions de Sûreté & Autonomie');
+    const formUrl = await createGoogleForm('Dossier d\'Évaluation Sécurisé - HAVEN-ELLE', 'Formulaire des 10 Questions de Sûreté & Autonomie');
     setIsCreatingForm(false);
     if (formUrl) {
       window.open(formUrl, '_blank');
@@ -98,6 +94,14 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
     }
   };
 
+  // Synchronize field updates
+  const updateState = (partial: Partial<IntakeQuestionnaireState>) => {
+    const updated = { ...intakeState, ...partial, lastUpdated: new Date().toISOString() };
+    setIntakeState(updated);
+    StorageService.saveIntakeQuestionnaire(updated);
+  };
+
+  // Risk options for Q3
   const riskOptions = [
     'Menaces de violences ou escalade de tension',
     'Contrôle des communications et du téléphone',
@@ -110,247 +114,425 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
   ];
 
   const handleToggleRisk = (risk: string) => {
-    setSelectedRisks((prev) =>
-      prev.includes(risk) ? prev.filter((r) => r !== risk) : [...prev, risk]
-    );
+    const current = intakeState.selectedRisks || [];
+    const updated = current.includes(risk)
+      ? current.filter((r) => r !== risk)
+      : [...current, risk];
+    updateState({ selectedRisks: updated });
   };
 
-  const handleSaveAndGenerate = () => {
+  // Toxic relationship patterns for Q4
+  const toxicPatterns = [
+    {
+      id: 'emprise',
+      label: 'Emprise psychologique & manipulation',
+      desc: 'Sentiment constant de marcher sur des œufs, déformation des faits (gaslighting) et perte de confiance en sa propre perception.',
+    },
+    {
+      id: 'imprevisibilite',
+      label: 'Imprévisibilité & climat de peur',
+      desc: 'Alternance imprévisible de phases de séduction/lune de miel et d\'explosions de colère ou silences punitifs.',
+    },
+    {
+      id: 'devalorisation',
+      label: 'Dénigrement insidieux & dévalorisation',
+      desc: 'Remarques blessantes masquées sous forme d\'humour, critiques répétées sur l\'apparence, l\'intelligence ou la maternité.',
+    },
+    {
+      id: 'isolement',
+      label: 'Isolement relationnel & jalousie obsessionnelle',
+      desc: 'Critique systématique de vos proches, surveillance des fréquentations et obligation de justifier chaque déplacement.',
+    },
+    {
+      id: 'culpabilisation',
+      label: 'Inversion de la culpabilité',
+      desc: 'L\'autre se positionne systématiquement en victime et vous rend responsable de tous ses comportements toxiques.',
+    },
+    {
+      id: 'controle_materiel',
+      label: 'Contrôle économique & matériel',
+      desc: 'Privation de libre accès à l\'argent, dépendance financière organisée ou confiscation des moyens de transport.',
+    },
+    {
+      id: 'effacement_soi',
+      label: 'Effacement de soi & épuisement émotionnel',
+      desc: 'Extinction progressive de ses propres besoins et passions pour préserver le calme et éviter le conflit.',
+    },
+    {
+      id: 'chantage_menaces',
+      label: 'Chantage affectif ou menaces indirectes',
+      desc: 'Menaces de se faire du mal, de retirer les enfants ou de détruire votre réputation en cas de désaccord.',
+    },
+  ];
+
+  const handleToggleToxicPattern = (patternLabel: string) => {
+    const current = intakeState.toxicRelationshipPatterns || [];
+    const updated = current.includes(patternLabel)
+      ? current.filter((p) => p !== patternLabel)
+      : [...current, patternLabel];
+    updateState({ toxicRelationshipPatterns: updated });
+  };
+
+  // Open Editor for Vero question
+  const handleOpenVeroEditor = (id: number) => {
+    const question = intakeState.veroQuestions[id];
+    setEditingVeroId(id);
+    setEditTitle(question?.title || `Question ${id}`);
+    setEditSubtitle(question?.subtitle || '');
+    setEditQuestionType(question?.questionType || 'multiple_choice');
+    setEditOptions(question?.options ? [...question.options] : ['Option 1', 'Option 2']);
+    setNewOptionText('');
+  };
+
+  const handleSaveVeroEditor = () => {
+    if (!editingVeroId) return;
+    const updated = StorageService.updateVeroQuestion(editingVeroId, {
+      title: editTitle.trim() || `Question ${editingVeroId}`,
+      subtitle: editSubtitle.trim(),
+      questionType: editQuestionType,
+      options: editOptions,
+      isConfigured: true,
+    });
+    setIntakeState(updated);
+    setEditingVeroId(null);
+  };
+
+  const handleAddOption = () => {
+    if (!newOptionText.trim()) return;
+    setEditOptions([...editOptions, newOptionText.trim()]);
+    setNewOptionText('');
+  };
+
+  const handleRemoveOption = (index: number) => {
+    setEditOptions(editOptions.filter((_, i) => i !== index));
+  };
+
+  const handleUpdateVeroAnswer = (id: number, answer: string | string[] | number, note?: string) => {
+    const currentVero = intakeState.veroQuestions[id];
+    if (!currentVero) return;
+    const updated = StorageService.updateVeroQuestion(id, {
+      ...currentVero,
+      userAnswer: answer,
+      userNote: note !== undefined ? note : currentVero.userNote,
+    });
+    setIntakeState(updated);
+  };
+
+  // Save full assessment & earn points
+  const handleSaveAndSubmit = () => {
     setIsGenerating(true);
+
     const updatedProfile: UserAssessmentProfile = {
       ...profile,
       isCompleted: true,
       lastUpdated: new Date().toISOString(),
       personalInfo: {
         ...profile.personalInfo,
-        livingSituation,
+        livingSituation: intakeState.livingSituation as any,
       },
       childrenInfo: {
         ...profile.childrenInfo,
-        hasChildren,
-        childrenCount: hasChildren ? Math.max(1, childrenCount) : 0,
+        hasChildren: intakeState.hasChildren,
+        childrenCount: intakeState.hasChildren ? Math.max(1, intakeState.childrenCount) : 0,
       },
       problemTypes: {
         ...profile.problemTypes,
-        physicalViolence: selectedRisks.some((r) => r.includes('violences')),
-        psychologicalAbuse: selectedRisks.some((r) => r.includes('Intimidation') || r.includes('Isolement')),
-        financialControl: financialAutonomy.includes('Contrôle'),
-        cyberHarassment: surveillanceLevel.includes('Espionnage'),
+        physicalViolence: intakeState.selectedRisks.some((r) => r.includes('violences')),
+        psychologicalAbuse: intakeState.selectedRisks.some((r) => r.includes('Intimidation') || r.includes('Isolement')) || intakeState.toxicRelationshipPatterns.length > 0,
+        financialControl: intakeState.financialAutonomy.includes('Contrôle'),
+        cyberHarassment: intakeState.surveillanceLevel.includes('Espionnage'),
       },
     };
 
     StorageService.saveAssessmentProfile(updatedProfile);
     setProfile(updatedProfile);
 
+    const updatedIntake: IntakeQuestionnaireState = {
+      ...intakeState,
+      isCompleted: true,
+      lastUpdated: new Date().toISOString(),
+    };
+    StorageService.saveIntakeQuestionnaire(updatedIntake);
+    setIntakeState(updatedIntake);
+
+    // Award +25 resilience points for completing the 10 questions questionnaire
+    CompanionMemoryService.addResiliencePoints(25, 'Validation du Formulaire des 10 Questions de Sûreté & Autonomie');
+
     setTimeout(() => {
       setIsGenerating(false);
       setIsSaved(true);
       if (onPlanGenerated) onPlanGenerated();
-      setTimeout(() => setIsSaved(false), 4000);
-    }, 800);
+      setTimeout(() => setIsSaved(false), 4500);
+    }, 700);
   };
+
+  // Check if a question is answered
+  const isQuestionAnswered = (qNum: number): boolean => {
+    switch (qNum) {
+      case 1:
+        return !!intakeState.livingSituation;
+      case 2:
+        return true; // Has a default state (either non or oui with count)
+      case 3:
+        return (intakeState.selectedRisks || []).length > 0;
+      case 4:
+        return (intakeState.toxicRelationshipPatterns || []).length > 0 || !!intakeState.toxicRelationshipDescription;
+      default: {
+        const vq = intakeState.veroQuestions[qNum];
+        if (!vq) return false;
+        return vq.userAnswer !== undefined && vq.userAnswer !== '' && vq.userAnswer !== null;
+      }
+    }
+  };
+
+  const answeredCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((n) => isQuestionAnswered(n)).length;
+  const progressPercent = Math.round((answeredCount / 10) * 100);
 
   return (
     <div id="main-screen-video-questions-hub" className="space-y-6">
-      {/* Centered Assessment Form */}
+      {/* Primary 10-Question Form Card */}
       <div className="max-w-4xl mx-auto w-full">
-        <div className="bg-white rounded-3xl border-2 border-[#CED6C1] p-6 shadow-md space-y-6">
+        <div className="bg-white rounded-3xl border-2 border-[#CED6C1] p-5 sm:p-7 shadow-md space-y-6">
           
-          {/* Form Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b-2 border-[#E5E2D9]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#E5EED6] text-[#385117] border border-[#B8CCA2] flex items-center justify-center shadow-xs">
-                  <Brain className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#385117]">
-                    Formulaire Principal d'Évaluation
-                  </span>
-                  <h2 className="text-xl font-extrabold text-[#1F201C]">
-                    Questions Clés de Sûreté & Autonomie
-                  </h2>
-                </div>
+          {/* Header & Quick Intro */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-[#E5E2D9]">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#E5EED6] text-[#385117] border-2 border-[#B8CCA2] flex items-center justify-center shadow-xs shrink-0">
+                <Brain className="w-6 h-6" />
               </div>
-
-              {/* Progress steps */}
-              <div className="flex items-center gap-2 text-xs bg-[#F4F2EB] px-3 py-1.5 rounded-xl border border-[#D5D0C2]">
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(1)}
-                  className={`w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center transition-colors ${
-                    activeStep === 1 ? 'bg-[#385117] text-white shadow-xs' : 'text-[#33312C] bg-[#FAF9F5] border border-[#D0CABE] hover:bg-[#E5EED6]'
-                  }`}
-                >
-                  1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(2)}
-                  className={`w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center transition-colors ${
-                    activeStep === 2 ? 'bg-[#385117] text-white shadow-xs' : 'text-[#33312C] bg-[#FAF9F5] border border-[#D0CABE] hover:bg-[#E5EED6]'
-                  }`}
-                >
-                  2
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveStep(3)}
-                  className={`w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center transition-colors ${
-                    activeStep === 3 ? 'bg-[#385117] text-white shadow-xs' : 'text-[#33312C] bg-[#FAF9F5] border border-[#D0CABE] hover:bg-[#E5EED6]'
-                  }`}
-                >
-                  3
-                </button>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#385117]">
+                    Page Prioritaire • Formulaire d'Entrée
+                  </span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#E5EED6] text-[#385117] border border-[#B8CCA2]">
+                    10 Questions
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-[#1F201C] mt-0.5">
+                  Questionnaire de Sûreté & Reconstruction
+                </h2>
               </div>
             </div>
 
-            {/* STEP 1: Cadre de vie & Logement */}
-            {activeStep === 1 && (
-              <div className="space-y-4 animate-in fade-in duration-200">
-                <div>
-                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
-                    <User className="w-4 h-4 text-[#385117]" />
-                    1. Quelle est votre situation de résidence actuelle ?
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {[
-                      'Cohabitation sous le même toit',
-                      'En cours de recherche de logement séparé',
-                      'Logement personnel indépendant',
-                      'Hébergement temporaire chez des proches',
-                    ].map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setLivingSituation(opt)}
-                        className={`p-3 rounded-2xl border-2 text-left text-xs transition-all ${
-                          livingSituation === opt
-                            ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                            : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE] hover:border-[#BDB7A6]'
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
+            {/* Answered Counter & Progress */}
+            <div className="flex items-center gap-3 self-end sm:self-center bg-[#F4F2EB] px-3.5 py-2 rounded-2xl border-2 border-[#D5D0C2]">
+              <div className="text-right">
+                <div className="text-xs font-extrabold text-[#1F201C]">
+                  {answeredCount} / 10 complétées
                 </div>
-
-                <div className="pt-2">
-                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
-                    <Baby className="w-4 h-4 text-[#385117]" />
-                    2. Y a-t-il des enfants à charge ou des mineurs dans le foyer ?
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setHasChildren(false)}
-                      className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all ${
-                        !hasChildren
-                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                          : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
-                      }`}
-                    >
-                      <div className="font-extrabold text-sm text-[#1F201C]">Non (Sans enfant)</div>
-                      <div className="text-xs text-[#4A4843] font-medium mt-0.5">Focus sur l'autonomie personnelle</div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setHasChildren(true);
-                        if (childrenCount === 0) setChildrenCount(1);
-                      }}
-                      className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all ${
-                        hasChildren
-                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                          : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
-                      }`}
-                    >
-                      <div className="font-extrabold text-sm text-[#1F201C]">Oui (Avec enfant·s)</div>
-                      <div className="text-xs text-[#4A4843] font-medium mt-0.5">Protection conjointe requise</div>
-                    </button>
-                  </div>
-
-                  {hasChildren && (
-                    <div className="mt-3 p-3.5 rounded-2xl bg-[#F4F2EB] border-2 border-[#D5D0C2] flex items-center gap-3">
-                      <span className="text-xs text-[#1F201C] font-bold">Nombre d'enfants :</span>
-                      <div className="flex items-center gap-2">
-                        {[1, 2, 3, 4].map((num) => (
-                          <button
-                            key={num}
-                            type="button"
-                            onClick={() => setChildrenCount(num)}
-                            className={`w-8 h-8 rounded-xl text-xs font-extrabold transition-all ${
-                              childrenCount === num
-                                ? 'bg-[#385117] text-white shadow-xs'
-                                : 'bg-white border-2 border-[#D8D4C7] text-[#2D2B27] hover:bg-[#E7EEDB]'
-                            }`}
-                          >
-                            {num}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-end pt-3">
-                  <button
-                    type="button"
-                    onClick={() => setActiveStep(2)}
-                    className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
-                  >
-                    <span>Étape suivante</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                <div className="text-[10px] text-[#6A6860] font-semibold">
+                  Progression : {progressPercent}%
                 </div>
               </div>
-            )}
+              <div className="w-9 h-9 rounded-full bg-white border-2 border-[#385117] flex items-center justify-center font-extrabold text-xs text-[#385117]">
+                {progressPercent}%
+              </div>
+            </div>
+          </div>
 
-            {/* STEP 2: Facteurs de risque et surveillance */}
-            {activeStep === 2 && (
-              <div className="space-y-4 animate-in fade-in duration-200">
-                <div>
-                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-[#A64D4D]" />
-                    3. Sélectionnez les indicateurs ou pressions constatés :
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {riskOptions.map((risk) => {
-                      const isSelected = selectedRisks.includes(risk);
-                      return (
-                        <button
-                          key={risk}
-                          type="button"
-                          onClick={() => handleToggleRisk(risk)}
-                          className={`p-3 rounded-2xl border-2 text-left text-xs transition-all flex items-start gap-2.5 ${
-                            isSelected
-                              ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold ring-2 ring-[#385117]/25'
-                              : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
-                          }`}
-                        >
-                          <div
-                            className={`w-4 h-4 rounded-md mt-0.5 shrink-0 flex items-center justify-center ${
-                              isSelected ? 'bg-[#385117] text-white' : 'border-2 border-[#9C9686] bg-white'
-                            }`}
-                          >
-                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
-                          </div>
-                          <span className="leading-snug">{risk}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+          {/* Stepper Grid (1 to 10 questions) */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-[#5C5952]">
+                Sélectionnez une question pour y répondre ou la configurer :
+              </span>
+              <span className="text-xs font-bold text-[#385117]">
+                Question {activeQuestion} sur 10
+              </span>
+            </div>
+
+            <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                const isActive = activeQuestion === num;
+                const isAnswered = isQuestionAnswered(num);
+                const isVeroSlot = num >= 5;
+                const isVeroConfigured = isVeroSlot && intakeState.veroQuestions[num]?.isConfigured;
+
+                return (
+                  <button
+                    key={num}
+                    id={`intake-question-step-btn-${num}`}
+                    type="button"
+                    onClick={() => setActiveQuestion(num)}
+                    className={`relative py-2.5 px-1 rounded-xl font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 transition-all ${
+                      isActive
+                        ? 'bg-[#385117] text-white shadow-md ring-2 ring-[#385117]/30 scale-105 z-10'
+                        : isAnswered
+                        ? 'bg-[#E7EEDB] border-2 border-[#A8BE90] text-[#22330E] hover:bg-[#DCE6CE]'
+                        : isVeroConfigured
+                        ? 'bg-[#F2EADB] border-2 border-[#D6C4A2] text-[#5C451D] hover:bg-[#E8DCC8]'
+                        : 'bg-[#FAF9F5] border-2 border-[#D8D4C7] text-[#55524B] hover:bg-[#F0EEE6]'
+                    }`}
+                  >
+                    <span className="text-xs font-black">Q{num}</span>
+                    {isAnswered ? (
+                      <Check className="w-3 h-3 text-[#385117] stroke-[3]" />
+                    ) : isVeroConfigured ? (
+                      <span className="w-2 h-2 rounded-full bg-[#8A5A1E]" />
+                    ) : isVeroSlot ? (
+                      <span className="text-[9px] text-[#8C887E] font-medium">Libre</span>
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#A39E91]" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* QUESTION 1: Situation de résidence */}
+          {activeQuestion === 1 && (
+            <div className="space-y-4 pt-2 animate-in fade-in duration-200">
+              <div className="bg-[#F8F7F2] p-4 rounded-2xl border-2 border-[#E5E2D9]">
+                <label className="block text-base font-extrabold text-[#1F201C] mb-1 flex items-center gap-2">
+                  <User className="w-5 h-5 text-[#385117]" />
+                  1. Quelle est votre situation de résidence actuelle ?
+                </label>
+                <p className="text-xs text-[#5C5952] mb-3">
+                  Cette information permet d'adapter les recommandations de mise en sécurité et les protocoles de sortie discrète.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {[
+                    'Cohabitation sous le même toit',
+                    'En cours de recherche de logement séparé',
+                    'Logement personnel indépendant',
+                    'Hébergement temporaire chez des proches',
+                  ].map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => updateState({ livingSituation: opt })}
+                      className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all ${
+                        intakeState.livingSituation === opt
+                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                          : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{opt}</span>
+                        {intakeState.livingSituation === opt && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* QUESTION 2: Enfants & Personnes à charge */}
+          {activeQuestion === 2 && (
+            <div className="space-y-4 pt-2 animate-in fade-in duration-200">
+              <div className="bg-[#F8F7F2] p-4 rounded-2xl border-2 border-[#E5E2D9]">
+                <label className="block text-base font-extrabold text-[#1F201C] mb-1 flex items-center gap-2">
+                  <Baby className="w-5 h-5 text-[#385117]" />
+                  2. Y a-t-il des enfants à charge ou des mineurs dans le foyer ?
+                </label>
+                <p className="text-xs text-[#5C5952] mb-3">
+                  La présence d'enfants déclenche des mesures de protection juridique conjointe (JAF, ordonnance de protection).
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => updateState({ hasChildren: false, childrenCount: 0 })}
+                    className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                      !intakeState.hasChildren
+                        ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                        : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                    }`}
+                  >
+                    <div className="font-extrabold text-sm text-[#1F201C]">Non (Sans enfant)</div>
+                    <div className="text-xs text-[#4A4843] mt-0.5">Focus direct sur l'autonomie et le départ individuel</div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => updateState({ hasChildren: true, childrenCount: Math.max(1, intakeState.childrenCount) })}
+                    className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                      intakeState.hasChildren
+                        ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                        : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                    }`}
+                  >
+                    <div className="font-extrabold text-sm text-[#1F201C]">Oui (Avec enfant·s à charge)</div>
+                    <div className="text-xs text-[#4A4843] mt-0.5">Prise en compte des actes de naissance et garde d'urgence</div>
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {intakeState.hasChildren && (
+                  <div className="mt-4 p-4 rounded-2xl bg-white border-2 border-[#CED6C1] flex items-center justify-between flex-wrap gap-3">
+                    <span className="text-xs text-[#1F201C] font-bold">
+                      Précisez le nombre d'enfants concernés :
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {[1, 2, 3, 4, 5].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => updateState({ childrenCount: num })}
+                          className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all ${
+                            intakeState.childrenCount === num
+                              ? 'bg-[#385117] text-white shadow-xs'
+                              : 'bg-[#F4F2EB] border-2 border-[#D8D4C7] text-[#2D2B27] hover:bg-[#E7EEDB]'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* QUESTION 3: Indicateurs de pression & facteurs de risques */}
+          {activeQuestion === 3 && (
+            <div className="space-y-4 pt-2 animate-in fade-in duration-200">
+              <div className="bg-[#F8F7F2] p-4 rounded-2xl border-2 border-[#E5E2D9]">
+                <label className="block text-base font-extrabold text-[#1F201C] mb-1 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-[#A64D4D]" />
+                  3. Sélectionnez les indicateurs ou pressions constatés :
+                </label>
+                <p className="text-xs text-[#5C5952] mb-3">
+                  Cochez tous les éléments que vous observez ou subissez dans votre environnement quotidien.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
+                  {riskOptions.map((risk) => {
+                    const isSelected = (intakeState.selectedRisks || []).includes(risk);
+                    return (
+                      <button
+                        key={risk}
+                        type="button"
+                        onClick={() => handleToggleRisk(risk)}
+                        className={`p-3 rounded-2xl border-2 text-left text-xs transition-all flex items-start gap-2.5 ${
+                          isSelected
+                            ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold ring-2 ring-[#385117]/25'
+                            : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                        }`}
+                      >
+                        <div
+                          className={`w-4 h-4 rounded-md mt-0.5 shrink-0 flex items-center justify-center ${
+                            isSelected ? 'bg-[#385117] text-white' : 'border-2 border-[#9C9686] bg-white'
+                          }`}
+                        >
+                          {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
+                        </div>
+                        <span className="leading-snug">{risk}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E5E2D9]">
                   <div>
                     <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5">
                       Contrôle financier :
                     </label>
                     <select
-                      value={financialAutonomy}
-                      onChange={(e) => setFinancialAutonomy(e.target.value)}
+                      value={intakeState.financialAutonomy}
+                      onChange={(e) => updateState({ financialAutonomy: e.target.value })}
                       className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
                     >
                       <option value="Autonomie financière totale">Autonomie financière totale</option>
@@ -364,8 +546,8 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                       Niveau de surveillance tech :
                     </label>
                     <select
-                      value={surveillanceLevel}
-                      onChange={(e) => setSurveillanceLevel(e.target.value)}
+                      value={intakeState.surveillanceLevel}
+                      onChange={(e) => updateState({ surveillanceLevel: e.target.value })}
                       className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
                     >
                       <option value="Pas de surveillance détectée">Pas de surveillance détectée</option>
@@ -374,140 +556,506 @@ export const MainScreenVideoAndQuestions: React.FC<MainScreenVideoAndQuestionsPr
                     </select>
                   </div>
                 </div>
-
-                <div className="flex justify-between pt-3">
-                  <button
-                    type="button"
-                    onClick={() => setActiveStep(1)}
-                    className="px-4 py-2.5 bg-white border-2 border-[#D8D4C7] hover:bg-[#F2EFE9] text-[#2D2B27] text-xs font-extrabold rounded-xl transition-colors"
-                  >
-                    Retour
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveStep(3)}
-                    className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
-                  >
-                    <span>Étape suivante</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* STEP 3: Objectifs et Validation Immédiate */}
-            {activeStep === 3 && (
-              <div className="space-y-4 animate-in fade-in duration-200">
+          {/* QUESTION 4: Comment décririez-vous une relation toxique ? */}
+          {activeQuestion === 4 && (
+            <div className="space-y-4 pt-2 animate-in fade-in duration-200">
+              <div className="bg-[#F8F7F2] p-4 sm:p-5 rounded-2xl border-2 border-[#E5E2D9] space-y-4">
                 <div>
-                  <label className="block text-sm font-extrabold text-[#1F201C] mb-2 flex items-center gap-2">
-                    <BookmarkCheck className="w-4 h-4 text-[#385117]" />
-                    4. Quel est votre objectif prioritaire aujourd'hui ?
+                  <div className="flex items-center gap-2 text-xs font-extrabold text-[#385117] uppercase tracking-wider mb-1">
+                    <HeartHandshake className="w-4 h-4" />
+                    Question Thérapeutique Fondatrice
+                  </div>
+                  <label className="block text-base sm:text-lg font-extrabold text-[#1F201C] mb-1">
+                    4. Comment décririez-vous une relation toxique ou votre dynamique relationnelle actuelle ?
                   </label>
-                  <div className="space-y-2.5">
-                    {[
-                      'Préparer un départ sécurisé et préserver mes droits',
-                      'Sécuriser mes preuves et documents confidentiels',
-                      'Organiser un réseau d’alerte discret avec mes proches',
-                      'Évaluer calmement la situation sans action précipitée',
-                    ].map((goal) => (
+                  <p className="text-xs text-[#5C5952] leading-relaxed">
+                    Une relation saine apporte sérénité, sécurité et respect mutuel. Une relation toxique ou dysfonctionnelle installe le doute, la peur constante, la dévalorisation et l'épuisement. Cochez les dynamiques qui résonnent avec votre vécu :
+                  </p>
+                </div>
+
+                {/* Toxic relationship patterns grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {toxicPatterns.map((pat) => {
+                    const isSelected = (intakeState.toxicRelationshipPatterns || []).includes(pat.label);
+                    return (
                       <button
-                        key={goal}
+                        key={pat.id}
                         type="button"
-                        onClick={() => setPrimaryGoal(goal)}
-                        className={`w-full p-3.5 rounded-2xl border-2 text-left text-xs transition-all flex items-center justify-between ${
-                          primaryGoal === goal
-                            ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
-                            : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                        onClick={() => handleToggleToxicPattern(pat.label)}
+                        className={`p-3.5 rounded-2xl border-2 text-left transition-all flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-[#E7EEDB] border-[#385117] ring-2 ring-[#385117]/25 shadow-xs'
+                            : 'bg-white border-[#D8D4C7] hover:bg-[#F6F4EE]'
                         }`}
                       >
-                        <span className="font-semibold">{goal}</span>
-                        {primaryGoal === goal && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <div className="text-xs font-extrabold text-[#1F201C] flex items-center gap-2">
+                            <span className={`w-3.5 h-3.5 rounded-md flex items-center justify-center shrink-0 ${
+                              isSelected ? 'bg-[#385117] text-white' : 'border border-[#8E8A7E] bg-white'
+                            }`}>
+                              {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                            </span>
+                            <span>{pat.label}</span>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-[#5C5952] font-medium leading-normal pl-5">
+                          {pat.desc}
+                        </p>
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
 
-                {/* Summary pill */}
-                <div className="p-4 rounded-2xl bg-[#F4F2EB] border-2 border-[#D5D0C2] text-xs text-[#2D2B27] space-y-2">
-                  <div className="font-extrabold text-[#1F201C]">Récapitulatif de votre profil :</div>
-                  <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-[#CED6C1] text-[#1F201C] font-bold">
-                      {livingSituation}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-[#CED6C1] text-[#1F201C] font-bold">
-                      {hasChildren ? `${childrenCount} enfant(s)` : 'Sans enfant'}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-[#CED6C1] text-[#1F201C] font-bold">
-                      {selectedRisks.length} facteur(s) de risque
-                    </span>
-                  </div>
+                {/* Free text reflection */}
+                <div className="pt-2">
+                  <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5 flex items-center gap-1.5">
+                    <MessageSquareHeart className="w-4 h-4 text-[#385117]" />
+                    <span>Décrivez avec vos propres mots ce que vous ressentez au quotidien (facultatif mais libérateur) :</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={intakeState.toxicRelationshipDescription || ''}
+                    onChange={(e) => updateState({ toxicRelationshipDescription: e.target.value })}
+                    placeholder="Ex: J'ai l'impression de ne plus avoir le droit d'exprimer mes besoins sans déclencher un drame..."
+                    className="w-full text-xs p-3.5 rounded-2xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117] placeholder:text-[#9A968B]"
+                  />
                 </div>
+              </div>
+            </div>
+          )}
 
-                <div className="flex items-center justify-between pt-3">
-                  <button
-                    type="button"
-                    onClick={() => setActiveStep(2)}
-                    className="px-4 py-2.5 bg-white border-2 border-[#D8D4C7] hover:bg-[#F2EFE9] text-[#2D2B27] text-xs font-extrabold rounded-xl transition-colors"
-                  >
-                    Retour
-                  </button>
+          {/* QUESTIONS 5 à 10: Espaces réservés pour Véro (Configurables & Personnalisables) */}
+          {activeQuestion >= 5 && activeQuestion <= 10 && (() => {
+            const qNum = activeQuestion;
+            const veroQ = intakeState.veroQuestions[qNum] || {
+              id: qNum,
+              title: `Question ${qNum} (Espace réservé pour Véro)`,
+              subtitle: 'Emplacement libre pour intégrer la question de Véro.',
+              isConfigured: false,
+              questionType: 'multiple_choice',
+              options: ['Option 1', 'Option 2', 'Option 3'],
+              userAnswer: '',
+            };
 
-                  <button
-                    type="button"
-                    onClick={handleSaveAndGenerate}
-                    disabled={isGenerating}
-                    className="px-6 py-3 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-2xl flex items-center gap-2 shadow-md transition-all disabled:opacity-50"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Mise à jour en cours...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4" />
-                        <span>Valider et actualiser mon plan de sûreté</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+            return (
+              <div className="space-y-4 pt-2 animate-in fade-in duration-200">
+                <div className="bg-[#F8F7F2] p-4 sm:p-5 rounded-2xl border-2 border-[#E5E2D9] space-y-4">
+                  
+                  {/* Top Bar for Véro Question with Customize/Edit Button */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E2D9]">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                          veroQ.isConfigured 
+                            ? 'bg-[#E5EED6] text-[#385117] border-[#B8CCA2]' 
+                            : 'bg-[#F2EADB] text-[#8A5A1E] border-[#D6C4A2]'
+                        }`}>
+                          {veroQ.isConfigured ? '✓ Question de Véro configurée' : 'Espace libre pour Véro'}
+                        </span>
+                        <span className="text-xs font-bold text-[#6A6860]">
+                          Slot #{qNum}
+                        </span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-extrabold text-[#1F201C] mt-1">
+                        {veroQ.title}
+                      </h3>
+                      {veroQ.subtitle && (
+                        <p className="text-xs text-[#5C5952] mt-0.5">
+                          {veroQ.subtitle}
+                        </p>
+                      )}
+                    </div>
 
-                <div className="pt-4 border-t-2 border-[#E5E2D9] flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="text-xs text-[#2D2B27]">
-                    <span className="font-extrabold block text-[#1F201C]">Alternative sécurisée :</span>
-                    Générez ce formulaire sur Google Forms pour le partager avec votre avocate ou assistance sociale.
-                  </div>
-                  {needsAuth ? (
+                    {/* Button to customize / rename Véro question */}
                     <button
-                      onClick={handleLogin}
-                      className="px-4 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap shadow-xs"
+                      id={`edit-vero-question-${qNum}-btn`}
+                      type="button"
+                      onClick={() => handleOpenVeroEditor(qNum)}
+                      className="px-3.5 py-2 bg-white hover:bg-[#FAF9F5] text-[#385117] border-2 border-[#B8CCA2] rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-xs transition-colors shrink-0"
                     >
-                      <User className="w-4 h-4" />
-                      Connexion Google
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>{veroQ.isConfigured ? 'Modifier la question de Véro' : 'Intégrer / Renommer cette question'}</span>
                     </button>
-                  ) : (
-                    <button
-                      onClick={handleCreateGoogleForm}
-                      disabled={isCreatingForm}
-                      className="px-4 py-2.5 bg-[#2D8E47] hover:bg-[#247339] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 transition-colors whitespace-nowrap shadow-xs disabled:opacity-50"
-                    >
-                      {isCreatingForm ? <RefreshCw className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
-                      Exporter vers Google Forms
-                    </button>
+                  </div>
+
+                  {/* Rendering based on Question Type */}
+                  {veroQ.questionType === 'multiple_choice' && (
+                    <div className="space-y-2.5">
+                      <div className="text-xs font-bold text-[#1F201C] mb-1">
+                        Sélectionnez la réponse appropriée :
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {(veroQ.options || ['Option 1', 'Option 2']).map((opt) => {
+                          const isSelected = veroQ.userAnswer === opt;
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => handleUpdateVeroAnswer(qNum, opt)}
+                              className={`p-3.5 rounded-2xl border-2 text-left text-xs transition-all flex items-center justify-between ${
+                                isSelected
+                                  ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                                  : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                              }`}
+                            >
+                              <span>{opt}</span>
+                              {isSelected && <CheckCircle2 className="w-4 h-4 text-[#385117]" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {veroQ.questionType === 'yes_no' && (
+                    <div className="space-y-2.5">
+                      <div className="text-xs font-bold text-[#1F201C] mb-1">
+                        Votre réponse :
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {['Oui', 'Non', 'Incertain / En réflexion'].map((opt) => {
+                          const isSelected = veroQ.userAnswer === opt;
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => handleUpdateVeroAnswer(qNum, opt)}
+                              className={`p-3.5 rounded-2xl border-2 text-center text-xs transition-all ${
+                                isSelected
+                                  ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A] font-bold shadow-xs ring-2 ring-[#385117]/25'
+                                  : 'bg-white border-[#D8D4C7] text-[#2D2B27] font-semibold hover:bg-[#F6F4EE]'
+                              }`}
+                            >
+                              <div className="font-extrabold">{opt}</div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {veroQ.questionType === 'rating_scale' && (
+                    <div className="space-y-3">
+                      <div className="text-xs font-bold text-[#1F201C]">
+                        Échelle d'évaluation (1 = Très faible, 5 = Très intense) :
+                      </div>
+                      <div className="grid grid-cols-5 gap-2">
+                        {[1, 2, 3, 4, 5].map((val) => {
+                          const isSelected = veroQ.userAnswer === val;
+                          return (
+                            <button
+                              key={val}
+                              type="button"
+                              onClick={() => handleUpdateVeroAnswer(qNum, val)}
+                              className={`py-3 rounded-2xl border-2 text-center font-extrabold text-sm transition-all ${
+                                isSelected
+                                  ? 'bg-[#385117] text-white border-[#385117] shadow-xs'
+                                  : 'bg-white border-[#D8D4C7] text-[#2D2B27] hover:bg-[#E7EEDB]'
+                              }`}
+                            >
+                              {val}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {veroQ.questionType === 'text_reflection' && (
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-[#1F201C]">
+                        Votre réflexion ou réponse rédigée :
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={(veroQ.userAnswer as string) || ''}
+                        onChange={(e) => handleUpdateVeroAnswer(qNum, e.target.value)}
+                        placeholder="Rédigez votre réponse ici..."
+                        className="w-full text-xs p-3.5 rounded-2xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117] placeholder:text-[#9A968B]"
+                      />
+                    </div>
+                  )}
+
+                  {/* Optional notes */}
+                  <div className="pt-2">
+                    <label className="block text-[11px] font-bold text-[#5C5952] mb-1">
+                      Remarque personnelle ou précision additionnelle (facultatif) :
+                    </label>
+                    <input
+                      type="text"
+                      value={veroQ.userNote || ''}
+                      onChange={(e) => handleUpdateVeroAnswer(qNum, veroQ.userAnswer || '', e.target.value)}
+                      placeholder="Ajouter une note de contexte..."
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#D5D0C2] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
+                    />
+                  </div>
+
+                  {!veroQ.isConfigured && (
+                    <div className="p-3 rounded-xl bg-[#F4F2EB] border border-[#D5D0C2] flex items-center justify-between text-xs text-[#6A6860]">
+                      <div className="flex items-center gap-2">
+                        <Info className="w-4 h-4 text-[#8A5A1E]" />
+                        <span>Vous recevrez prochainement la question de Véro pour cet emplacement.</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenVeroEditor(qNum)}
+                        className="text-xs font-extrabold text-[#385117] underline hover:text-[#24360F]"
+                      >
+                        Configurer maintenant
+                      </button>
+                    </div>
                   )}
                 </div>
-
-                {isSaved && (
-                  <div className="p-3.5 rounded-xl bg-[#E7EEDB] border-2 border-[#385117] text-[#121B0A] text-xs font-bold flex items-center gap-2 animate-in fade-in">
-                    <CheckCircle2 className="w-4 h-4 text-[#385117]" />
-                    <span>Vos réponses ont été enregistrées localement et votre protocole a été actualisé !</span>
-                  </div>
-                )}
               </div>
+            );
+          })()}
+
+          {/* Stepper Navigation Buttons (Précédent / Suivant / Valider) */}
+          <div className="flex items-center justify-between pt-4 border-t-2 border-[#E5E2D9]">
+            <button
+              id="intake-prev-question-btn"
+              type="button"
+              disabled={activeQuestion === 1}
+              onClick={() => setActiveQuestion((prev) => Math.max(1, prev - 1))}
+              className="px-4 py-2.5 bg-white border-2 border-[#D8D4C7] hover:bg-[#F2EFE9] text-[#2D2B27] text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Question précédente</span>
+            </button>
+
+            <div className="flex items-center gap-2">
+              {activeQuestion < 10 ? (
+                <button
+                  id="intake-next-question-btn"
+                  type="button"
+                  onClick={() => setActiveQuestion((prev) => Math.min(10, prev + 1))}
+                  className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
+                >
+                  <span>Question suivante (Q{activeQuestion + 1})</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  id="intake-submit-final-btn"
+                  type="button"
+                  onClick={handleSaveAndSubmit}
+                  disabled={isGenerating}
+                  className="px-6 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl flex items-center gap-2 shadow-md transition-all disabled:opacity-50"
+                >
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Enregistrement du Bilan...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Valider les 10 questions (+25 pts)</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Export & Google Form Integration */}
+          <div className="pt-3 border-t border-[#E5E2D9] flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-[#5C5952]">
+              <span className="font-extrabold text-[#1F201C]">Exportation sécurisée : </span>
+              Partagez ou sauvegardez vos réponses confidentielles vers Google Forms / Drive.
+            </div>
+
+            {needsAuth ? (
+              <button
+                onClick={handleLogin}
+                className="px-3.5 py-2 bg-[#4285F4] hover:bg-[#3367D6] text-white text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-xs"
+              >
+                <User className="w-3.5 h-3.5" />
+                Connexion Google
+              </button>
+            ) : (
+              <button
+                onClick={handleCreateGoogleForm}
+                disabled={isCreatingForm}
+                className="px-3.5 py-2 bg-[#2D8E47] hover:bg-[#247339] text-white text-xs font-extrabold rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-xs disabled:opacity-50"
+              >
+                {isCreatingForm ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5" />}
+                Exporter vers Google Forms
+              </button>
             )}
           </div>
-        </div>
 
+          {isSaved && (
+            <div className="p-3.5 rounded-xl bg-[#E7EEDB] border-2 border-[#385117] text-[#121B0A] text-xs font-bold flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-[#385117] shrink-0" />
+              <span>Vos 10 questions ont été enregistrées localement et votre protocole de sûreté a été actualisé (+25 points) !</span>
+            </div>
+          )}
+
+        </div>
+      </div>
+
+      {/* MODAL: Editor to rename & customize Véro's Questions (5 to 10) */}
+      {editingVeroId !== null && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
+          <div className="bg-white rounded-3xl border-2 border-[#CED6C1] p-6 max-w-lg w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="flex items-center justify-between border-b pb-3 border-[#E5E2D9]">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-[#E5EED6] text-[#385117] flex items-center justify-center font-extrabold text-sm">
+                  Q{editingVeroId}
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-[#1F201C]">
+                    Intégrer / Renommer la Question de Véro
+                  </h4>
+                  <p className="text-[11px] text-[#5C5952]">
+                    Personnalisez l'intitulé, les options et le type de réponse.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEditingVeroId(null)}
+                className="w-8 h-8 rounded-lg text-[#6A6860] hover:bg-[#F4F2EB] flex items-center justify-center font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3.5">
+              {/* Question Title */}
+              <div>
+                <label className="block text-xs font-extrabold text-[#1F201C] mb-1">
+                  Intitulé de la question :
+                </label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="Ex: Avez-vous le sentiment d'être écoutée sans jugement ?"
+                  className="w-full text-xs font-semibold p-3 rounded-xl border-2 border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
+                />
+              </div>
+
+              {/* Subtitle / Therapeutic guidance */}
+              <div>
+                <label className="block text-xs font-extrabold text-[#1F201C] mb-1">
+                  Sous-titre / Explication bienveillante (facultatif) :
+                </label>
+                <input
+                  type="text"
+                  value={editSubtitle}
+                  onChange={(e) => setEditSubtitle(e.target.value)}
+                  placeholder="Ex: Cette question permet d'évaluer la réciprocité relationnelle."
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#CED6C1] bg-white text-[#1F201C] focus:outline-none focus:ring-2 focus:ring-[#385117]"
+                />
+              </div>
+
+              {/* Question Type */}
+              <div>
+                <label className="block text-xs font-extrabold text-[#1F201C] mb-1.5">
+                  Format de réponse :
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: 'multiple_choice', label: 'Choix multiples' },
+                    { id: 'text_reflection', label: 'Texte libre rédigé' },
+                    { id: 'yes_no', label: 'Oui / Non / Incertain' },
+                    { id: 'rating_scale', label: 'Échelle 1 à 5' },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setEditQuestionType(t.id as any)}
+                      className={`p-2.5 rounded-xl border-2 text-xs font-bold text-left transition-all ${
+                        editQuestionType === t.id
+                          ? 'bg-[#E7EEDB] border-[#385117] text-[#121B0A]'
+                          : 'bg-[#FAF9F5] border-[#D8D4C7] text-[#55524B] hover:bg-[#F2EFE9]'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Options list for multiple choice */}
+              {editQuestionType === 'multiple_choice' && (
+                <div className="space-y-2">
+                  <label className="block text-xs font-extrabold text-[#1F201C]">
+                    Options de choix personnalisées :
+                  </label>
+                  <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                    {editOptions.map((opt, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="w-5 text-[11px] font-bold text-[#8A867C]">{idx + 1}.</span>
+                        <input
+                          type="text"
+                          value={opt}
+                          onChange={(e) => {
+                            const copy = [...editOptions];
+                            copy[idx] = e.target.value;
+                            setEditOptions(copy);
+                          }}
+                          className="flex-1 text-xs p-2 rounded-lg border border-[#CED6C1] bg-white text-[#1F201C]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveOption(idx)}
+                          className="p-2 text-[#A64D4D] hover:bg-[#FCE8E8] rounded-lg"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add option */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={newOptionText}
+                      onChange={(e) => setNewOptionText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddOption()}
+                      placeholder="Ajouter une option..."
+                      className="flex-1 text-xs p-2 rounded-lg border border-[#CED6C1] bg-white text-[#1F201C]"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddOption}
+                      className="px-3 py-2 bg-[#385117] text-white rounded-lg text-xs font-bold flex items-center gap-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Ajouter</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E5E2D9]">
+              <button
+                type="button"
+                onClick={() => setEditingVeroId(null)}
+                className="px-4 py-2 text-xs font-bold text-[#6A6860] hover:bg-[#F4F2EB] rounded-xl"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveVeroEditor}
+                className="px-5 py-2.5 bg-[#385117] hover:bg-[#2A3E11] text-white text-xs font-extrabold rounded-xl shadow-xs"
+              >
+                Enregistrer la question de Véro
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
