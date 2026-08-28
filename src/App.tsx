@@ -26,7 +26,7 @@ export default function App() {
   const [isNightMode, setIsNightMode] = useState<boolean>(() => {
     return StorageService.isNightMode();
   });
-  const [activeTab, setActiveTab] = useState('evaluation');
+  const [activeTab, setActiveTab] = useState('violentometre');
   const [companionProfile, setCompanionProfile] = useState(() => CompanionMemoryService.getProfile());
   const [securitySubTab, setSecuritySubTab] = useState<'network' | 'justice' | 'appointments'>('network');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
@@ -248,8 +248,8 @@ export default function App() {
           />
         )}
 
-        {/* TAB 1: Questionnaire Principal & Parcours */}
-        {(activeTab === 'evaluation' || activeTab === 'toltec') && (
+        {/* TAB 1: Violentomètre & 8 Questionnaires Interactifs */}
+        {(activeTab === 'violentometre' || activeTab === 'evaluation') && (
           <div className="space-y-6">
             <MainScreenVideoAndQuestions 
               onPlanGenerated={() => setActiveTab('wellness')} 
@@ -257,6 +257,12 @@ export default function App() {
               onTriggerPanic={() => setIsCamouflageActive(true)}
               onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
             />
+          </div>
+        )}
+
+        {/* TAB 2: Les 111 Vérités (111 Paliers, Flashcards Toltèques, Validation & Progression) */}
+        {(activeTab === 'truths111' || activeTab === 'toltec') && (
+          <div className="space-y-6">
             <ProgressionDashboard 
               resiliencePoints={companionProfile.resiliencePoints} 
               onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}

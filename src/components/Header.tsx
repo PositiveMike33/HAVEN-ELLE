@@ -109,22 +109,30 @@ export const Header: React.FC<HeaderProps> = ({
   const userCycleId = getCycleForLevel(userLevel);
   const userCycle = RESILIENCE_CYCLES.find(c => c.id === userCycleId) || RESILIENCE_CYCLES[0];
   
-  // Strictly 3 Main Tabs:
-  // 1. 8 Questionnaires & Violentomètre (Parcours de Résilience & Découverte)
+  // Main Tabs:
+  // 1. Violentomètre (Violentomètre & 8 Questionnaires Interactifs)
   navItems.push({ 
-    id: 'evaluation', 
-    label: '8 Questionnaires & Violentomètre', 
+    id: 'violentometre', 
+    label: 'Violentomètre', 
     icon: ClipboardList 
   });
 
-  // 2. Soutien & Bien-Être (Psychanalyste IA, Respiration, Méditations)
+  // 2. Les 111 Vérités (111 Paliers, Flashcards Toltèques, Validation & Progression)
+  navItems.push({ 
+    id: 'truths111', 
+    label: 'Les 111 Vérités', 
+    icon: Sparkles,
+    badge: isPendingValidation ? 'Palier' : undefined
+  });
+
+  // 3. Soutien & Bien-Être (Psychanalyste IA, Respiration, Méditations)
   navItems.push({ 
     id: 'wellness', 
     label: 'Soutien & Bien-Être', 
     icon: Heart 
   });
   
-  // 3. Sécurité & Protection (Réseau de Secours, Dossier Justice & Alertes)
+  // 4. Sécurité & Protection (Réseau de Secours, Dossier Justice & Alertes)
   navItems.push({ 
     id: 'security', 
     label: 'Sécurité & Protection', 
@@ -157,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div id="header-audio-container" className="flex items-center gap-3">
           {/* Level & Cycle Badge */}
           <button
-            onClick={() => onSelectTab('evaluation')}
+            onClick={() => onSelectTab('truths111')}
             className={`px-3.5 py-1.5 rounded-xl border-2 text-xs font-black flex items-center gap-1.5 transition-all hover:scale-105 ${userCycle.badgeBg} ${userCycle.badgeBorder} ${userCycle.badgeText} shadow-xs`}
             title={`Niveau validé ${userLevel}/111 (${currentPts} pts) - ${userCycle.subtitle}${isPendingValidation ? ' • Question de palier débloquée !' : ''}`}
           >

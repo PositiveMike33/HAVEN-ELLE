@@ -454,16 +454,15 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
 
           <a
             id="quick-silent-sms-btn"
-            href={`sms:${primaryContact?.phone ? primaryContact.phone.replace(/[^\d+]/g, '') : '14385432555'}?body=${encodeURIComponent(`ALERTE SILENCIEUSE - Mot de passe secret : ${primaryContact?.secretCodeWord || 'Mamadou'}. Besoin d'assistance immédiate.`)}`}
-            onClick={handleQuickSilentSms}
+            href="tel:811"
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors cursor-pointer"
-            title={`Envoyer SMS Silencieux à ${primaryContact ? primaryContact.name : 'Contact Prioritaire'} (${primaryContact?.phone || '1-438-543-2555'})`}
+            title="Appeler Urgence Santé 811 (Info-Santé / Info-Social 24/7)"
           >
-            <div className="w-8 h-7 rounded-lg bg-[#8A9A5B]/40 text-white flex items-center justify-center font-bold text-xs">SMS</div>
+            <div className="w-8 h-7 rounded-lg bg-[#2563EB]/40 text-white flex items-center justify-center font-bold text-xs">811</div>
             <div>
-              <span className="font-bold block text-white">SMS Silencieux</span>
+              <span className="font-bold block text-white">811 / Urgence Santé</span>
               <span className="text-[10px] text-[#E5EAD9] truncate max-w-[130px] block">
-                {primaryContact ? `${primaryContact.name.split(' ')[0]} • ${primaryContact.phone || 'SOS'}` : '1-438-543-2555 • Mamadou'}
+                Info-Santé & Social 24/7
               </span>
             </div>
           </a>

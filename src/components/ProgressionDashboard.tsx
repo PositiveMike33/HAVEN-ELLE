@@ -133,14 +133,14 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#DCFCE7] text-[#14532D] text-xs font-black uppercase tracking-wider mb-2 border-2 border-[#86EFAC]">
             <Sparkles className="w-4 h-4 text-[#15803D]" />
-            Évolution Échelonnée en 111 Niveaux
+            Parcours Initiatique en 111 Vérités
           </div>
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#0F172A] flex items-center gap-2.5">
             <Trophy className="w-7 h-7 text-[#15803D]" />
-            Votre Sanctuaire de Résilience
+            Les 111 Vérités & Paliers d'Évolution
           </h2>
           <p className="text-[#334155] font-semibold mt-1 text-sm max-w-2xl leading-relaxed">
-            Un cheminement progressif en 4 grands cycles de 25 niveaux couronnés par le Cycle Secret du Kybalion (Niveaux 101 à 111) et le Trophée Légendaire « ÉVEILLÉ ».
+            Un cheminement progressif en 4 grands cycles de 25 vérités couronnés par le Cycle Secret du Kybalion (Vérités 101 à 111) et le Trophée Légendaire « ÉVEILLÉ ».
           </p>
         </div>
 
@@ -232,7 +232,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           }`}
         >
           <BookOpen className="w-4 h-4" />
-          <span>Grand Livre des 111 Questions</span>
+          <span>Grand Livre des 111 Vérités</span>
           <span className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-black ${
             activeDashboardView === 'roadmap100' ? 'bg-white/25 text-white' : 'bg-[#DCFCE7] text-[#14532D]'
           }`}>
