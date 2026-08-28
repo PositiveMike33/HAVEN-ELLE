@@ -315,27 +315,18 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Immediate Panic Mode Button */}
-          <button
-            id="header-panic-mode-btn"
-            onClick={onTriggerPanic}
-            className="px-3.5 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95"
-            title="Basculer instantanément en mode camouflage et couper le son (Touche Échap)"
-          >
-            <AlertOctagon className="w-4 h-4 animate-pulse" />
-            <span>MODE PANIQUE (Échap)</span>
-          </button>
-
-          {/* Quick Alert SOS */}
-          <button
-            id="header-quick-sos-btn"
-            onClick={onTriggerSOS}
-            className="px-3.5 py-1.5 bg-[#15803D] hover:bg-[#14532D] text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition-transform hover:scale-105 active:scale-95"
-            title="Déclencher l'alerte d'urgence aux contacts de confiance"
-          >
-            <ShieldAlert className="w-4 h-4 text-[#DCFCE7]" />
-            <span>SOS Réseau</span>
-          </button>
+          {/* Immediate Panic Mode Button with integrated SOS Réseau quick option */}
+          <div className="flex items-center gap-1.5">
+            <button
+              id="header-panic-mode-btn"
+              onClick={onTriggerPanic}
+              className="px-3.5 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 border border-[#EF4444]"
+              title="SOS : Basculer instantanément en camouflage d'urgence et couper le son (Touche Échap)"
+            >
+              <AlertOctagon className="w-4 h-4 animate-pulse" />
+              <span>SOS</span>
+            </button>
+          </div>
         </div>
       </div>
 

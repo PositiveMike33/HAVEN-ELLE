@@ -33,11 +33,33 @@ export interface ToltecFlashcardItem {
   agreementNumber: 1 | 2 | 3 | 4 | 5;
   agreementName: string;
   agreementTag: string;
+  questionNumberLabel?: string; // e.g. "Question 1 / 111 : Le Miroir du Verbe — Bénir ou Maudire"
+  questionContext?: string; // Context intro
+  scenarioSubtitle?: string;
   realWorldScenario: string;
+  philosophicalFramework?: {
+    title: string;
+    quoteTitle: string;
+    quoteText: string;
+    quoteAuthor: string;
+    decodingTitle: string;
+    macroMicroTitle: string;
+    macroMicroDesc: string;
+    causeEffectTitle: string;
+    causeEffectDesc: string;
+    verbVectorTitle: string;
+    verbVectorDesc: string;
+  };
+  alignmentKey?: {
+    title: string;
+    hiddenPrinciple: string;
+    groundingGesture: string;
+  };
   question: string;
   options: {
     id: 'A' | 'B' | 'C';
     text: string;
+    sublabel?: string;
     isResilientToltec: boolean;
     // The revealed analysis hidden until answered
     revealedTitle: string;
@@ -56,34 +78,62 @@ export const TOLTEC_FLASHCARD_QUESTIONS: ToltecFlashcardItem[] = [
     agreementNumber: 1,
     agreementName: 'Que ta parole soit impeccable',
     agreementTag: 'Accord 1 • Verbe Aimant & Alchimie Intérieure',
-    realWorldScenario: 'Après une journée harassante, vous commettez une maladresse et essuyez un refus (« Non ») sec. Une voix familière surgit dans votre tête : « Tu es incapable, tu rates toujours tout quand ça compte. »',
-    question: 'Face à ce faux-pas et ce refus du monde réel, comment appliquez-vous la Parole Impeccable ?',
+    questionNumberLabel: 'Question 1 / 111 : Le Miroir du Verbe — Bénir ou Maudire',
+    questionContext: `Dans la tradition toltèque, ta parole est une baguette magique : chaque mot prononcé ou pensé est un ordre créateur envoyé à ton univers intérieur. Selon les enseignements hermétiques, ton esprit est la cause première de ta réalité (Loi du Mentalisme et Loi de Correspondance). Lorsque tu vis une injustice, utiliser des mots destructeurs contre toi ou contre l'autre revient à jeter une malédiction (male-dicere : mal dire) qui empoisonne ton propre sanctuaire. À l'inverse, choisir une parole impeccable revient à poser une bénédiction (bene-dicere : bien dire) qui élève immédiatement ta fréquence et transmute l'épreuve.`,
+    scenarioSubtitle: "📌 La Mise en Situation Réelle",
+    realWorldScenario: `Tu viens de subir un reproche injuste et blessant d'une personne proche, qui tente de te faire porter le chapeau pour ses propres erreurs et son instabilité émotionnelle. Ton cœur s'accélère, la colère monte, et ton mental veut immédiatement réagir.`,
+    philosophicalFramework: {
+      title: "Le Principe de Correspondance et la Puissance du Verbe",
+      quoteTitle: "1. Fondement Philosophique : Le Principe de Correspondance",
+      quoteText: "« Ce qui est en haut est comme ce qui est en bas, et ce qui est en bas est comme ce qui est en haut ; ce qui est en dedans est comme ce qui est en dehors, et ce qui est en dehors est comme ce qui est en dedans. »",
+      quoteAuthor: "— Attribué à Hermès Trismégiste (Table d'Émeraude & Kybalion / Tradition Hermétique)",
+      decodingTitle: "1.2. Décodage des Plans d'Existence",
+      macroMicroTitle: "En Haut / En Bas (Macrocosme & Microcosme)",
+      macroMicroDesc: "Les lois qui régissent l'univers, les étoiles et la conscience cosmique sont les mêmes que celles qui régissent l'atome, la cellule et la psyché humaine.",
+      causeEffectTitle: "En Dedans / En Dehors (Cause & Effet)",
+      causeEffectDesc: "Le monde intérieur (pensées, émotions, croyances, intentions) constitue la cause première, tandis que le monde extérieur (circonstances, relations, événements matériels) n'est que le reflet ou l'effet. On ne manifeste pas ce que l'on veut, on manifeste et attire ce que l'on vibre intérieurement.",
+      verbVectorTitle: "2. Le Verbe : Vecteur de Transmutation entre l'Intérieur et l'Extérieur",
+      verbVectorDesc: "La parole est le pont dynamique par lequel l'énergie immatérielle (la pensée, l'intention) s'incarne dans le monde physique et vibratoire."
+    },
+    alignmentKey: {
+      title: "🧭 La Clé d'Alignement pour l'Apprentie",
+      hiddenPrinciple: "La Loi de Polarité et du Mentalisme (Le Kybalion) — Ce sur quoi tu portes ton verbe et ton attention devient le moule de ta réalité. Ne donne aucun pouvoir aux paroles de destruction.",
+      groundingGesture: "Dès qu'une parole toxique t'est lancée, pose une main sur ton plexus ou ton cœur, respire lentement et répète intérieurement : « Ce poison ne m'appartient pas. Ma parole demeure mon bouclier et ma lumière. »"
+    },
+    question: 'Quelle est la meilleure façon de formuler ta réponse pour créer une rétroaction positive, préserver ton énergie vitale et rester souveraine de ton sanctuaire intérieur ?',
     options: [
       {
         id: 'A',
-        text: 'Interrompre immédiatement ce poison verbal : me parler avec douceur en disant : « Ce Non et cette maladresse ne définissent pas ma valeur. J’apprends, j’ai fait face avec courage et je me traite avec respect. »',
-        isResilientToltec: true,
-        revealedTitle: '✨ Posture Toltèque Réussie : Alchimie du Verbe Protecteur',
-        revealedAnalysis: 'La parole impeccable commence par le dialogue envers soi-même. Remplacer l\'autocritique réflexe par la tendresse désactive immédiatement le système d\'alarme de l\'amygdale et rétablit une sécurité psychologique inviolable.',
-        somaticShiftPrompt: 'Posez une main sur la poitrine, inspirez amplement et sentez la chaleur bienveillante de vos mots.'
+        sublabel: '❌ Le Piège de la Malédiction Intérieure / Soumission Toxique',
+        text: '« C\'est encore de ma faute, je ne vaux rien et je gâche toujours tout. De toute façon, je n\'arriverai jamais à me faire respecter, le sort s\'acharne sur moi. »',
+        isResilientToltec: false,
+        revealedTitle: '🌱 Décodage : Piège de la Malédiction Intérieure (Soumission Toxique)',
+        revealedAnalysis: 'Tu utilises le Verbe contre toi-même. En t\'identifiant à l\'étiquette de victime et d\'incapable, tu nourris le Juge intérieur et déclenches une chute vibratoire qui renforce la sidération et l\'impuissance.',
+        growthMindsetForMistake: 'Dans le monde réel, se dévaloriser face à l\'injustice nourrit le poison de la soumission. Choisis de ne plus être ton propre bourreau : ton verbe doit d\'abord te protéger et t\'élever.',
+        somaticShiftPrompt: 'Pose une main sur ton plexus, respire profondément et rappelle-toi : ce venin ne t\'appartient pas.'
       },
       {
         id: 'B',
-        text: 'Me répéter cette critique en boucle pour me punir et me forcer à être irréprochable la prochaine fois.',
+        sublabel: '❌ Le Piège du Poison Émotionnel / Escalade Réactive',
+        text: '« Tu es un monstre manipulateur et toxique ! Tu détruis ma vie, j\'espère que tu paieras pour tout le mal que tu me fais, je te hais. »',
         isResilientToltec: false,
-        revealedTitle: '🌱 Opportunité d’Apprentissage : Dépasser le Piège du Persécuteur Intérieur',
-        revealedAnalysis: 'Ce réflexe tente de trouver la sécurité dans l\'auto-flagellation. Or, la punition interne n\'engendre que de l\'épuisement et de la peur de revivre un échec.',
-        growthMindsetForMistake: 'Dans le monde réel, se tromper ou faire face à un « Non » n\'est jamais une preuve d\'incapacité, mais une donnée d\'apprentissage indispensable. L\'échec est un tuteur de croissance : transformez la critique en parole de réconfort et autorisez-vous à être en apprentissage continu.',
-        somaticShiftPrompt: 'Relâchez les mâchoires et observez la tension que crée l\'autocritique. Choisissez de la relâcher à l\'expiration.'
+        revealedTitle: '🌱 Décodage : Piège du Poison Émotionnel (Escalade Réactive)',
+        revealedAnalysis: 'Tu prends l\'attaque personnellement et tu projettes un sortilège de haine (male-dicere). En nourrissant la guerre extérieure, tu restes sur le même plan que l\'agresseur (tu es le pion qui subit le choc de la causalité inférieure).',
+        growthMindsetForMistake: 'La haine réactive te maintient dans la toile de l\'agresseur. En refusant de projeter du venin, tu gardes ta fréquence pure et ta souveraineté intacte.',
+        somaticShiftPrompt: 'Relâche les mâchoires, expire longuement et refuse de descendre dans l\'arène du conflit stérile.'
       },
       {
         id: 'C',
-        text: 'Projeter ma colère sur une personne proche pour me décharger du sentiment de culpabilité.',
-        isResilientToltec: false,
-        revealedTitle: '🌱 Opportunité d’Apprentissage : Canaliser l’Énergie du Rejet',
-        revealedAnalysis: 'Médire ou rejeter la faute sur autrui disperse le poison émotionnel sans apaiser la blessure originelle.',
-        growthMindsetForMistake: 'Ressentir de la frustration après un refus est naturel. Apprendre à accueillir cette émotion sans la projeter sur autrui permet de grandir en maturité relationnelle et de garder sa parole pure et intègre.',
-        somaticShiftPrompt: 'Prenez 3 respirations lentes et reconnaissez votre vulnérabilité sans chercher de coupable.'
+        sublabel: '✨ La Parole Impeccable / Transmutation & Bénédiction Souveraine (RÉPONSE VALIDE)',
+        text: '« J\'observe ta colère et tes reproches, mais ils t\'appartiennent et ne définissent pas ma valeur. Je choisis de me traiter avec respect et de poser mes limites avec calme. Je bénis la clarté et la paix dans cet échange. »',
+        isResilientToltec: true,
+        revealedTitle: '✨ Décodage Initiatique : Transmutation & Bénédiction Souveraine (RÉPONSE VALIDE)',
+        revealedAnalysis: `1. Désidentification toltèque : Tu ne prends rien personnellement ; le venin de l'autre reste dans son propre film.
+
+2. Parole Impeccable (Bene-dicere) : Tu refuses la magie noire verbale et affirmes ton intégrité sans attaquer ni te soumettre.
+
+3. Alchimie Hermétique : Tu déplaces la polarité de la dispute vers le pôle de la souveraineté. Tu deviens la Cause maîtresse au lieu d'être l'Effet passif des émotions d'autrui.`,
+        somaticShiftPrompt: 'Pose une main sur ton plexus ou ton cœur, respire lentement et répète intérieurement : « Ce poison ne m\'appartient pas. Ma parole demeure mon bouclier et ma lumière. »'
       }
     ],
     scientificGrowthLesson: 'La neuroplasticité montre que le dialogue intérieur bienveillant reprogramme les circuits de résilience (cortex préfrontal) et réduit la sécrétion de cortisol de plus de 30%.',
@@ -430,24 +480,154 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
 
         {/* Card Body */}
         <div className="p-6 md:p-8 space-y-6">
-          {/* Real-World Scenario Box */}
-          <div className="bg-[#FEFCE8] border-2 border-[#EAB308] p-5 rounded-2xl space-y-2 shadow-2xs">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#854D0E]">
-              <Flame className="w-4 h-4 text-[#D97706]" />
-              Mise en Situation Réelle & Épreuve du « Non »
+          {/* Question Number Banner if Available */}
+          {card.questionNumberLabel && (
+            <div className="bg-gradient-to-r from-emerald-900 to-slate-900 text-white px-5 py-3 rounded-2xl flex items-center justify-between shadow-xs border border-emerald-500/30">
+              <div className="flex items-center gap-2.5">
+                <Compass className="w-5 h-5 text-emerald-400 shrink-0" />
+                <span className="font-extrabold text-sm sm:text-base tracking-wide">
+                  {card.questionNumberLabel}
+                </span>
+              </div>
+              <span className="text-[11px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-1 rounded-full font-bold shrink-0 hidden sm:inline-block">
+                Sanctuaire Haven-Elle
+              </span>
             </div>
-            <p className="text-sm sm:text-base text-black font-black leading-relaxed">
-              « {card.realWorldScenario} »
-            </p>
+          )}
+
+          {/* Context of the Question Box if Available */}
+          {card.questionContext && (
+            <div className="bg-white/95 border-2 border-emerald-200/80 p-5 rounded-2xl space-y-2 shadow-2xs">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-800">
+                <BookOpen className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Le Contexte de la Question</span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed italic border-l-2 border-emerald-500 pl-3">
+                « {card.questionContext} »
+              </p>
+            </div>
+          )}
+
+          {/* Real-World Scenario Box */}
+          <div className="bg-[#FEFCE8] border-2 border-[#EAB308] p-5 rounded-2xl space-y-3 shadow-2xs">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#854D0E]">
+              <Flame className="w-4 h-4 text-[#D97706] shrink-0" />
+              <span>{card.scenarioSubtitle || "Mise en Situation Réelle & Épreuve du « Non »"}</span>
+            </div>
+
+            {card.realWorldScenario.includes('\n') ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                {card.realWorldScenario.split('\n').filter(line => line.trim().length > 0).map((line, idx) => {
+                  const cleaned = line.replace(/^[-•*]\s*/, '').trim();
+                  const colonIdx = cleaned.indexOf(':');
+                  const title = colonIdx !== -1 ? cleaned.substring(0, colonIdx).trim() : '';
+                  const desc = colonIdx !== -1 ? cleaned.substring(colonIdx + 1).trim() : cleaned;
+                  const isPositive = title.toLowerCase().includes('bénédiction');
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-3.5 rounded-xl border flex flex-col justify-start gap-1.5 shadow-2xs backdrop-blur-xs transition-all ${
+                        isPositive
+                          ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950'
+                          : 'bg-amber-50/90 border-amber-300 text-amber-950'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                            isPositive ? 'bg-emerald-600 ring-4 ring-emerald-200' : 'bg-amber-600 ring-4 ring-amber-200'
+                          }`}
+                        />
+                        <span className="font-black text-sm uppercase tracking-wide">
+                          {title || cleaned}
+                        </span>
+                      </div>
+                      {desc && (
+                        <p className="text-xs sm:text-sm font-semibold leading-relaxed pl-4.5 text-black">
+                          {desc}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-sm sm:text-base text-black font-black leading-relaxed">
+                « {card.realWorldScenario} »
+              </p>
+            )}
+
+            {/* Philosophical Framework Integration (Kybalion & Correspondence Principle) */}
+            {card.philosophicalFramework && (
+              <div className="mt-4 pt-4 border-t border-[#EAB308]/40 space-y-3.5 text-black font-sans">
+                {/* Header Title */}
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#B45309]" />
+                  <h5 className="text-sm sm:text-base font-black text-[#78350F] tracking-tight">
+                    {card.philosophicalFramework.title}
+                  </h5>
+                </div>
+
+                {/* 1. Fondement Philosophique & Citation */}
+                <div className="bg-white/85 p-3.5 rounded-xl border border-[#FDE047] space-y-2">
+                  <div className="text-xs font-bold text-[#854D0E] uppercase tracking-wide">
+                    {card.philosophicalFramework.quoteTitle}
+                  </div>
+                  <blockquote className="text-xs sm:text-sm italic font-serif leading-relaxed text-[#1F2937] border-l-3 border-[#D97706] pl-3 py-0.5">
+                    {card.philosophicalFramework.quoteText}
+                  </blockquote>
+                  <p className="text-[11px] font-bold text-[#4B5563] text-right">
+                    {card.philosophicalFramework.quoteAuthor}
+                  </p>
+                </div>
+
+                {/* 1.2 Décodage des Plans d'Existence */}
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[#854D0E] uppercase tracking-wide">
+                    {card.philosophicalFramework.decodingTitle}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+                    <div className="bg-white/80 p-3 rounded-xl border border-[#CBD5E1] space-y-1">
+                      <div className="font-black text-[#15803D]">
+                        • {card.philosophicalFramework.macroMicroTitle}
+                      </div>
+                      <p className="text-xs text-[#1E293B] font-semibold leading-relaxed">
+                        {card.philosophicalFramework.macroMicroDesc}
+                      </p>
+                    </div>
+
+                    <div className="bg-white/80 p-3 rounded-xl border border-[#CBD5E1] space-y-1">
+                      <div className="font-black text-[#D97706]">
+                        • {card.philosophicalFramework.causeEffectTitle}
+                      </div>
+                      <p className="text-xs text-[#1E293B] font-semibold leading-relaxed">
+                        {card.philosophicalFramework.causeEffectDesc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Le Verbe : Vecteur de Transmutation */}
+                <div className="bg-emerald-50/80 p-3 rounded-xl border border-emerald-200 space-y-1">
+                  <div className="text-xs font-black text-emerald-900">
+                    {card.philosophicalFramework.verbVectorTitle}
+                  </div>
+                  <p className="text-xs sm:text-sm text-emerald-950 font-semibold leading-relaxed">
+                    {card.philosophicalFramework.verbVectorDesc}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Prompt Question */}
           <div className="space-y-1">
-            <h4 className="text-base sm:text-lg font-black text-black flex items-center gap-2">
+            <h4 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-[#15803D]" />
               {card.question}
             </h4>
-            <p className="text-xs text-black font-black">
+            <p className="text-xs text-white font-semibold">
               Sélectionnez la posture qui vous inspire pour dévoiler la fiche pédagogique cachée.
             </p>
           </div>
@@ -478,7 +658,16 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                   }`}>
                     {opt.id}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-1">
+                    {opt.sublabel && (
+                      <span className={`text-[11px] uppercase tracking-wider font-extrabold block ${
+                        isSelected
+                          ? opt.isResilientToltec ? 'text-emerald-800' : 'text-amber-800'
+                          : 'text-slate-600'
+                      }`}>
+                        {opt.sublabel}
+                      </span>
+                    )}
                     <span className="text-xs sm:text-sm font-bold leading-relaxed block text-inherit">
                       {opt.text}
                     </span>
@@ -522,7 +711,7 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
 
               {/* Analysis Text */}
               <div className="bg-white p-4.5 rounded-2xl border-2 border-[#CBD5E1] shadow-2xs">
-                <p className="text-sm sm:text-base text-black font-bold leading-relaxed">
+                <p className="text-sm sm:text-base text-black font-bold leading-relaxed whitespace-pre-line">
                   {selectedOption.revealedAnalysis}
                 </p>
               </div>
@@ -547,6 +736,34 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                   <strong>Ancrage Somatique :</strong> {selectedOption.somaticShiftPrompt}
                 </p>
               </div>
+
+              {/* Alignment Key for Apprentice if provided */}
+              {card.alignmentKey && (
+                <div className="bg-gradient-to-br from-amber-50 to-emerald-50 border-2 border-amber-300 p-4.5 rounded-2xl space-y-3 shadow-2xs">
+                  <div className="flex items-center gap-2 text-sm font-black text-amber-900 uppercase tracking-wide">
+                    <Compass className="w-4.5 h-4.5 text-amber-700" />
+                    <span>{card.alignmentKey.title}</span>
+                  </div>
+                  <div className="space-y-2 text-xs sm:text-sm">
+                    <div className="bg-white/90 p-3 rounded-xl border border-amber-200">
+                      <span className="font-extrabold text-amber-900 block mb-0.5">
+                        • Le Principe Caché :
+                      </span>
+                      <span className="text-slate-800 font-semibold leading-relaxed block">
+                        {card.alignmentKey.hiddenPrinciple}
+                      </span>
+                    </div>
+                    <div className="bg-white/90 p-3 rounded-xl border border-emerald-200">
+                      <span className="font-extrabold text-emerald-900 block mb-0.5">
+                        • Le Geste d'Ancrage :
+                      </span>
+                      <span className="text-slate-800 font-semibold leading-relaxed block">
+                        {card.alignmentKey.groundingGesture}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Scientific Note & Mantra */}
               <div className="pt-2 border-t-2 border-[#CBD5E1] grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">

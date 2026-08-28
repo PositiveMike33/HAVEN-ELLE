@@ -1,7 +1,45 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
-import { Trees, Sun, Moon, Sparkles, Wind, Volume2, VolumeX, Sliders, Eye, RefreshCw, Compass } from 'lucide-react';
+import { 
+  Trees, 
+  Sun, 
+  Moon, 
+  Sparkles, 
+  Wind, 
+  Volume2, 
+  VolumeX, 
+  Volume1,
+  Sliders, 
+  Eye, 
+  RefreshCw, 
+  Compass, 
+  Radio, 
+  Headphones, 
+  Play, 
+  Pause, 
+  Mic, 
+  MicOff, 
+  BookOpen, 
+  Flame, 
+  Crown, 
+  ChevronRight, 
+  Layers, 
+  FileText, 
+  Activity, 
+  Maximize2,
+  Youtube,
+  ExternalLink
+} from 'lucide-react';
 import { StorageService } from '../utils/storage';
+import { 
+  SANCTUARY_PODCAST_PARTS, 
+  PodcastEpisode, 
+  PodcastPartContext, 
+  getPodcastPartForQuestionNumber,
+  SANCTUARY_OFFICIAL_SEMINAR
+} from '../data/sanctuaryPodcasts';
+import { SanctuaryAudio } from '../utils/sanctuaryAudioSynth';
+import { CompanionMemoryService } from '../utils/companionMemory';
 
 export type ForestAtmosphere = 'morning' | 'noon' | 'dusk' | 'night';
 
@@ -19,10 +57,12 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
     return isNightMode ? 'night' : 'morning';
   });
   const [isForestSoundActive, setIsForestSoundActive] = useState<boolean>(false);
-  const [soundVolume, setSoundVolume] = useState<number>(15);
+  const [soundVolume, setSoundVolume] = useState<number>(5); // Default 5% (capped at max 10%)
   const [showForestControls, setShowForestControls] = useState<boolean>(false);
+  const [activeModalTab, setActiveModalTab] = useState<'seminar' | 'radio' | 'script' | 'forest'>('seminar');
   const [windSpeed, setWindSpeed] = useState<number>(1.0);
   const [cameraParallaxEnabled, setCameraParallaxEnabled] = useState<boolean>(true);
+  const [isSeminarHzActive, setIsSeminarHzActive] = useState<boolean>(false);
 
   // References for Three.js objects
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -48,6 +88,31 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
   const streamGainRef = useRef<GainNode | null>(null);
   const birdTimerRef = useRef<number | null>(null);
 
+  // Podcast Radio State (Parts: 1-25 Toltec, 26-50 Trauma, 51-75 Sovereignty, 76-100 Hermeticism, 101-111 Mysticism)
+  const profile = CompanionMemoryService.getProfile();
+  const userLevel = profile.validatedLevel || 1;
+  const initialPartIndex = Math.min(
+    4,
+    Math.max(
+      0,
+      userLevel <= 25 ? 0 : userLevel <= 50 ? 1 : userLevel <= 75 ? 2 : userLevel <= 100 ? 3 : 4
+    )
+  );
+
+  const [selectedPartIndex, setSelectedPartIndex] = useState<number>(initialPartIndex);
+  const currentPart = SANCTUARY_PODCAST_PARTS[selectedPartIndex] || SANCTUARY_PODCAST_PARTS[0];
+  const [selectedEpisode, setSelectedEpisode] = useState<PodcastEpisode>(currentPart.episodes[0]);
+  const [isPodcastPlaying, setIsPodcastPlaying] = useState<boolean>(false);
+  const [isVoiceActive, setIsVoiceActive] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // When selected part changes, update selected episode
+  useEffect(() => {
+    if (currentPart.episodes.length > 0) {
+      setSelectedEpisode(currentPart.episodes[0]);
+    }
+  }, [selectedPartIndex, currentPart]);
+
   // Sync atmosphere when night mode changes
   useEffect(() => {
     if (isNightMode && atmosphere !== 'night') {
@@ -56,6 +121,23 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
       setAtmosphere('morning');
     }
   }, [isNightMode]);
+
+  // Listen to question changes if dispatched
+  useEffect(() => {
+    const handleQuestionJump = (e: any) => {
+      const qNum = e?.detail?.questionNumber;
+      if (typeof qNum === 'number') {
+        const matchingPart = getPodcastPartForQuestionNumber(qNum);
+        const pIndex = SANCTUARY_PODCAST_PARTS.findIndex((p) => p.range === matchingPart.range);
+        if (pIndex !== -1) {
+          setSelectedPartIndex(pIndex);
+        }
+      }
+    };
+
+    window.addEventListener('haven-podcast-select-part', handleQuestionJump as EventListener);
+    return () => window.removeEventListener('haven-podcast-select-part', handleQuestionJump as EventListener);
+  }, []);
 
   // Color palettes for atmospheres
   const atmospherePresets = {
@@ -680,31 +762,86 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
     }
   }, [soundVolume]);
 
-  const stopForestAudio = useCallback(() => {
-    if (birdTimerRef.current) {
-      clearTimeout(birdTimerRef.current);
-      birdTimerRef.current = null;
-    }
-    if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
-      audioCtxRef.current.close().catch(() => {});
-      audioCtxRef.current = null;
-    }
-    setIsForestSoundActive(false);
-  }, []);
-
-  const toggleForestAudio = () => {
-    if (isForestSoundActive) {
-      stopForestAudio();
+  // Podcast Radio & Audio Handlers
+  const handleTogglePodcast = () => {
+    if (isPodcastPlaying) {
+      SanctuaryAudio.stopAmbience();
+      SanctuaryAudio.stopVoiceNarration();
+      setIsPodcastPlaying(false);
+      setIsVoiceActive(false);
     } else {
-      startForestAudio();
+      SanctuaryAudio.startSolfeggioAmbience(selectedEpisode.frequencyHz, selectedEpisode.audioToneType);
+      setIsPodcastPlaying(true);
+      if (isVoiceActive) {
+        SanctuaryAudio.playVoiceNarration(
+          selectedEpisode.narrationScript,
+          () => setIsVoiceActive(true),
+          () => setIsVoiceActive(false)
+        );
+      }
     }
   };
 
-  useEffect(() => {
-    if (isPanicOrCamouflage && isForestSoundActive) {
-      stopForestAudio();
+  const handleToggleVoice = () => {
+    if (isVoiceActive) {
+      SanctuaryAudio.stopVoiceNarration();
+      setIsVoiceActive(false);
+    } else {
+      if (!isPodcastPlaying) {
+        SanctuaryAudio.startSolfeggioAmbience(selectedEpisode.frequencyHz, selectedEpisode.audioToneType);
+        setIsPodcastPlaying(true);
+      }
+      SanctuaryAudio.playVoiceNarration(
+        selectedEpisode.narrationScript,
+        () => setIsVoiceActive(true),
+        () => setIsVoiceActive(false),
+        () => {
+          setIsVoiceActive(false);
+          setToastMessage("Synthèse vocale indisponible sur ce navigateur. Lecture du texte disponible ci-dessous.");
+          setTimeout(() => setToastMessage(null), 4000);
+        }
+      );
+      setIsVoiceActive(true);
     }
-  }, [isPanicOrCamouflage, isForestSoundActive, stopForestAudio]);
+  };
+
+  const handleSelectPart = (idx: number) => {
+    setSelectedPartIndex(idx);
+    const targetPart = SANCTUARY_PODCAST_PARTS[idx];
+    if (targetPart && targetPart.episodes.length > 0) {
+      const newEp = targetPart.episodes[0];
+      setSelectedEpisode(newEp);
+      if (isPodcastPlaying) {
+        SanctuaryAudio.startSolfeggioAmbience(newEp.frequencyHz, newEp.audioToneType);
+        if (isVoiceActive) {
+          SanctuaryAudio.playVoiceNarration(
+            newEp.narrationScript,
+            () => setIsVoiceActive(true),
+            () => setIsVoiceActive(false)
+          );
+        }
+      }
+    }
+  };
+
+  const handleSelectEpisode = (ep: PodcastEpisode) => {
+    setSelectedEpisode(ep);
+    if (isPodcastPlaying) {
+      SanctuaryAudio.startSolfeggioAmbience(ep.frequencyHz, ep.audioToneType);
+      if (isVoiceActive) {
+        SanctuaryAudio.playVoiceNarration(
+          ep.narrationScript,
+          () => setIsVoiceActive(true),
+          () => setIsVoiceActive(false)
+        );
+      }
+    }
+  };
+
+  const handleSoundVolumeChange = (newVal: number) => {
+    setSoundVolume(newVal);
+    SanctuaryAudio.setVolume(newVal / 100);
+  };
 
   return (
     <>
@@ -718,168 +855,597 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
         aria-hidden="true"
       />
 
-      {/* Floating Forest Ambience Controller (Bottom Left) */}
+      {/* Floating Sanctuary Podcast Radio & Atmosphere Hub (Bottom Left) */}
       {!isPanicOrCamouflage && (
         <div
           id="forest-ambience-control-bar"
           className="fixed bottom-4 left-4 z-40 flex flex-col items-start gap-2 font-sans"
         >
-          {/* Expanded Forest Settings Panel */}
+          {/* Toast Notification */}
+          {toastMessage && (
+            <div className="p-2.5 px-3 rounded-xl bg-[#0F172A] text-white text-[11px] font-bold border border-[#334155] shadow-xl animate-in fade-in slide-in-from-bottom-2">
+              {toastMessage}
+            </div>
+          )}
+
+          {/* Expanded Sanctuary Radio & Podcast Player Panel */}
           {showForestControls && (
             <div
-              className={`p-4 rounded-2xl shadow-2xl border text-xs w-76 sm:w-84 space-y-3.5 backdrop-blur-xl animate-in fade-in slide-in-from-bottom-2 duration-200 ${
+              className={`p-4 rounded-3xl shadow-2xl border text-xs w-[340px] sm:w-[460px] max-h-[82vh] overflow-y-auto space-y-4 backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-3 duration-200 scrollbar-thin ${
                 isNightMode || atmosphere === 'night'
-                  ? 'bg-[#0F172A]/90 border-[#334155] text-[#F8FAFC]'
-                  : 'bg-white/90 border-[#CBD5E1] text-[#0F172A]'
+                  ? 'bg-[#0F172A]/95 border-[#334155] text-[#F8FAFC]'
+                  : 'bg-white/95 border-[#CBD5E1] text-[#0F172A]'
               }`}
             >
               {/* Header */}
-              <div className="flex items-center justify-between border-b pb-2.5 border-inherit/30">
-                <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-lg bg-[#15803D]/20 text-[#15803D]">
-                    <Trees className="w-4 h-4" />
+              <div className="flex items-center justify-between border-b pb-3 border-inherit/30">
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-2 rounded-2xl border-2 flex items-center justify-center font-black ${
+                    selectedPartIndex === 0 ? 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]' :
+                    selectedPartIndex === 1 ? 'bg-[#E0F2FE] text-[#0284C7] border-[#7DD3FC]' :
+                    selectedPartIndex === 2 ? 'bg-[#FCE7F3] text-[#DB2777] border-[#F472B6]' :
+                    selectedPartIndex === 3 ? 'bg-[#FEF3C7] text-[#D97706] border-[#FCD34D]' :
+                    'bg-[#F3E8FF] text-[#9333EA] border-[#D8B4FE]'
+                  }`}>
+                    <Radio className="w-5 h-5 animate-pulse" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xs">Sanctuaire 3D Forêt Vivante</h4>
-                    <p className="text-[10px] opacity-75">Immersion & Profondeur Réelle</p>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-black text-sm">Radio Sanctuaire HAVEN-ELLE</h4>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#15803D]/20 text-[#15803D] border border-[#15803D]/40">
+                        {currentPart.frequencyName.split('•')[0].trim()}
+                      </span>
+                    </div>
+                    <p className="text-[11px] opacity-75 font-medium">Podcasts Contextuels & Fréquences Sacrées (1 à 111)</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowForestControls(false)}
-                  className="text-xs opacity-60 hover:opacity-100 p-1 rounded-md"
+                  className="text-xs opacity-60 hover:opacity-100 p-1.5 rounded-xl hover:bg-black/10 transition-colors"
                 >
                   ✕
                 </button>
               </div>
 
-              {/* Atmosphere Presets */}
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold flex items-center gap-1.5 opacity-90">
-                  <Sparkles className="w-3.5 h-3.5 text-[#15803D]" />
-                  Atmosphère & Lumière du Jour
-                </label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {(['morning', 'noon', 'dusk', 'night'] as ForestAtmosphere[]).map((atm) => {
-                    const preset = atmospherePresets[atm];
-                    const isSelected = atmosphere === atm;
-                    return (
-                      <button
-                        key={atm}
-                        type="button"
-                        onClick={() => setAtmosphere(atm)}
-                        className={`p-2 rounded-xl text-[11px] font-medium border text-left flex items-center gap-2 transition-all ${
-                          isSelected
-                            ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
-                            : 'bg-black/5 hover:bg-black/10 border-inherit/30'
-                        }`}
-                      >
-                        <span className="text-base">{preset.icon}</span>
-                        <span className="truncate">{preset.name.split(' ')[0]}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Wind Speed Slider */}
-              <div className="space-y-1 bg-black/5 p-2.5 rounded-xl border border-inherit/25">
-                <div className="flex justify-between items-center text-[11px]">
-                  <span className="font-medium flex items-center gap-1">
-                    <Wind className="w-3.5 h-3.5 text-[#15803D]" />
-                    Brise & Mouvement des Feuilles
-                  </span>
-                  <span className="font-bold text-[#15803D]">
-                    {windSpeed === 0 ? 'Calme plat' : windSpeed <= 1 ? 'Brise douce' : 'Vent vivifiant'}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="2.2"
-                  step="0.2"
-                  value={windSpeed}
-                  onChange={(e) => setWindSpeed(Number(e.target.value))}
-                  className="w-full h-1.5 bg-[#CBD5E1]/40 rounded-lg appearance-none cursor-pointer accent-[#15803D]"
-                />
-              </div>
-
-              {/* Parallax Toggle */}
-              <div className="flex items-center justify-between p-2 rounded-xl bg-black/5 border border-inherit/25 text-[11px]">
-                <span className="flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-[#15803D]" />
-                  Profondeur & Parallaxe Curseur
-                </span>
+              {/* Navigation Tabs (Séminaire Vidéo / Radio Podcasts / Script & Enseignement / Forêt 3D) */}
+              <div className="grid grid-cols-4 gap-1 p-1 bg-black/5 rounded-2xl border border-inherit/20">
                 <button
                   type="button"
-                  onClick={() => setCameraParallaxEnabled(!cameraParallaxEnabled)}
-                  className={`px-2.5 py-1 rounded-lg font-semibold text-[10px] transition-colors ${
-                    cameraParallaxEnabled
-                      ? 'bg-[#15803D] text-white'
-                      : 'bg-black/10 text-inherit opacity-75'
+                  onClick={() => setActiveModalTab('seminar')}
+                  className={`py-1.5 px-1 rounded-xl font-black text-[10px] flex items-center justify-center gap-1 transition-all ${
+                    activeModalTab === 'seminar'
+                      ? 'bg-[#DC2626] text-white shadow-xs'
+                      : 'hover:bg-black/10 text-inherit opacity-75'
                   }`}
                 >
-                  {cameraParallaxEnabled ? 'Actif' : 'Fixe'}
+                  <Youtube className="w-3.5 h-3.5" />
+                  <span className="truncate">Séminaire</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveModalTab('radio')}
+                  className={`py-1.5 px-1 rounded-xl font-black text-[10px] flex items-center justify-center gap-1 transition-all ${
+                    activeModalTab === 'radio'
+                      ? 'bg-[#15803D] text-white shadow-xs'
+                      : 'hover:bg-black/10 text-inherit opacity-75'
+                  }`}
+                >
+                  <Headphones className="w-3.5 h-3.5" />
+                  <span className="truncate">Podcasts</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveModalTab('script')}
+                  className={`py-1.5 px-1 rounded-xl font-black text-[10px] flex items-center justify-center gap-1 transition-all ${
+                    activeModalTab === 'script'
+                      ? 'bg-[#15803D] text-white shadow-xs'
+                      : 'hover:bg-black/10 text-inherit opacity-75'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="truncate">Texte</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveModalTab('forest')}
+                  className={`py-1.5 px-1 rounded-xl font-black text-[10px] flex items-center justify-center gap-1 transition-all ${
+                    activeModalTab === 'forest'
+                      ? 'bg-[#15803D] text-white shadow-xs'
+                      : 'hover:bg-black/10 text-inherit opacity-75'
+                  }`}
+                >
+                  <Trees className="w-3.5 h-3.5" />
+                  <span className="truncate">Forêt 3D</span>
                 </button>
               </div>
 
-              {/* Ambient Forest Sound Generator (Web Audio) */}
-              <div className="space-y-2 p-2.5 rounded-xl bg-black/5 border border-inherit/25">
-                <div className="flex justify-between items-center text-[11px]">
-                  <span className="font-medium flex items-center gap-1.5">
-                    {isForestSoundActive ? (
-                      <Volume2 className="w-3.5 h-3.5 text-[#15803D]" />
-                    ) : (
-                      <VolumeX className="w-3.5 h-3.5 opacity-60" />
-                    )}
-                    Sons Naturels de Forêt (Vent, Oiseaux, Ruisseau)
-                  </span>
-                  <button
-                    type="button"
-                    onClick={toggleForestAudio}
-                    className={`px-2 py-0.5 rounded-md font-bold text-[10px] transition-colors ${
-                      isForestSoundActive
-                        ? 'bg-[#15803D] text-white'
-                        : 'bg-black/10 text-inherit hover:bg-black/20'
-                    }`}
-                  >
-                    {isForestSoundActive ? 'Activé' : 'Activer'}
-                  </button>
+              {/* TAB 0: YouTube Seminar Integration */}
+              {activeModalTab === 'seminar' && (
+                <div className="space-y-3.5">
+                  {/* Seminar Header Card */}
+                  <div className="p-3.5 rounded-2xl bg-[#FEF2F2] dark:bg-[#7F1D1D]/20 border border-[#FECACA] dark:border-[#991B1B] text-[#991B1B] dark:text-[#FCA5A5] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/80 dark:bg-black/40 border border-inherit">
+                        Séminaire Officiel HAVEN-ELLE
+                      </span>
+                      <span className="text-[10px] font-black flex items-center gap-1 font-mono">
+                        <Youtube className="w-3.5 h-3.5 text-[#DC2626]" />
+                        432 Hz Subliminal (≤10%)
+                      </span>
+                    </div>
+                    <div className="font-black text-xs text-[#1E293B] dark:text-white">
+                      {SANCTUARY_OFFICIAL_SEMINAR.title}
+                    </div>
+                    <p className="text-[11px] opacity-90 leading-relaxed text-[#475569] dark:text-[#CBD5E1]">
+                      {SANCTUARY_OFFICIAL_SEMINAR.description}
+                    </p>
+                  </div>
+
+                  {/* YouTube Embed Player Container */}
+                  <div className="relative w-full rounded-2xl overflow-hidden shadow-lg border border-inherit/30 bg-black aspect-video">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${SANCTUARY_OFFICIAL_SEMINAR.youtubeId}?rel=0&modestbranding=1`}
+                      title={SANCTUARY_OFFICIAL_SEMINAR.title}
+                      className="absolute inset-0 w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+
+                  {/* Direct YouTube Link and Solfeggio Background Activation */}
+                  <div className="p-3 rounded-2xl bg-black/5 border border-inherit/25 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[11px] font-bold">
+                        Ambience Solfeggio 432 Hz Subliminale :
+                      </div>
+                      <a
+                        href={SANCTUARY_OFFICIAL_SEMINAR.youtubeUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-[10px] font-black text-[#DC2626] hover:underline flex items-center gap-1"
+                      >
+                        Ouvrir sur YouTube
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isSeminarHzActive) {
+                            SanctuaryAudio.stopAmbience();
+                            setIsSeminarHzActive(false);
+                            setIsPodcastPlaying(false);
+                          } else {
+                            SanctuaryAudio.startSolfeggioAmbience(432, 'calm_forest');
+                            setIsSeminarHzActive(true);
+                            setIsPodcastPlaying(true);
+                          }
+                        }}
+                        className={`p-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                          isSeminarHzActive
+                            ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                            : 'bg-white border-[#CBD5E1] text-[#0F172A] hover:bg-[#DCFCE7]'
+                        }`}
+                      >
+                        <Volume2 className={`w-4 h-4 ${isSeminarHzActive ? 'animate-bounce' : ''}`} />
+                        <span>{isSeminarHzActive ? 'Ondes 432Hz Actives' : 'Activer Fond 432Hz'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isForestSoundActive) {
+                            setIsForestSoundActive(false);
+                          } else {
+                            startForestAudio();
+                          }
+                        }}
+                        className={`p-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                          isForestSoundActive
+                            ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-xs'
+                            : 'bg-white border-[#CBD5E1] text-[#0F172A] hover:bg-[#E0F2FE]'
+                        }`}
+                      >
+                        <Wind className="w-4 h-4" />
+                        <span>{isForestSoundActive ? 'Brise Active' : 'Brise Naturelle'}</span>
+                      </button>
+                    </div>
+
+                    {/* Subliminal Volume Slider capped at Max 10% */}
+                    <div className="space-y-1 pt-1">
+                      <div className="flex justify-between items-center text-[10px] font-bold opacity-85">
+                        <span className="flex items-center gap-1 text-[#15803D]">
+                          <Activity className="w-3.5 h-3.5" />
+                          Volume Ondes Hz (Strictement limité à 10% max)
+                        </span>
+                        <span className="font-mono bg-[#15803D]/10 text-[#15803D] px-1.5 py-0.5 rounded font-black">
+                          {soundVolume}% / 10%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        step="1"
+                        value={soundVolume}
+                        onChange={(e) => handleSoundVolumeChange(Number(e.target.value))}
+                        className="w-full h-1.5 bg-[#CBD5E1]/40 rounded-lg appearance-none cursor-pointer accent-[#15803D]"
+                      />
+                      <div className="text-[9px] opacity-70 italic text-center">
+                        Niveau sonore ultra-doux et apaisant pour ne pas saturer l'écoute du séminaire.
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* TAB 1: Radio & Podcasts by Context */}
+              {activeModalTab === 'radio' && (
+                <div className="space-y-4">
+                  {/* Contextual 5-Part Selector */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-black uppercase tracking-wider opacity-80 flex items-center justify-between">
+                      <span>Progression des 5 Paliers Mystiques (1 à 111)</span>
+                      <span className="font-bold text-[#15803D]">{currentPart.mysticalProgression.split(':')[0]}</span>
+                    </label>
+
+                    <div className="grid grid-cols-5 gap-1">
+                      {SANCTUARY_PODCAST_PARTS.map((part, idx) => {
+                        const isSelected = selectedPartIndex === idx;
+                        return (
+                          <button
+                            key={part.range}
+                            type="button"
+                            onClick={() => handleSelectPart(idx)}
+                            className={`p-2 rounded-xl text-center border transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs scale-[1.02]'
+                                : 'bg-black/5 hover:bg-black/10 border-inherit/25'
+                            }`}
+                          >
+                            <div className="text-[11px] font-black">{part.range}</div>
+                            <div className="text-[9px] opacity-85 font-mono">{part.solfeggioFrequency}Hz</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Part Details & Mystical Atmosphere Banner */}
+                  <div className={`p-3.5 rounded-2xl border space-y-2 ${
+                    selectedPartIndex === 0 ? 'bg-[#F0FDF4] border-[#86EFAC] text-[#14532D]' :
+                    selectedPartIndex === 1 ? 'bg-[#F0F9FF] border-[#7DD3FC] text-[#0369A1]' :
+                    selectedPartIndex === 2 ? 'bg-[#FDF2F8] border-[#F472B6] text-[#9D174D]' :
+                    selectedPartIndex === 3 ? 'bg-[#FFFBEB] border-[#FCD34D] text-[#92400E]' :
+                    'bg-[#FAF5FF] border-[#D8B4FE] text-[#6B21A8]'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/70 border border-inherit">
+                        {currentPart.title.split('•')[0]}
+                      </span>
+                      <span className="text-[10px] font-black flex items-center gap-1 font-mono">
+                        <Activity className="w-3 h-3 animate-pulse" />
+                        {currentPart.frequencyName}
+                      </span>
+                    </div>
+                    <div className="font-black text-xs">{currentPart.theme}</div>
+                    <p className="text-[11px] opacity-90 leading-relaxed">{currentPart.description}</p>
+                  </div>
+
+                  {/* Episode Selector for Selected Part */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-black opacity-80">
+                      Épisodes Disponibles dans ce Contexte :
+                    </label>
+                    <div className="space-y-1.5">
+                      {currentPart.episodes.map((ep) => {
+                        const isEpSelected = selectedEpisode.id === ep.id;
+                        return (
+                          <div
+                            key={ep.id}
+                            onClick={() => handleSelectEpisode(ep)}
+                            className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                              isEpSelected
+                                ? 'bg-black/10 border-[#15803D] ring-2 ring-[#15803D]/40'
+                                : 'bg-black/5 hover:bg-black/10 border-inherit/25'
+                            }`}
+                          >
+                            <div className="space-y-0.5">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black px-2 py-0.2 rounded-full bg-[#15803D] text-white">
+                                  {ep.themeTitle}
+                                </span>
+                                <span className="text-[10px] opacity-75 font-mono">{ep.durationMinutes} min</span>
+                              </div>
+                              <div className="font-black text-xs pt-0.5">{ep.title}</div>
+                              <div className="text-[11px] opacity-80 line-clamp-1">{ep.subtitle}</div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSelectEpisode(ep);
+                                handleTogglePodcast();
+                              }}
+                              className={`p-2.5 rounded-xl border font-black shrink-0 transition-transform active:scale-95 ${
+                                isEpSelected && isPodcastPlaying
+                                  ? 'bg-[#15803D] text-white border-[#15803D]'
+                                  : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#DCFCE7]'
+                              }`}
+                            >
+                              {isEpSelected && isPodcastPlaying ? (
+                                <Pause className="w-4 h-4" />
+                              ) : (
+                                <Play className="w-4 h-4 ml-0.5" />
+                              )}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Primary Audio Player Controls */}
+                  <div className="p-3.5 rounded-2xl bg-black/5 border border-inherit/25 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-[10px] uppercase font-black tracking-wider text-[#15803D]">
+                          Lecteur & Transmutation Sonore
+                        </div>
+                        <div className="text-xs font-black truncate max-w-[200px]">
+                          {selectedEpisode.title.split(':')[1] || selectedEpisode.title}
+                        </div>
+                      </div>
+
+                      {/* Mystical Level Badge */}
+                      <span className="text-[10px] font-black px-2.5 py-1 rounded-xl bg-black/10 border border-inherit/30">
+                        {selectedEpisode.mysticalLevel}
+                      </span>
+                    </div>
+
+                    {/* Action Buttons: Frequencies & Voice Narration */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={handleTogglePodcast}
+                        className={`p-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                          isPodcastPlaying
+                            ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                            : 'bg-white border-[#CBD5E1] text-[#0F172A] hover:bg-[#DCFCE7]'
+                        }`}
+                      >
+                        {isPodcastPlaying ? <Volume2 className="w-4 h-4 animate-bounce" /> : <Play className="w-4 h-4" />}
+                        <span>{isPodcastPlaying ? 'Fréquence Active' : 'Activer Ondes'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleToggleVoice}
+                        className={`p-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                          isVoiceActive
+                            ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-xs'
+                            : 'bg-white border-[#CBD5E1] text-[#0F172A] hover:bg-[#E0F2FE]'
+                        }`}
+                      >
+                        {isVoiceActive ? <Mic className="w-4 h-4 animate-pulse" /> : <MicOff className="w-4 h-4 opacity-60" />}
+                        <span>{isVoiceActive ? 'Voix Parlée Active' : 'Écouter la Voix'}</span>
+                      </button>
+                    </div>
+
+                    {/* Master Volume Slider (Restricted to 10% max) */}
+                    <div className="space-y-1 pt-1">
+                      <div className="flex justify-between items-center text-[10px] font-bold opacity-85">
+                        <span className="flex items-center gap-1 text-[#15803D]">
+                          <Volume1 className="w-3.5 h-3.5" />
+                          Volume Ondes Hz (Strictement limité à 10% max)
+                        </span>
+                        <span className="font-mono bg-[#15803D]/10 text-[#15803D] px-1.5 py-0.5 rounded font-black">
+                          {soundVolume}% / 10%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        step="1"
+                        value={soundVolume}
+                        onChange={(e) => handleSoundVolumeChange(Number(e.target.value))}
+                        className="w-full h-1.5 bg-[#CBD5E1]/40 rounded-lg appearance-none cursor-pointer accent-[#15803D]"
+                      />
+                      <div className="text-[9px] opacity-70 italic text-center">
+                        Niveau sonore subliminal doux pour une immersion sans saturation cognitive.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: Transcription & Script Viewer */}
+              {activeModalTab === 'script' && (
+                <div className="space-y-3.5">
+                  <div className="p-3.5 rounded-2xl bg-black/5 border border-inherit/25 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#15803D]">
+                        Transmission Vocale du Sanctuaire
+                      </span>
+                      <span className="text-[10px] opacity-75 font-mono">
+                        {selectedEpisode.hostName}
+                      </span>
+                    </div>
+                    <h3 className="font-black text-sm">{selectedEpisode.title}</h3>
+                    <p className="text-xs opacity-85 leading-relaxed font-serif italic">
+                      "{selectedEpisode.shortSummary}"
+                    </p>
+                  </div>
+
+                  {/* Narration Script Text */}
+                  <div className="p-4 rounded-2xl bg-white/80 dark:bg-black/40 border border-inherit/30 space-y-3 text-xs leading-relaxed max-h-60 overflow-y-auto">
+                    <div className="font-bold text-[11px] text-[#15803D] uppercase tracking-wider border-b pb-1 border-inherit/20">
+                      Texte Intégral de l'Épisode :
+                    </div>
+                    <p className="whitespace-pre-line opacity-90">{selectedEpisode.narrationScript}</p>
+                  </div>
+
+                  {/* Key Takeaways */}
+                  <div className="space-y-1.5 p-3 rounded-2xl bg-[#DCFCE7]/40 border border-[#86EFAC] text-[#14532D]">
+                    <div className="font-black text-xs flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#15803D]" />
+                      Points Clés d'Ancrage :
+                    </div>
+                    <ul className="space-y-1 text-[11px] list-disc list-inside">
+                      {selectedEpisode.keyInsights.map((insight, i) => (
+                        <li key={i}>{insight}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Scientific / Philosophical Anchor */}
+                  <div className="p-2.5 rounded-xl bg-black/5 border border-inherit/20 text-[10px] opacity-80">
+                    <span className="font-black">Fondement Scientifique / Hermétique : </span>
+                    {selectedEpisode.scientificOrPhilosophicalAnchor}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: 3D Forest Controls */}
+              {activeModalTab === 'forest' && (
+                <div className="space-y-3.5">
+                  {/* Atmosphere Presets */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold flex items-center gap-1.5 opacity-90">
+                      <Sparkles className="w-3.5 h-3.5 text-[#15803D]" />
+                      Atmosphère & Lumière du Jour
+                    </label>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {(['morning', 'noon', 'dusk', 'night'] as ForestAtmosphere[]).map((atm) => {
+                        const preset = atmospherePresets[atm];
+                        const isSelected = atmosphere === atm;
+                        return (
+                          <button
+                            key={atm}
+                            type="button"
+                            onClick={() => setAtmosphere(atm)}
+                            className={`p-2 rounded-xl text-[11px] font-medium border text-left flex items-center gap-2 transition-all ${
+                              isSelected
+                                ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                                : 'bg-black/5 hover:bg-black/10 border-inherit/30'
+                            }`}
+                          >
+                            <span className="text-base">{preset.icon}</span>
+                            <span className="truncate">{preset.name.split(' ')[0]}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Wind Speed Slider */}
+                  <div className="space-y-1 bg-black/5 p-2.5 rounded-xl border border-inherit/25">
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="font-medium flex items-center gap-1">
+                        <Wind className="w-3.5 h-3.5 text-[#15803D]" />
+                        Brise & Mouvement des Feuilles
+                      </span>
+                      <span className="font-bold text-[#15803D]">
+                        {windSpeed === 0 ? 'Calme plat' : windSpeed <= 1 ? 'Brise douce' : 'Vent vivifiant'}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="2.2"
+                      step="0.2"
+                      value={windSpeed}
+                      onChange={(e) => setWindSpeed(Number(e.target.value))}
+                      className="w-full h-1.5 bg-[#CBD5E1]/40 rounded-lg appearance-none cursor-pointer accent-[#15803D]"
+                    />
+                  </div>
+
+                  {/* Parallax Toggle */}
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-black/5 border border-inherit/25 text-[11px]">
+                    <span className="flex items-center gap-1.5">
+                      <Compass className="w-3.5 h-3.5 text-[#15803D]" />
+                      Profondeur & Parallaxe Curseur
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCameraParallaxEnabled(!cameraParallaxEnabled)}
+                      className={`px-2.5 py-1 rounded-lg font-semibold text-[10px] transition-colors ${
+                        cameraParallaxEnabled
+                          ? 'bg-[#15803D] text-white'
+                          : 'bg-black/10 text-inherit opacity-75'
+                      }`}
+                    >
+                      {cameraParallaxEnabled ? 'Actif' : 'Fixe'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Main Floating Forest Pill Button */}
-          <div className="flex items-center gap-1.5 bg-white/85 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg border border-[#CBD5E1] text-xs text-[#0F172A] transition-all hover:bg-white">
-            <div className="w-6 h-6 rounded-full bg-[#DCFCE7] text-[#15803D] flex items-center justify-center shrink-0">
-              <Trees className="w-3.5 h-3.5 animate-pulse" />
+          {/* Main Floating Forest & Radio Pill Button (Target Element) */}
+          <div className="flex items-center gap-1.5 bg-white/90 dark:bg-[#0F172A]/90 backdrop-blur-md px-3.5 py-2 rounded-full shadow-xl border border-[#CBD5E1] dark:border-[#334155] text-xs text-[#0F172A] dark:text-[#F8FAFC] transition-all hover:scale-[1.01] hover:bg-white">
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+              isPodcastPlaying
+                ? 'bg-[#15803D] text-white shadow-xs'
+                : 'bg-[#DCFCE7] text-[#15803D]'
+            }`}>
+              <Radio className={`w-3.5 h-3.5 ${isPodcastPlaying ? 'animate-pulse' : ''}`} />
             </div>
 
-            <span className="font-bold text-[11px] pr-1">
-              Forêt 3D • {atmospherePresets[atmosphere].name.split(' ')[0]}
+            <span className="font-black text-[11px] pr-1 flex items-center gap-1.5">
+              <span>Radio Sanctuaire</span>
+              <span className="text-[10px] font-bold opacity-80 hidden sm:inline">
+                • {currentPart.range} ({selectedPartIndex === 0 ? 'Toltèque' : selectedPartIndex === 1 ? 'Trauma' : selectedPartIndex === 2 ? 'Souveraineté' : selectedPartIndex === 3 ? 'Hermétisme' : 'Mystique'})
+              </span>
             </span>
 
+            {/* Solfeggio frequency pill */}
+            <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30 font-mono">
+              {currentPart.solfeggioFrequency}Hz
+            </span>
+
+            {/* Quick Play/Pause Podcast button */}
             <button
               type="button"
-              onClick={toggleForestAudio}
-              className={`p-1.5 rounded-full transition-colors ${
-                isForestSoundActive
-                  ? 'bg-[#15803D] text-white'
+              onClick={handleTogglePodcast}
+              className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                isPodcastPlaying
+                  ? 'bg-[#15803D] text-white shadow-xs'
                   : 'hover:bg-[#DCFCE7] text-[#15803D]'
               }`}
-              title={isForestSoundActive ? 'Couper le son de la forêt' : 'Activer la brise et les oiseaux de forêt'}
+              title={isPodcastPlaying ? 'Mettre en pause la radio' : 'Lancer les podcasts et fréquences du sanctuaire'}
             >
-              {isForestSoundActive ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5 opacity-75" />}
+              {isPodcastPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </button>
 
+            {/* Quick Voice button */}
+            <button
+              type="button"
+              onClick={handleToggleVoice}
+              className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                isVoiceActive
+                  ? 'bg-[#2563EB] text-white'
+                  : 'hover:bg-[#E0F2FE] text-[#2563EB] opacity-75'
+              }`}
+              title={isVoiceActive ? 'Couper la voix' : 'Écouter la narration du podcast'}
+            >
+              {isVoiceActive ? <Mic className="w-3.5 h-3.5 animate-pulse" /> : <MicOff className="w-3.5 h-3.5" />}
+            </button>
+
+            {/* Expand / Controls button */}
             <button
               type="button"
               onClick={() => setShowForestControls(!showForestControls)}
-              className={`p-1.5 rounded-full transition-colors ${
-                showForestControls ? 'bg-[#15803D] text-white' : 'hover:bg-[#DCFCE7] text-[#334155]'
+              className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                showForestControls ? 'bg-[#15803D] text-white' : 'hover:bg-black/10 text-[#334155] dark:text-[#CBD5E1]'
               }`}
-              title="Personnaliser l'atmosphère 3D de la forêt"
+              title="Ouvrir la radio des podcasts, les fréquences et la forêt 3D"
             >
               <Sliders className="w-3.5 h-3.5" />
             </button>
@@ -889,3 +1455,4 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
     </>
   );
 };
+

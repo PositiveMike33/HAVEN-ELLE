@@ -184,6 +184,10 @@ export default function App() {
     return (
       <CamouflageApp
         onDeactivateCamouflage={() => setIsCamouflageActive(false)}
+        onTriggerSOS={() => {
+          setIsCamouflageActive(false);
+          setShowGlobalSOSModal(true);
+        }}
       />
     );
   }

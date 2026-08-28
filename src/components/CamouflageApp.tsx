@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { ChefHat, Search, Clock, Users, Heart, Sparkles, Key, AlertCircle, Sun, CloudRain, Wind } from 'lucide-react';
+import { ChefHat, Search, Clock, Users, Heart, Sparkles, Key, AlertCircle, Sun, CloudRain, Wind, ShieldAlert } from 'lucide-react';
 
 interface CamouflageAppProps {
   onDeactivateCamouflage: () => void;
+  onTriggerSOS?: () => void;
 }
 
-export const CamouflageApp: React.FC<CamouflageAppProps> = ({ onDeactivateCamouflage }) => {
+export const CamouflageApp: React.FC<CamouflageAppProps> = ({ onDeactivateCamouflage, onTriggerSOS }) => {
   const [activeTab, setActiveTab] = useState<'recipes' | 'weather'>('recipes');
   const [searchQuery, setSearchQuery] = useState('');
   const [showPinModal, setShowPinModal] = useState(false);
@@ -337,6 +338,23 @@ export const CamouflageApp: React.FC<CamouflageAppProps> = ({ onDeactivateCamouf
                   Déverrouiller
                 </button>
               </div>
+
+              {onTriggerSOS && (
+                <div className="pt-2 border-t border-[#E5E2D9] mt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPinModal(false);
+                      onDeactivateCamouflage();
+                      onTriggerSOS();
+                    }}
+                    className="w-full py-2 px-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl text-xs font-black flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  >
+                    <ShieldAlert className="w-3.5 h-3.5" />
+                    <span>Déclencher SOS Réseau Urgent</span>
+                  </button>
+                </div>
+              )}
             </form>
           </div>
         </div>
