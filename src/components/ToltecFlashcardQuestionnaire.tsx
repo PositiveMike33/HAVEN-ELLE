@@ -663,12 +663,12 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                       <span className={`text-[11px] uppercase tracking-wider font-extrabold block ${
                         isSelected
                           ? opt.isResilientToltec ? 'text-emerald-800' : 'text-amber-800'
-                          : 'text-slate-600'
+                          : 'text-white'
                       }`}>
                         {opt.sublabel}
                       </span>
                     )}
-                    <span className="text-xs sm:text-sm font-bold leading-relaxed block text-inherit">
+                    <span className="text-xs sm:text-sm font-bold leading-relaxed block text-white">
                       {opt.text}
                     </span>
                   </div>

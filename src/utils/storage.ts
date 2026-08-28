@@ -1,4 +1,5 @@
 import { TrustedContact, EmergencyAlert, IncidentRecord, DetailedSafetyPlan, DiscreetAppointment, UserAssessmentProfile, VoiceRecordingEvidence, WellnessDailyEntry, VeroCustomQuestion, IntakeQuestionnaireState } from '../types';
+import { InteractiveAssessmentsState, QuestionnaireId, UserModuleProgress } from '../data/questionnairesData';
 
 const STORAGE_KEYS = {
   CONTACTS: 'haven_trusted_contacts_v3',
@@ -16,6 +17,7 @@ const STORAGE_KEYS = {
   BG_VOLUME: 'haven_bg_volume_v1',
   WELLNESS_ENTRIES: 'haven_wellness_tracker_entries_v1',
   INTAKE_10Q: 'haven_intake_10questions_v2',
+  INTERACTIVE_ASSESSMENTS: 'haven_interactive_assessments_v1',
 };
 
 export const DEFAULT_VERO_QUESTIONS: Record<number, VeroCustomQuestion> = {
@@ -665,5 +667,54 @@ export const StorageService = {
 
     this.saveIntakeQuestionnaire(updatedState);
     return updatedState;
+  },
+
+  getInteractiveAssessments(): InteractiveAssessmentsState {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.INTERACTIVE_ASSESSMENTS);
+      if (!data) {
+        return {
+          violentometreSelections: [],
+          modulesProgress: {} as Record<QuestionnaireId, UserModuleProgress>,
+          lastUpdated: new Date().toISOString(),
+        };
+      }
+      const parsed = JSON.parse(data) as Partial<InteractiveAssessmentsState>;
+      return {
+        violentometreSelections: parsed.violentometreSelections || [],
+        modulesProgress: (parsed.modulesProgress || {}) as Record<QuestionnaireId, UserModuleProgress>,
+        lastUpdated: parsed.lastUpdated || new Date().toISOString(),
+      };
+    } catch {
+      return {
+        violentometreSelections: [],
+        modulesProgress: {} as Record<QuestionnaireId, UserModuleProgress>,
+        lastUpdated: new Date().toISOString(),
+      };
+    }
+  },
+
+  saveInteractiveAssessments(state: InteractiveAssessmentsState): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.INTERACTIVE_ASSESSMENTS, JSON.stringify(state));
+      window.dispatchEvent(new CustomEvent('haven-assessments-updated', { detail: state }));
+    } catch (e) {
+      console.error('Failed to save interactive assessments', e);
+    }
+  },
+
+  toggleViolentometreItem(itemId: string): InteractiveAssessmentsState {
+    const current = this.getInteractiveAssessments();
+    const exists = current.violentometreSelections.includes(itemId);
+    const updated = exists
+      ? current.violentometreSelections.filter((id) => id !== itemId)
+      : [...current.violentometreSelections, itemId];
+    const newState: InteractiveAssessmentsState = {
+      ...current,
+      violentometreSelections: updated,
+      lastUpdated: new Date().toISOString(),
+    };
+    this.saveInteractiveAssessments(newState);
+    return newState;
   },
 };

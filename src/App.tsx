@@ -251,7 +251,12 @@ export default function App() {
         {/* TAB 1: Questionnaire Principal & Parcours */}
         {(activeTab === 'evaluation' || activeTab === 'toltec') && (
           <div className="space-y-6">
-            <MainScreenVideoAndQuestions onPlanGenerated={() => setActiveTab('wellness')} />
+            <MainScreenVideoAndQuestions 
+              onPlanGenerated={() => setActiveTab('wellness')} 
+              onTriggerSOS={() => setShowGlobalSOSModal(true)}
+              onTriggerPanic={() => setIsCamouflageActive(true)}
+              onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}
+            />
             <ProgressionDashboard 
               resiliencePoints={companionProfile.resiliencePoints} 
               onPointsEarned={() => setCompanionProfile(CompanionMemoryService.getProfile())}

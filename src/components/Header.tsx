@@ -110,10 +110,10 @@ export const Header: React.FC<HeaderProps> = ({
   const userCycle = RESILIENCE_CYCLES.find(c => c.id === userCycleId) || RESILIENCE_CYCLES[0];
   
   // Strictly 3 Main Tabs:
-  // 1. Questionnaire & 5 Accords (Parcours de Résilience & Découverte)
+  // 1. 8 Questionnaires & Violentomètre (Parcours de Résilience & Découverte)
   navItems.push({ 
     id: 'evaluation', 
-    label: 'Questionnaire & 5 Accords', 
+    label: '8 Questionnaires & Violentomètre', 
     icon: ClipboardList 
   });
 

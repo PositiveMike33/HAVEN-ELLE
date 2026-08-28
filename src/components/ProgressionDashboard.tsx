@@ -148,7 +148,7 @@ export const ProgressionDashboard: React.FC<ProgressionDashboardProps> = ({
           <div className="bg-white px-5 py-3 rounded-2xl border-2 border-[#CBD5E1] text-right shadow-xs">
             <div className="text-3xl font-black text-[#15803D] font-mono leading-none">
               {resiliencePoints}
-              <span className="text-sm text-[#475569] font-sans font-bold">/1665</span>
+              <span className="text-sm text-white font-sans font-bold">/1665</span>
             </div>
             <div className="text-[11px] uppercase font-black tracking-wider text-[#0F172A] mt-1">
               Points de Résilience
