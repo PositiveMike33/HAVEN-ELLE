@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   MapPin, Phone, ShieldCheck, Navigation, Search, RefreshCw, 
-  ExternalLink, Building, HeartPulse, Shield, Compass, Check 
+  ExternalLink, Building, HeartPulse, Shield, Compass, Key, Info, Map as MapIcon
 } from 'lucide-react';
 import { ShelterResource } from '../types';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
@@ -48,7 +48,16 @@ export const SheltersMapDirectory: React.FC = () => {
     },
   ]);
   const [mapCenter, setMapCenter] = useState({ lat: 48.8566, lng: 2.3522 });
-  const [mapKey, setMapKey] = useState((import.meta as any).env.VITE_GOOGLE_MAPS_API_KEY || '');
+  const rawEnvKey = ((import.meta as any).env.VITE_GOOGLE_MAPS_API_KEY || '').trim();
+  
+  // A valid Google Maps Platform API key starts with "AIzaSy" and is roughly 39 chars.
+  // We strictly avoid passing AI Studio/Gemini keys (which start with AQ... or other prefixes)
+  // to avoid triggering Google Maps InvalidKeyMapError.
+  const isGmpKeyValid = (key: string) => typeof key === 'string' && key.startsWith('AIza') && key.length >= 30;
+  
+  const [mapKey, setMapKey] = useState(isGmpKeyValid(rawEnvKey) ? rawEnvKey : '');
+  const [showConfig, setShowConfig] = useState(false);
+  const [customKeyInput, setCustomKeyInput] = useState('');
 
   const searchShelters = async () => {
     if (!city.trim() && !navigator.geolocation) return;
@@ -80,23 +89,86 @@ export const SheltersMapDirectory: React.FC = () => {
     return <Building className="w-5 h-5 text-emerald-600" />;
   };
 
+  const handleApplyCustomKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isGmpKeyValid(customKeyInput.trim())) {
+      setMapKey(customKeyInput.trim());
+      setShowConfig(false);
+    } else {
+      alert("La clé Google Maps Platform doit débuter par 'AIza...' (format standard des clés Google Cloud Console ou Maps Demo Key).");
+    }
+  };
+
+  const hasValidMapKey = isGmpKeyValid(mapKey);
+
   return (
     <div id="shelters-directory-section" className="space-y-5">
       {/* Header with Search */}
       <div className="bg-[#FFFFFF] rounded-3xl border border-[#E5E2D9] p-6 shadow-xs">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-2xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center">
-            <Compass className="w-6 h-6" />
+        <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#E5EAD9] text-[#5A5A40] flex items-center justify-center">
+              <Compass className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-lg md:text-xl font-bold text-[#3E3B39] font-serif-natural">
+                Refuges, Hébergements & Centres de Soins Sûrs
+              </h2>
+              <p className="text-xs text-[#8E8B82]">
+                Cartographie et géolocalisation des structures d'accueil d'urgence via <strong className="text-[#5A5A40]">Google Maps Grounding</strong>.
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg md:text-xl font-bold text-[#3E3B39] font-serif-natural">
-              Refuges, Hébergements & Centres de Soins Sûrs
-            </h2>
-            <p className="text-xs text-[#8E8B82]">
-              Cartographie et géolocalisation des structures d'accueil d'urgence via <strong className="text-[#5A5A40]">Google Maps Grounding</strong>.
-            </p>
-          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowConfig(!showConfig)}
+            className="text-xs px-3 py-1.5 rounded-xl border border-[#CED6C1] bg-[#F8F7F2] hover:bg-[#E5EAD9] text-[#5A5A40] font-bold flex items-center gap-1.5 transition-colors"
+            title="Options de cartographie Google Maps"
+          >
+            <MapIcon className="w-3.5 h-3.5" />
+            <span>{hasValidMapKey ? 'Google Maps Actif' : 'Cartographie Sûre'}</span>
+          </button>
         </div>
+
+        {/* Optional Config Panel for Google Maps Key */}
+        {showConfig && (
+          <div className="mt-4 p-4 rounded-2xl bg-[#F8F7F2] border border-[#CED6C1] text-xs text-[#3E3B39] space-y-3 animate-fadeIn">
+            <div className="flex items-start gap-2">
+              <Info className="w-4 h-4 text-[#8A9A5B] shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-[#5A5A40]">Mode de Cartographie & Clé API Google Maps Platform</p>
+                <p className="text-[#8E8B82] mt-0.5 leading-relaxed">
+                  L'application utilise une cartographie interactive avec accès instantané aux itinéraires Google Maps. Vous pouvez également connecter une clé Google Maps Platform ou une{' '}
+                  <a
+                    href="https://mapsplatform.google.com/maps-demo-key?utm_campaign=gmp_mcp_codeassist_v1_aistudio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#8A9A5B] font-bold underline hover:text-[#5A5A40]"
+                  >
+                    Maps Demo Key gratuite
+                  </a>.
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleApplyCustomKey} className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-[#E5E2D9]">
+              <input
+                type="text"
+                value={customKeyInput}
+                onChange={(e) => setCustomKeyInput(e.target.value)}
+                placeholder="Entrez votre clé Google Maps (AIzaSy...)"
+                className="flex-1 px-3 py-2 rounded-xl border border-[#CED6C1] text-xs bg-white text-black font-mono focus:outline-none focus:ring-2 focus:ring-[#8A9A5B]"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-[#8A9A5B] hover:bg-[#78884d] text-white rounded-xl text-xs font-bold transition-colors shadow-2xs whitespace-nowrap"
+              >
+                Appliquer la clé
+              </button>
+            </form>
+          </div>
+        )}
 
         {/* Search input */}
         <div className="mt-5 flex flex-col sm:flex-row gap-2">
@@ -108,7 +180,7 @@ export const SheltersMapDirectory: React.FC = () => {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && searchShelters()}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E5E2D9] text-xs text-[#3E3B39] focus:outline-none focus:ring-2 focus:ring-[#8A9A5B]/30 focus:border-[#8A9A5B] bg-white"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E5E2D9] text-xs text-[#3E3B39] focus:outline-none focus:ring-2 focus:ring-[#8A9A5B]/30 focus:border-[#8A9A5B] bg-white font-medium"
             />
           </div>
 
@@ -116,7 +188,7 @@ export const SheltersMapDirectory: React.FC = () => {
             id="search-shelters-btn"
             onClick={searchShelters}
             disabled={loading}
-            className="px-5 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5"
+            className="px-5 py-2.5 bg-[#8A9A5B] hover:bg-[#78884d] disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
             {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
             Localiser les Refuges
@@ -124,14 +196,15 @@ export const SheltersMapDirectory: React.FC = () => {
         </div>
       </div>
 
-      {/* Google Map Section */}
-      {mapKey ? (
+      {/* Map Section */}
+      {hasValidMapKey ? (
         <div className="w-full h-80 rounded-2xl overflow-hidden shadow-xs border border-[#E5E2D9]">
           <APIProvider apiKey={mapKey}>
             <Map
               defaultZoom={13}
               defaultCenter={mapCenter}
               mapId="DEMO_MAP_ID"
+              internalUsageAttributionIds={["gmp_mcp_codeassist_v1_aistudio"]}
             >
               <AdvancedMarker position={{ lat: 48.8600, lng: 2.3522 }}>
                 <Pin background={'#8A9A5B'} borderColor={'#5A5A40'} glyphColor={'#fff'} />
@@ -146,11 +219,31 @@ export const SheltersMapDirectory: React.FC = () => {
           </APIProvider>
         </div>
       ) : (
-        <div className="w-full h-40 bg-[#F8F7F2] rounded-2xl border border-[#E5E2D9] flex flex-col items-center justify-center p-4 text-center">
-          <MapPin className="w-8 h-8 text-[#8A9A5B] mb-2" />
-          <p className="text-xs text-[#5A5A40] font-medium max-w-md">
-            Pour afficher la carte interactive, veuillez configurer la clé d'API Google Maps Platform (VITE_GOOGLE_MAPS_API_KEY).
-          </p>
+        <div className="w-full rounded-2xl border border-[#E5E2D9] overflow-hidden bg-white shadow-xs">
+          {/* Interactive Safe Cartography View */}
+          <div className="relative w-full h-64 bg-[#F8F7F2] overflow-hidden">
+            <iframe
+              title="Cartographie sécurisée des structures d'accueil"
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapCenter.lng - 0.05}%2C${mapCenter.lat - 0.03}%2C${mapCenter.lng + 0.05}%2C${mapCenter.lat + 0.03}&layer=mapnik&marker=${mapCenter.lat}%2C${mapCenter.lng}`}
+              className="w-full h-full border-0 pointer-events-auto"
+              loading="lazy"
+            />
+            <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-[#CED6C1] shadow-xs flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8A9A5B] animate-pulse" />
+              <span className="text-[11px] font-bold text-[#3E3B39]">Périmètre d'accueil actif • {city || 'Zone locale'}</span>
+            </div>
+            <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-[#CED6C1] shadow-xs">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`refuges femmes urgences ${city || 'Paris'}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold text-[#5A5A40] hover:text-[#8A9A5B] flex items-center gap-1.5"
+              >
+                <span>Ouvrir dans Google Maps</span>
+                <ExternalLink className="w-3 h-3 text-[#8A9A5B]" />
+              </a>
+            </div>
+          </div>
         </div>
       )}
 
@@ -208,7 +301,7 @@ export const SheltersMapDirectory: React.FC = () => {
             <div className="flex items-center gap-2 pt-2 border-t border-[#E5E2D9]">
               <a
                 href={`tel:${res.phone}`}
-                className="flex-1 py-2 bg-[#5A5A40] hover:bg-[#4a4a35] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 bg-[#5A5A40] hover:bg-[#4a4a35] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-[#E5EAD9]" /> Appeler ({res.phone})
               </a>
@@ -216,7 +309,7 @@ export const SheltersMapDirectory: React.FC = () => {
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(res.name + ' ' + res.address)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 border border-[#E5E2D9] hover:bg-[#F5F2ED] text-[#5A5A40] rounded-xl text-xs font-semibold flex items-center justify-center gap-1"
+                className="p-2 border border-[#E5E2D9] hover:bg-[#F5F2ED] text-[#5A5A40] rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
                 title="Itinéraire Google Maps"
               >
                 <Navigation className="w-4 h-4 text-[#8A9A5B]" />

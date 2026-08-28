@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sliders, Eye, Sparkles, Layers, Check, Sun, Moon } from 'lucide-react';
+import { Sliders, Eye, Sparkles, Layers, Trees, Sun, Moon } from 'lucide-react';
 import { StorageService } from '../utils/storage';
 
 interface UiOpacityControlProps {
@@ -12,7 +12,7 @@ export const UiOpacityControl: React.FC<UiOpacityControlProps> = ({ isNightMode 
   const [videoOpacity, setVideoOpacity] = useState<number>(() => StorageService.getVideoOpacity());
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Sync state if changed from another component (e.g. HeaderAudioPlayer or BackgroundVideo)
+  // Sync state if changed from another component
   useEffect(() => {
     const handleUiChange = (e: Event) => {
       const custom = e as CustomEvent<{ opacity: number }>;
@@ -45,12 +45,13 @@ export const UiOpacityControl: React.FC<UiOpacityControlProps> = ({ isNightMode 
   }, []);
 
   const handleUiOpacityChange = (val: number) => {
-    const clamped = Math.max(10, Math.min(100, Math.round(val)));
+    const clamped = Math.max(0, Math.min(100, Math.round(val)));
     setUiOpacity(clamped);
     StorageService.setUiOpacity(clamped);
     const root = document.documentElement;
     root.style.setProperty('--ui-surface-opacity', (clamped / 100).toFixed(2));
-    root.style.setProperty('--ui-bg-opacity', ((clamped / 100) * 0.4).toFixed(2));
+    root.style.setProperty('--ui-bg-opacity', ((clamped / 100) * 0.3).toFixed(2));
+    root.style.setProperty('--ui-blur', clamped === 0 ? '0px' : clamped <= 35 ? '8px' : '16px');
     window.dispatchEvent(
       new CustomEvent('haven-ui-opacity-changed', {
         detail: { opacity: clamped },
@@ -59,7 +60,7 @@ export const UiOpacityControl: React.FC<UiOpacityControlProps> = ({ isNightMode 
   };
 
   const handleVideoOpacityChange = (val: number) => {
-    const clamped = Math.max(5, Math.min(100, Math.round(val)));
+    const clamped = Math.max(0, Math.min(100, Math.round(val)));
     setVideoOpacity(clamped);
     StorageService.setVideoOpacity(clamped);
     window.dispatchEvent(
@@ -78,17 +79,19 @@ export const UiOpacityControl: React.FC<UiOpacityControlProps> = ({ isNightMode 
         onClick={() => setIsOpen(!isOpen)}
         className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
           isOpen
-            ? 'bg-[#8A9A5B] text-white ring-2 ring-[#8A9A5B]/30'
+            ? 'bg-[#15803D] text-white ring-2 ring-[#15803D]/30'
             : isNightMode
-            ? 'bg-[#2A2C28] text-[#D8E4C7] border border-[#3E4238] hover:bg-[#343630]'
-            : 'bg-[#F8F7F2] text-[#5A5A40] border border-[#E5E2D9] hover:bg-[#E5EAD9]'
+            ? 'bg-[#1E293B] text-[#E2E8F0] border border-[#334155] hover:bg-[#334155]'
+            : 'bg-white text-[#0F172A] border border-[#CBD5E1] hover:bg-[#F1F5F9]'
         }`}
-        title="Régler la transparence des fiches et boutons pour voir la vidéo d'arrière-plan"
+        title="Régler la transparence des blocs de contenu pour voir la forêt 3D en profondeur"
       >
-        <Layers className="w-3.5 h-3.5" />
-        <span className="hidden lg:inline text-[11px]">Transparence</span>
-        <span className="text-[10px] px-1 py-0.2 bg-black/10 rounded-md font-mono">
-          {uiOpacity}%
+        <Trees className="w-3.5 h-3.5 text-[#15803D]" />
+        <span className="hidden sm:inline text-[11px]">Profondeur 3D</span>
+        <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold ${
+          uiOpacity === 0 ? 'bg-[#15803D] text-white' : 'bg-black/10'
+        }`}>
+          {uiOpacity === 0 ? '0% (Forêt Pure)' : `${uiOpacity}%`}
         </span>
       </button>
 
@@ -96,22 +99,24 @@ export const UiOpacityControl: React.FC<UiOpacityControlProps> = ({ isNightMode 
       {isOpen && (
         <div
           id="ui-transparency-popover"
-          className={`absolute right-0 top-full mt-2 w-76 sm:w-84 p-4 rounded-2xl shadow-2xl border z-50 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur-xl ${
+          className={`absolute right-0 top-full mt-2 w-80 sm:w-92 p-4 rounded-2xl shadow-2xl border z-50 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur-xl ${
             isNightMode
-              ? 'bg-[#1E201B]/95 border-[#3E4633] text-[#D6D4CD]'
-              : 'bg-white/95 border-[#CED6C1] text-[#3E3B39]'
+              ? 'bg-[#0F172A]/95 border-[#334155] text-[#F8FAFC]'
+              : 'bg-white/95 border-[#CBD5E1] text-[#0F172A]'
           }`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b pb-2.5 mb-3 border-inherit/40">
+          <div className="flex items-center justify-between border-b pb-2.5 mb-3 border-inherit/30">
             <div className="flex items-center gap-2">
-              <div className="p-1 rounded-lg bg-[#8A9A5B]/20 text-[#8A9A5B]">
+              <div className="p-1.5 rounded-lg bg-[#15803D]/20 text-[#15803D]">
                 <Layers className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-bold text-xs">Transparence & Vidéo de Fond</h4>
+                <h4 className="font-bold text-xs">Transparence & Profondeur Forêt 3D</h4>
                 <p className="text-[10px] opacity-75">
-                  {isNightMode ? 'Mode Nuit actif' : 'Mode Jour actif'}
+                  {uiOpacity === 0
+                    ? 'Immersion totale : Blocs flottants à 0% opacité'
+                    : 'Ajustez la transparence pour admirer la forêt'}
                 </p>
               </div>
             </div>
@@ -124,104 +129,90 @@ export const UiOpacityControl: React.FC<UiOpacityControlProps> = ({ isNightMode 
             </button>
           </div>
 
-          {/* Slider 1: UI / Cards & Buttons Opacity */}
-          <div className="space-y-2 mb-4 p-2.5 rounded-xl bg-black/5 border border-inherit/30">
+          {/* Slider 1: UI / Cards & Buttons Opacity (from 0% to 100%) */}
+          <div className="space-y-2 mb-4 p-3 rounded-xl bg-black/5 border border-inherit/25">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold flex items-center gap-1.5">
-                <Sliders className="w-3.5 h-3.5 text-[#8A9A5B]" />
-                Opacité des Fiches & Boutons
+                <Sliders className="w-3.5 h-3.5 text-[#15803D]" />
+                Opacité des Blocs Flottants
               </span>
-              <span className="font-bold font-mono text-[#8A9A5B] bg-[#8A9A5B]/10 px-2 py-0.5 rounded-md">
-                {uiOpacity}%
+              <span className={`font-bold font-mono px-2 py-0.5 rounded-md ${
+                uiOpacity === 0
+                  ? 'bg-[#15803D] text-white shadow-xs'
+                  : 'text-[#15803D] bg-[#15803D]/15'
+              }`}>
+                {uiOpacity === 0 ? '0% (Forêt 3D Pure)' : `${uiOpacity}%`}
               </span>
             </div>
 
-            <p className="text-[10px] opacity-75">
-              Descendez l'opacité pour rendre les fiches transparentes et laisser apparaître la vidéo.
+            <p className="text-[10px] opacity-80 leading-relaxed">
+              Mettez l'opacité à <strong>0%</strong> pour effacer les fonds blancs/gris et faire flotter vos contenus directement au cœur des arbres en 3D.
             </p>
 
             <input
               id="ui-opacity-range-input"
               type="range"
-              min="15"
+              min="0"
               max="100"
               step="5"
               value={uiOpacity}
               onChange={(e) => handleUiOpacityChange(Number(e.target.value))}
-              className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-[#8A9A5B] bg-[#CED6C1]/40"
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-[#15803D] bg-[#CBD5E1]/40"
             />
 
             {/* Quick Presets */}
-            <div className="grid grid-cols-3 gap-1.5 pt-1">
+            <div className="grid grid-cols-4 gap-1 pt-1.5">
+              <button
+                type="button"
+                onClick={() => handleUiOpacityChange(0)}
+                className={`px-1.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all text-center ${
+                  uiOpacity === 0
+                    ? 'bg-[#15803D] text-white border-[#15803D] shadow-xs'
+                    : 'bg-black/5 hover:bg-black/10 border-inherit/30'
+                }`}
+                title="Transparence totale pour voir la profondeur 3D de la forêt"
+              >
+                0% Forêt Pure
+              </button>
               <button
                 type="button"
                 onClick={() => handleUiOpacityChange(25)}
-                className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
-                  uiOpacity <= 35
-                    ? 'bg-[#8A9A5B] text-white border-[#8A9A5B]'
-                    : 'bg-black/5 hover:bg-black/10 border-inherit/40'
+                className={`px-1.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all text-center ${
+                  uiOpacity > 0 && uiOpacity <= 35
+                    ? 'bg-[#15803D] text-white border-[#15803D]'
+                    : 'bg-black/5 hover:bg-black/10 border-inherit/30'
                 }`}
               >
-                Translucide (25%)
+                25% Verre
               </button>
               <button
                 type="button"
                 onClick={() => handleUiOpacityChange(65)}
-                className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
-                  uiOpacity > 35 && uiOpacity <= 75
-                    ? 'bg-[#8A9A5B] text-white border-[#8A9A5B]'
-                    : 'bg-black/5 hover:bg-black/10 border-inherit/40'
+                className={`px-1.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all text-center ${
+                  uiOpacity > 35 && uiOpacity <= 80
+                    ? 'bg-[#15803D] text-white border-[#15803D]'
+                    : 'bg-black/5 hover:bg-black/10 border-inherit/30'
                 }`}
               >
-                Équilibré (65%)
+                65% Équilibré
               </button>
               <button
                 type="button"
-                onClick={() => handleUiOpacityChange(95)}
-                className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
-                  uiOpacity > 75
-                    ? 'bg-[#8A9A5B] text-white border-[#8A9A5B]'
-                    : 'bg-black/5 hover:bg-black/10 border-inherit/40'
+                onClick={() => handleUiOpacityChange(100)}
+                className={`px-1.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all text-center ${
+                  uiOpacity > 80
+                    ? 'bg-[#15803D] text-white border-[#15803D]'
+                    : 'bg-black/5 hover:bg-black/10 border-inherit/30'
                 }`}
               >
-                Opaque (95%)
+                100% Opaque
               </button>
             </div>
           </div>
 
-          {/* Slider 2: Video Intensity */}
-          <div className="space-y-2 p-2.5 rounded-xl bg-black/5 border border-inherit/30">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold flex items-center gap-1.5">
-                <Eye className="w-3.5 h-3.5 text-[#8A9A5B]" />
-                Intensité Vidéo Clip en Arrière-plan
-              </span>
-              <span className="font-bold font-mono text-[#8A9A5B] bg-[#8A9A5B]/10 px-2 py-0.5 rounded-md">
-                {videoOpacity}%
-              </span>
-            </div>
-
-            <input
-              id="video-opacity-range-input"
-              type="range"
-              min="10"
-              max="90"
-              step="5"
-              value={videoOpacity}
-              onChange={(e) => handleVideoOpacityChange(Number(e.target.value))}
-              className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-[#8A9A5B] bg-[#CED6C1]/40"
-            />
-
-            <div className="flex justify-between text-[9px] opacity-70">
-              <span>Discret (20%)</span>
-              <span>Idéal (45%)</span>
-              <span>Vif (80%)</span>
-            </div>
-          </div>
-
-          <div className="mt-3 pt-2 text-[10px] opacity-70 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-[#8A9A5B] shrink-0" />
-            <span>Effet de verre poli flouté avec lisibilité automatique garantie.</span>
+          <div className="mt-2 text-[10px] opacity-80 flex items-center gap-1.5 bg-[#15803D]/10 p-2 rounded-xl text-[#15803D]">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span>Contraste et lisibilité protégés par un filtre de verre poli et ombres douces.</span>
           </div>
         </div>
       )}

@@ -20,27 +20,27 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
   isNightMode = false,
   resiliencePoints = 0,
 }) => {
-  const isVideoUnfrozen = resiliencePoints >= 200; // Level 3+
+  const isVideoUnfrozen = true; // Active immediately on background screen
   const isAudioAutoUnlocked = resiliencePoints >= 400; // Level 4+
-  const canControlVisuals = resiliencePoints >= 80; // Level 2+
-  const canControlAudio = resiliencePoints >= 400; // Level 4+
+  const canControlVisuals = true; // Always allow adjusting background visuals
+  const canControlAudio = true; // Allow controlling audio/mute
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState<number>(() => StorageService.getBgVolume() || 15);
-  const [opacity, setOpacity] = useState<number>(() => resiliencePoints < 80 ? 100 : (StorageService.getVideoOpacity() || 100));
+  const [opacity, setOpacity] = useState<number>(() => StorageService.getVideoOpacity() || 85);
   const [uiOpacity, setUiOpacity] = useState<number>(() => StorageService.getUiOpacity());
   const [showControls, setShowControls] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(true);
   const [isApiReady, setIsApiReady] = useState(false);
-  const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 210 });
+  const [trackProgress, setTrackProgress] = useState({ currentTime: 0, duration: 3600 });
   const [audioUnlocked, setAudioUnlocked] = useState(false);
 
   const playerRef = useRef<any>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
   const pollIntervalRef = useRef<number | null>(null);
 
-  const videoId = 'hgHwXM7GYuk';
+  const videoId = 'Xv2NElOHo-0';
 
   useEffect(() => {
     if (!window.YT || !window.YT.Player) {
@@ -64,7 +64,7 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
   }, []);
 
   useEffect(() => {
-    if (window.YT && window.YT.Player && isApiReady && !playerRef.current && isVideoUnfrozen) {
+    if (window.YT && window.YT.Player && isApiReady && !playerRef.current) {
       playerRef.current = new window.YT.Player('haven-persistent-bg-player', {
         videoId,
         playerVars: {
@@ -79,33 +79,35 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
           disablekb: 1,
           fs: 0,
           iv_load_policy: 3,
+          playsinline: 1,
         },
         events: {
           onReady: (event: any) => {
             try {
               event.target.setVolume(volume);
               event.target.mute();
-              if (!isPanicOrCamouflage && isAudioAutoUnlocked) {
-                event.target.setVolume(10);
-                event.target.unMute();
-                event.target.playVideo();
-                setIsPlaying(true);
-                setIsMuted(false);
-                setVolume(10);
-                setAudioUnlocked(true);
-              } else if (!isPanicOrCamouflage) {
-                event.target.playVideo();
-                setIsPlaying(true);
-                setIsMuted(true);
-              }
+              event.target.playVideo();
+              setIsPlaying(true);
+              setIsMuted(true);
             } catch (e) {
               console.warn('Autoplay ready event notice:', e);
+            }
+          },
+          onStateChange: (event: any) => {
+            // State 0 is ENDED -> loop infinitely
+            if (event.data === 0) {
+              event.target.seekTo(0, true);
+              event.target.playVideo();
+            } else if (event.data === 1) {
+              setIsPlaying(true);
+            } else if (event.data === 2) {
+              setIsPlaying(false);
             }
           },
         },
       });
     }
-  }, [isApiReady, isPanicOrCamouflage, isVideoUnfrozen]);
+  }, [isApiReady, isPanicOrCamouflage]);
 
   useEffect(() => {
     const tryUnlockAudio = () => {
@@ -327,24 +329,15 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
       >
         <div
           ref={iframeContainerRef}
-          className="absolute inset-0 w-full h-full flex items-center justify-center bg-[#F8FAFC]"
+          className="absolute inset-0 w-full h-full flex items-center justify-center bg-transparent"
         >
-          {!isVideoUnfrozen ? (
-            <img 
-              src="https://img.youtube.com/vi/hgHwXM7GYuk/maxresdefault.jpg" 
-              alt="Background" 
-              className="w-full h-full object-cover opacity-60" 
-              style={{ filter: 'contrast(100%) saturate(100%)' }}
-            />
-          ) : (
-            <div
-              id="haven-persistent-bg-player"
-              className="w-[150vw] h-[150vh] min-w-full min-h-full object-cover scale-[1.3] pointer-events-none border-0 opacity-60"
-              style={{
-                filter: 'contrast(100%) saturate(100%)',
-              }}
-            />
-          )}
+          <div
+            id="haven-persistent-bg-player"
+            className="w-[150vw] h-[150vh] min-w-full min-h-full object-cover scale-[1.3] pointer-events-none border-0 opacity-60"
+            style={{
+              filter: 'contrast(100%) saturate(100%)',
+            }}
+          />
         </div>
 
         {/* Ambient gradient overlay */}
@@ -482,11 +475,11 @@ export const BackgroundMusicVideo: React.FC<BackgroundMusicVideoProps> = ({
 
             <div className="flex flex-col text-left pr-1 max-w-[140px] sm:max-w-[200px]">
               <span className="font-bold text-[11px] text-[#3E3B39] truncate leading-tight">
-                History of Violence
+                Forêt Vivante & Sérénité
               </span>
               <span className="text-[9px] text-[#8E8B82] truncate leading-tight flex items-center gap-1">
-                <span>Theory of a Deadman</span>
-                {isVideoUnfrozen && <span className="font-mono text-[#8A9A5B]">• {formatTrackTime(trackProgress.currentTime)}</span>}
+                <span>Boucle Infinie</span>
+                <span className="font-mono text-[#8A9A5B]">• {formatTrackTime(trackProgress.currentTime)}</span>
               </span>
             </div>
 

@@ -10,6 +10,7 @@ import { UpcomingAppointmentsWidget } from './components/UpcomingAppointmentsWid
 import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
 import { BackgroundMusicVideo } from './components/BackgroundMusicVideo';
+import { PeacefulForest3D } from './components/PeacefulForest3D';
 import { ProgressionDashboard } from './components/ProgressionDashboard';
 import { ValuesAndBenevolenceBuilder } from './components/ValuesAndBenevolenceBuilder';
 import { StorageService } from './utils/storage';
@@ -192,10 +193,16 @@ export default function App() {
       id="haven-app-root"
       className={`relative min-h-screen flex flex-col font-sans transition-colors duration-200 ${
         isNightMode
-          ? 'night-mode bg-[#161715]/95 text-[#D6D4CD] selection:bg-[#2A3122] selection:text-[#A5B67D]'
-          : 'bg-[#F8F7F2]/80 backdrop-blur-[0.5px] text-[#3E3B39] selection:bg-[#E5EAD9] selection:text-[#5A5A40]'
+          ? 'night-mode text-[#F8FAFC] selection:bg-[#15803D]/40 selection:text-white'
+          : 'text-[#0F172A] selection:bg-[#DCFCE7] selection:text-[#14532D]'
       }`}
     >
+      {/* 3D Living Peaceful Forest Environment Background */}
+      <PeacefulForest3D
+        isPanicOrCamouflage={isCamouflageActive}
+        isNightMode={isNightMode}
+      />
+
       {/* Background Music & Official Video (Theory of a Deadman - History of Violence) */}
       <BackgroundMusicVideo 
         isPanicOrCamouflage={isCamouflageActive} 
