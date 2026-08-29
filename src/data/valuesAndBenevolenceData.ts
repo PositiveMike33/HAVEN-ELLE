@@ -167,9 +167,9 @@ export const PRESET_CORE_VALUES: CoreValueItem[] = [
   },
   {
     id: 'val_securite',
-    name: 'Sécurité & Sanctuaire',
+    name: 'Sécurité & Souveraineté Personnelle',
     category: 'Sécurité & Paix',
-    definition: 'Le droit fondamental de vivre dans la tranquillité, protégé des violences, du contrôle et de la peur.',
+    definition: 'Le droit fondamental de reprendre sa souveraineté personnelle et de vivre dans la tranquillité, protégé des violences, du contrôle et de la peur.',
     benevolentVision: 'Je m\'accorde le droit absolu de me mettre à l\'abri et d\'écouter mes signaux d\'alarme sans jamais me juger peureuse.',
     dailyMicroAction: 'Prendre 2 minutes pour vérifier mes repères rassurants et respirer dans le calme.',
     iconName: 'ShieldCheck',

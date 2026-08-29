@@ -250,7 +250,7 @@ export const ConfidentialAssessmentModal: React.FC<ConfidentialAssessmentModalPr
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A9A5B]">
-                    Sanctuaire Confidentiel Chiffré • Étape {step} sur {totalSteps}
+                    Espace Souveraineté Personnelle Chiffré • Étape {step} sur {totalSteps}
                   </span>
                   <span className="bg-[#E5EAD9] text-[#5A5A40] text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-[#CED6C1]">
                     <EyeOff className="w-3 h-3" /> Zéro Partage Externe
@@ -1074,7 +1074,7 @@ export const ConfidentialAssessmentModal: React.FC<ConfidentialAssessmentModalPr
               <div className="p-3.5 rounded-2xl bg-[#E5EAD9]/60 border border-[#CED6C1] text-xs text-[#5A5A40] space-y-1">
                 <div className="font-bold flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-[#8A9A5B]" />
-                  <span>Validation de votre Sanctuaire Thérapeutique</span>
+                  <span>Validation pour Reprendre sa Souveraineté Personnelle</span>
                 </div>
                 <p className="text-[11px] text-[#5A5A40]/90 leading-relaxed">
                   En validant ce formulaire, vos données permettront d'activer immédiatement les recommandations ciblées, la régulation somato-émotionnelle et la sécurisation juridique de vos démarches.
@@ -1116,9 +1116,9 @@ export const ConfidentialAssessmentModal: React.FC<ConfidentialAssessmentModalPr
                 className="px-6 py-2.5 rounded-xl bg-[#8A9A5B] hover:bg-[#7b8a4f] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all"
               >
                 {isSavedNotice ? (
-                  <>Sanctuaire Configuré ! <CheckCircle2 className="w-4 h-4 text-white" /></>
+                  <>Souveraineté Personnelle Configurée ! <CheckCircle2 className="w-4 h-4 text-white" /></>
                 ) : (
-                  <>Enregistrer & Activer mon Sanctuaire <ShieldCheck className="w-4 h-4" /></>
+                  <>Enregistrer & Reprendre sa Souveraineté Personnelle <ShieldCheck className="w-4 h-4" /></>
                 )}
               </button>
             )}

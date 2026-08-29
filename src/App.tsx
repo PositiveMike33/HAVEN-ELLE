@@ -9,6 +9,8 @@ import { JusticeDossier } from './components/JusticeDossier';
 import { UpcomingAppointmentsWidget } from './components/UpcomingAppointmentsWidget';
 import { OnboardingModal } from './components/OnboardingModal';
 import { ConfidentialAssessmentModal } from './components/ConfidentialAssessmentModal';
+import { InitialEmergencySetupModal } from './components/InitialEmergencySetupModal';
+import { GmailSecurityHubModal } from './components/GmailSecurityHubModal';
 import { BackgroundMusicVideo } from './components/BackgroundMusicVideo';
 import { PeacefulForest3D } from './components/PeacefulForest3D';
 import { ProgressionDashboard } from './components/ProgressionDashboard';
@@ -31,6 +33,7 @@ export default function App() {
   const [securitySubTab, setSecuritySubTab] = useState<'network' | 'justice' | 'appointments'>('network');
   const [showGlobalSOSModal, setShowGlobalSOSModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showInitialEmergencySetup, setShowInitialEmergencySetup] = useState(false);
   const [showAssessmentModal, setShowAssessmentModal] = useState(false);
   const [assessmentProfile, setAssessmentProfile] = useState<UserAssessmentProfile>(() => {
     return StorageService.getAssessmentProfile();
@@ -39,6 +42,32 @@ export default function App() {
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Gmail Hub State
+  const [showGmailModal, setShowGmailModal] = useState(false);
+  const [gmailModalConfig, setGmailModalConfig] = useState<{
+    mode: 'inbox' | 'compose' | 'sos' | 'dossier';
+    recipient?: string;
+    subject?: string;
+    body?: string;
+  }>({
+    mode: 'sos',
+  });
+
+  const handleOpenGmail = (options?: {
+    mode?: 'inbox' | 'compose' | 'sos' | 'dossier';
+    recipient?: string;
+    subject?: string;
+    body?: string;
+  }) => {
+    setGmailModalConfig({
+      mode: options?.mode || 'sos',
+      recipient: options?.recipient || '',
+      subject: options?.subject || '',
+      body: options?.body || '',
+    });
+    setShowGmailModal(true);
+  };
 
   // App Data State
   const [contacts, setContacts] = useState<TrustedContact[]>([]);
@@ -53,7 +82,9 @@ export default function App() {
     setIncidents(StorageService.getIncidents());
     setAppointments(StorageService.getAppointments());
 
-    if (!StorageService.isOnboardingCompleted()) {
+    if (!StorageService.isInitialEmergencyConfigured()) {
+      setShowInitialEmergencySetup(true);
+    } else if (!StorageService.isOnboardingCompleted()) {
       setShowOnboarding(true);
     }
 
@@ -233,6 +264,7 @@ export default function App() {
         onLogin={async () => {
           try { await googleSignIn(); } catch(e) { console.error(e); }
         }}
+        onOpenGmail={() => handleOpenGmail({ mode: 'sos' })}
       />
 
       {/* Main Content Area */}
@@ -344,6 +376,7 @@ export default function App() {
                   setSecuritySubTab('network');
                 }}
                 onOpenDetailedAssessment={() => setShowAssessmentModal(true)}
+                onOpenGmail={handleOpenGmail}
               />
             ) : (
               <ContactsEtConsultations
@@ -355,6 +388,7 @@ export default function App() {
                 onUpdateAppointments={setAppointments}
                 requestedSubTab={securitySubTab === 'appointments' ? 'appointments' : 'contacts'}
                 onSubTabChange={(sub) => setSecuritySubTab(sub as any)}
+                onOpenGmail={handleOpenGmail}
               />
             )}
           </div>
@@ -369,10 +403,35 @@ export default function App() {
             <span>HAVEN-ELLE • Chiffrement local & Zéro traçage • Mode Anonyme</span>
           </div>
           <p className="text-[11px] text-[#8E8B82]">
-            En cas de danger immédiat : composez le <strong className="text-[#A64D4D]">911</strong> / <strong className="text-[#A64D4D]">17</strong> ou SMS <strong className="text-[#8A9A5B]">1-438-543-2555</strong>.
+            En cas de danger immédiat : composez le <strong className="text-[#A64D4D]">911</strong> ou SMS <strong className="text-[#8A9A5B]">1-438-543-2555</strong>.
           </p>
         </div>
       </footer>
+
+      {/* Initial Emergency Contacts & Silent Multi-Channel Setup Modal */}
+      <InitialEmergencySetupModal
+        isOpen={showInitialEmergencySetup}
+        onClose={() => setShowInitialEmergencySetup(false)}
+        contacts={contacts}
+        onSaveContacts={(updated) => {
+          setContacts(updated);
+        }}
+        onOpenGmailSos={() => {
+          handleOpenGmail({ mode: 'sos' });
+        }}
+      />
+
+      {/* Gmail Security & Emergency Hub Modal */}
+      <GmailSecurityHubModal
+        isOpen={showGmailModal}
+        onClose={() => setShowGmailModal(false)}
+        contacts={contacts}
+        incidents={incidents}
+        initialMode={gmailModalConfig.mode}
+        initialRecipient={gmailModalConfig.recipient}
+        initialSubject={gmailModalConfig.subject}
+        initialBody={gmailModalConfig.body}
+      />
 
       {/* Global SOS Modal Trigger */}
       <AlertTriggerModal

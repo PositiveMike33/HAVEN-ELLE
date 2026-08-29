@@ -175,7 +175,7 @@ export const CYCLE_3_QUESTIONS: Healing100QuestionItem[] = [
     correctOptionIndex: 0, // A
     explanation: "Traiter le critique intérieur avec une compassion ferme plutôt qu'avec de la haine désamorce son carburant conflictuel et rétablit l'harmonie psychique.",
     reflectionPrompt: "Quelle parole de paix bienveillante adressez-vous à cette vieille voix d'alarme pour l'inviter au repos ?",
-    benevolentAffirmation: "« Mon esprit est un sanctuaire de paix. Aucune voix accusatrice n'a de prise sur ma dignité retrouvée. »",
+    benevolentAffirmation: "« Mon esprit est un espace de souveraineté et de paix. Aucune voix accusatrice n'a de prise sur ma dignité retrouvée. »",
     unlockedRewardBadge: "Trophée : Maîtrise du Silence Intérieur (Palier 60 Validé)"
   },
 
@@ -385,7 +385,7 @@ export const CYCLE_3_QUESTIONS: Healing100QuestionItem[] = [
     correctOptionIndex: 2, // C
     explanation: "Le passé n'a plus d'existence matérielle, le futur est une projection mentale. Seul le présent offre l'opportunité d'agir, de choisir et de guérir.",
     reflectionPrompt: "Savourez l'immense soulagement de savoir que vous n'avez qu'une seule seconde à vivre à la fois : celle-ci.",
-    benevolentAffirmation: "« Le présent est mon sanctuaire d'éternité. J'y dépose mes pas avec grâce et sérénité. »",
+    benevolentAffirmation: "« Le présent est mon espace souverain d'éternité. J'y dépose mes pas avec grâce et sérénité. »",
     unlockedRewardBadge: "Badge : Clé de l'Éternel Présent"
   },
   {
@@ -436,7 +436,7 @@ export const CYCLE_3_QUESTIONS: Healing100QuestionItem[] = [
     correctOptionIndex: 2, // C
     explanation: "Triomphe grandiose ! Vous avez achevé les 25 paliers du Cycle 3. Votre esprit est limpide, vos ruminations neutralisées et vous maîtrisez l'art de vivre dans l'ici et maintenant.",
     reflectionPrompt: "Écrivez votre message d'envol pour célébrer l'achèvement du Cycle 3 et votre passage vers l'Amour Inconditionnel du Cycle 4 :",
-    benevolentAffirmation: "« Mon esprit est un ciel infini, libre de tout nuage. Je vole de mes propres ailes vers l'Amour Pur et le Sanctuaire Éternel. »",
+    benevolentAffirmation: "« Mon esprit est un ciel infini, libre de tout nuage. Je vole de mes propres ailes vers l'Amour Pur et ma Souveraineté Retrouvée. »",
     unlockedRewardBadge: "Trophée Suprême : Grande Colombe d'Argent du Lâcher-Prise (Cycle 3 Accompli 🏆)"
   }
 ];

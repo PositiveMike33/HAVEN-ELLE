@@ -37,7 +37,7 @@ export const CYCLE_5_QUESTIONS: Healing100QuestionItem[] = [
     correctOptionIndex: 2, // C
     explanation: "La Correspondance démontre la cohérence fractale des plans d'existence : ordonner son microcosme intérieur ordonne spontanément son macrocosme relationnel.",
     reflectionPrompt: "Quel ordre et quelle beauté intérieure cultivez-vous pour qu'ils rayonnent dans votre monde extérieur ?",
-    benevolentAffirmation: "« En Dedans comme en Dehors : mon sanctuaire intérieur irradie une harmonie parfaite dans toute ma vie. »",
+    benevolentAffirmation: "« En Dedans comme en Dehors : ma souveraineté personnelle irradie une harmonie parfaite dans toute ma vie. »",
     unlockedRewardBadge: "Arcane II : Le Miroir d'Émeraude de Correspondance"
   },
   {
@@ -154,7 +154,7 @@ export const CYCLE_5_QUESTIONS: Healing100QuestionItem[] = [
       "Parce qu'il est interdit par la loi de parler de bien-être."
     ],
     correctOptionIndex: 1, // B
-    explanation: "La première citation du Kybalion rappelle la dignité du Verbe : préserver son sanctuaire sans gaspiller son énergie sacrée dans des débats stériles.",
+    explanation: "La première citation du Kybalion rappelle la dignité du Verbe : préserver sa souveraineté personnelle sans gaspiller son énergie sacrée dans des débats stériles.",
     reflectionPrompt: "Méditez sur la noblesse du silence souverain qui protège votre temple sacré des agitations extérieures.",
     benevolentAffirmation: "« Les lèvres de ma sagesse restent closes aux bruits du monde. Je repose dans la majesté du silence sacré. »",
     unlockedRewardBadge: "Arcane IX : Le Sceau des Lèvres Scellées"
@@ -166,7 +166,7 @@ export const CYCLE_5_QUESTIONS: Healing100QuestionItem[] = [
     theme: "Kybalion • Arcane X : L'Unité Primordiale dans LE TOUT",
     question: "En contemplant l'ensemble des 7 Lois Hermétiques intégrées dans votre chair et votre esprit, que réalisez-vous au seuil de l'Éveil ?",
     options: [
-      "Que je suis le Sanctuaire Vivant : libre, intouchable, reliée à la source inépuisable de vie et d'amour infini.",
+      "Que je suis la Souveraineté Vivante : libre, intouchable, reliée à la source inépuisable de vie et d'amour infini.",
       "Que je dois tout recommencer depuis le début avec angoisse.",
       "Que l'univers est mon ennemi juré."
     ],
@@ -190,7 +190,7 @@ export const CYCLE_5_QUESTIONS: Healing100QuestionItem[] = [
     correctOptionIndex: 2, // C
     explanation: "CONSÉCRATION SUPRÊME ET ÉTERNELLE ! Vous avez accompli l'intégralité des 111 NIVEAUX du Grand Cheminement de HAVEN-ELLE ! Les 5 Cycles sont conquis, les 11 Arcanes Hermétiques scellés dans votre âme. Vous êtes officiellement sacrée [ÉVEILLÉE] 👑 !",
     reflectionPrompt: "GRAVEZ VOTRE ULTIME PAROLE D'ÉVEILLÉE POUR L'ÉTERNITÉ :",
-    benevolentAffirmation: "« JE SUIS ÉVEILLÉE. JE SUIS SOUVERAINE. JE SUIS LE SANCTUAIRE VIVANT D'AMOUR, DE SAGESSE ET DE PAIX ÉTERNELLE. 👑✨ »",
+    benevolentAffirmation: "« JE SUIS ÉVEILLÉE. JE SUIS SOUVERAINE. J'AI REPRIS MA SOUVERAINETÉ PERSONNELLE DANS L'AMOUR, LA SAGESSE ET LA PAIX ÉTERNELLE. 👑✨ »",
     unlockedRewardBadge: "TROPHÉE LÉGENDAIRE SUPRÊME : [ÉVEILLÉ] — LE SACRE DE L'INITIÉE SOUVERAINE 👑🏆"
   }
 ];

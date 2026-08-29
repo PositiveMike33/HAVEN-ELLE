@@ -21,11 +21,11 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
     lastEmotionalState: 'Déterminée mais vigilante',
     soothingAnchors: ['Respiration 4-7-8', 'Lumière du matin', 'Penser à la sécurité de mes enfants'],
     keyVictories: [
-      'Création de votre Sanctuaire de Résilience HAVEN-ELLE',
+      'Engagement à Reprendre sa Souveraineté Personnelle HAVEN-ELLE',
       'Entrée dans le Cycle 1 : Définition de sa liste de valeurs & Regard bienveillant'
     ],
     notesFromHaven: [
-      'Bienvenue dans votre sanctuaire. Vous avancez pas à pas, à votre propre rythme.',
+      'Bienvenue dans votre espace pour reprendre votre souveraineté personnelle. Vous avancez pas à pas, à votre propre rythme.',
       'Votre réseau d’alerte est prêt, vos preuves sont protégées.',
       'Je veille sur vous sans interruption.',
     ],
@@ -33,9 +33,9 @@ export const INITIAL_COMPANION_PROFILE: CompanionMemoryProfile = {
   conversationsHistory: [
     {
       date: new Date().toISOString().split('T')[0],
-      topic: 'Accueil dans le Sanctuaire HAVEN-ELLE',
+      topic: 'Accueil • Reprendre sa Souveraineté Personnelle HAVEN-ELLE',
       emotionalState: 'Départ du parcours',
-      keyTakeaway: 'Engagement envers soi-même et début du cheminement vers la résilience.',
+      keyTakeaway: 'Engagement envers soi-même et début du cheminement vers la souveraineté personnelle et la résilience.',
     },
   ],
 };
@@ -277,7 +277,7 @@ export const CompanionMemoryService = {
       Focus : Pardon libérateur (rompre le poison de la rancœur pour se sauver soi-même), couper les cordes de l'emprise, pacification mémorielle.
     
     - 💫 CYCLE 4 (NIVEAUX 76 À 100) : "L'amour sans condition, Acceptation bienveillante & Guérison totale émotionnelle"
-      Focus : Sanctuaire d'amour inconditionnel, plénitude, paix inaltérable, joie pure, accomplissement total.
+      Focus : Souveraineté personnelle retrouvée, amour inconditionnel, plénitude, paix inaltérable, joie pure, accomplissement total.
 
     ÉTAT ACTUEL DE L'UTILISATRICE :
     - Niveau actuel : ${p.relationshipLevel} / 100

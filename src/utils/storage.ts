@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
   APPOINTMENTS: 'haven_appointments_v1',
   SETTINGS: 'haven_user_settings_v1',
   ONBOARDING: 'haven_onboarding_completed_v1',
+  INITIAL_EMERGENCY: 'haven_initial_emergency_setup_v1',
   ASSESSMENT: 'haven_confidential_assessment_v1',
   NIGHT_MODE: 'haven_night_mode_v1',
   UI_OPACITY: 'haven_ui_opacity_v1',
@@ -455,6 +456,22 @@ export const StorageService = {
   setOnboardingCompleted(completed: boolean): void {
     try {
       localStorage.setItem(STORAGE_KEYS.ONBOARDING, completed ? 'true' : 'false');
+    } catch {
+      // Ignore
+    }
+  },
+
+  isInitialEmergencyConfigured(): boolean {
+    try {
+      return localStorage.getItem(STORAGE_KEYS.INITIAL_EMERGENCY) === 'true';
+    } catch {
+      return false;
+    }
+  },
+
+  setInitialEmergencyConfigured(configured: boolean = true): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.INITIAL_EMERGENCY, configured ? 'true' : 'false');
     } catch {
       // Ignore
     }

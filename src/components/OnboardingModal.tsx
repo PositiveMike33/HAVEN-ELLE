@@ -31,7 +31,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
   const steps = [
     {
       id: 'welcome',
-      title: 'Bienvenue dans votre Sanctuaire',
+      title: 'Bienvenue pour Reprendre votre Souveraineté Personnelle',
       subtitle: 'Un espace 100% confidentiel, protecteur et pensé pour votre sécurité absolue.',
       icon: ShieldCheck,
       iconBg: 'bg-[#E5EAD9] text-[#5A5A40]',

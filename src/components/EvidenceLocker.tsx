@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   FolderLock, FilePlus, ShieldAlert, Upload, Eye, FileText, 
   Download, CheckCircle, Trash2, Calendar, Lock, Sparkles, RefreshCw,
-  Mic, FileAudio, ShieldCheck, Fingerprint, Play, Pause, Volume2
+  Mic, FileAudio, ShieldCheck, Fingerprint, Play, Pause, Volume2, Mail
 } from 'lucide-react';
 import { IncidentRecord, VoiceRecordingEvidence } from '../types';
 import { StorageService } from '../utils/storage';
@@ -12,9 +12,10 @@ import { CryptoVault } from '../utils/cryptoVault';
 interface EvidenceLockerProps {
   incidents: IncidentRecord[];
   onUpdateIncidents: (incidents: IncidentRecord[]) => void;
+  onOpenGmail?: (options?: { mode?: 'inbox' | 'compose' | 'sos' | 'dossier'; recipient?: string; subject?: string; body?: string }) => void;
 }
 
-export const EvidenceLocker: React.FC<EvidenceLockerProps> = ({ incidents, onUpdateIncidents }) => {
+export const EvidenceLocker: React.FC<EvidenceLockerProps> = ({ incidents, onUpdateIncidents, onOpenGmail }) => {
   const [activeSubTab, setActiveSubTab] = useState<'all_incidents' | 'voice_recorder'>('all_incidents');
   const [showAddModal, setShowAddModal] = useState(false);
   const [generatingStatement, setGeneratingStatement] = useState(false);
@@ -178,6 +179,18 @@ export const EvidenceLocker: React.FC<EvidenceLockerProps> = ({ incidents, onUpd
               )}
               Dossier Officiel (Docs)
             </button>
+
+            {onOpenGmail && (
+              <button
+                onClick={() => onOpenGmail({ mode: 'compose', subject: `[CONFIDENTIEL] Dossier de Preuves & Chronologie HAVEN-ELLE (${incidents.length} faits consignés)` })}
+                disabled={incidents.length === 0}
+                className="px-4 py-2.5 bg-[#EA4335] hover:bg-[#DC2626] disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs"
+                title="Transmettre le relevé chronologique des preuves par courriel Gmail confidentiel"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                Transmettre (Gmail)
+              </button>
+            )}
 
             <button
               onClick={() => setActiveSubTab('voice_recorder')}

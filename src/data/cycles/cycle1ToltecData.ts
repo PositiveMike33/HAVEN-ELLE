@@ -88,7 +88,7 @@ export const CYCLE_1_QUESTIONS: Healing100QuestionItem[] = [
     correctOptionIndex: 1, // B
     explanation: "L'auto-affirmation positive répétée active la neuroplasticité et renforce l'axe préfrontal de régulation émotionnelle.",
     reflectionPrompt: "Quelle déclaration de triomphe et d'espérance choisissez-vous pour bénir votre journée ?",
-    benevolentAffirmation: "« Par mes paroles conscientes et lumineuses, je bâtis un sanctuaire inviolable de paix et de renouveau. »",
+    benevolentAffirmation: "« Par mes paroles conscientes et lumineuses, je bâtis un espace inviolable de paix, de renouveau et de souveraineté personnelle. »",
     unlockedRewardBadge: "Trophée : Maîtrise de la Parole Impeccable (Accord 1 Validé)"
   },
 

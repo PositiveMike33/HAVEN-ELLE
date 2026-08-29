@@ -406,7 +406,7 @@ export const HealingRoadmap100Questions: React.FC<HealingRoadmap100QuestionsProp
                           <p className="text-xs md:text-sm font-semibold italic text-[#334155] leading-relaxed">
                             {pastAnswer?.reflection 
                               ? `« ${pastAnswer.reflection} »` 
-                              : "« J'ai ancré cette vérité dans mon sanctuaire intérieur avec gratitude et sérénité. »"}
+                              : "« J'ai ancré cette vérité pour reprendre ma souveraineté personnelle avec gratitude et sérénité. »"}
                           </p>
                         </div>
                       </div>

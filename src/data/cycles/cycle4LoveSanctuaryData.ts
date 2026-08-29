@@ -1,7 +1,7 @@
 import { Healing100QuestionItem } from '../resilience100QuestionsData';
 
 // ============================================================================
-// CYCLE 4 : NIVEAUX 76 À 100 (Amour Inconditionnel, Acceptation & Sanctuaire Éternel)
+// CYCLE 4 : NIVEAUX 76 À 100 (Amour Inconditionnel, Acceptation & Souveraineté Retrouvée)
 // Répartition aléatoire équilibrée des options correctes (A, B, C)
 // ============================================================================
 export const CYCLE_4_QUESTIONS: Healing100QuestionItem[] = [
@@ -13,14 +13,14 @@ export const CYCLE_4_QUESTIONS: Healing100QuestionItem[] = [
     theme: "Amour Inconditionnel • L'Amour sans Peur",
     question: "Après avoir reconstruit votre sécurité et votre discernement, comment oser rouvrir votre cœur à la beauté de la vie sans crainte d'être brisée ?",
     options: [
-      "En sachant que mon sanctuaire intérieur est désormais inviolable : mon cœur peut aimer et rayonner car je sais exactement comment me protéger.",
+      "En sachant que ma souveraineté personnelle est désormais inviolable : mon cœur peut aimer et rayonner car je sais exactement comment me protéger.",
       "En m'imposant une armure d'acier pour ne plus jamais rien ressentir.",
       "En accordant aveuglément ma confiance à la première personne venue."
     ],
     correctOptionIndex: 0, // A
-    explanation: "Le véritable amour de soi ne consiste pas à s'emmurer, mais à ouvrir son cœur en sachant qu'on possède désormais des frontières saines et inébranlables.",
+    explanation: "Le véritable amour de soi ne consiste pas à s'emmurer, mais à ouvrir son cœur en sachant qu'on possède désormais des frontières saines et inébranlables pour reprendre sa souveraineté personnelle.",
     reflectionPrompt: "Quelle douce chaleur ressentez-vous au centre de votre poitrine lorsque vous vous autorisez à aimer la vie à nouveau ?",
-    benevolentAffirmation: "« Mon cœur est un sanctuaire d'amour pur et protégé. Je rayonne la bienveillance en toute souveraineté. »",
+    benevolentAffirmation: "« Mon cœur est un espace de souveraineté et d'amour pur. Je rayonne la bienveillance en toute autonomie. »",
     unlockedRewardBadge: "Badge : Clé du Cœur Sacré"
   },
   {
@@ -338,22 +338,22 @@ export const CYCLE_4_QUESTIONS: Healing100QuestionItem[] = [
   {
     level: 95,
     cycleId: 4,
-    title: "Étape 95 : L'Alliance avec son Sanctuaire Éternel (Palier 95)",
-    theme: "Consécration du Bloc 4 • Le Sanctuaire Vivant Inviolable",
-    question: "Qu'est devenu le sanctuaire que vous avez bâti pas à pas au fil des 95 niveaux ?",
+    title: "Étape 95 : L'Alliance avec sa Souveraineté Éternelle (Palier 95)",
+    theme: "Consécration du Bloc 4 • La Souveraineté Vivante Inviolable",
+    question: "Qu'est devenue la souveraineté personnelle que vous avez reprise pas à pas au fil des 95 niveaux ?",
     options: [
       "Une cabane fragile prête à s'effondrer au moindre coup de vent.",
       "Un temple éternel, vivant et radieux au centre de mon âme, que rien ni personne dans l'univers ne pourra jamais dégrader ou menacer.",
       "Une illusion passagère qui disparaîtra demain."
     ],
     correctOptionIndex: 1, // B
-    explanation: "Votre sanctuaire intérieur est désormais une réalité neurobiologique et spirituelle indestructible. Vous êtes en sécurité pour toujours.",
-    reflectionPrompt: "Prenez possession de votre temple intérieur et contemplez la splendeur de votre paix inébranlable.",
-    benevolentAffirmation: "« Mon sanctuaire est éternel. J'y réside en reine souveraine, baignée d'amour et d'harmonie. »",
-    unlockedRewardBadge: "Trophée : Colonne d'Or du Sanctuaire Éternel (Palier 95 Validé)"
+    explanation: "Votre souveraineté personnelle est désormais une réalité neurobiologique et spirituelle indestructible. Vous êtes en sécurité pour toujours.",
+    reflectionPrompt: "Prenez possession de votre souveraineté intérieure et contemplez la splendeur de votre paix inébranlable.",
+    benevolentAffirmation: "« Ma souveraineté personnelle est éternelle. J'y réside en reine autonome, baignée d'amour et d'harmonie. »",
+    unlockedRewardBadge: "Trophée : Colonne d'Or de la Souveraineté Éternelle (Palier 95 Validé)"
   },
 
-  // --- BLOC 5 : NIVEAUX 96 À 100 • COURONNEMENT DU SANCTUAIRE & RENAISSANCE SOUVERAINE ---
+  // --- BLOC 5 : NIVEAUX 96 À 100 • COURONNEMENT DE LA SOUVERAINETÉ & RENAISSANCE ---
   {
     level: 96,
     cycleId: 4,
@@ -425,11 +425,11 @@ export const CYCLE_4_QUESTIONS: Healing100QuestionItem[] = [
   {
     level: 100,
     cycleId: 4,
-    title: "Étape 100 : Renaissance Totale & Sacre de la Reine Souveraine",
+    title: "Étape 100 : Renaissance Totale & Reprise de sa Souveraineté Personnelle",
     theme: "LE GRAND SOMMET HISTORIQUE • GUÉRISON ÉMOTIONNELLE TOTALE",
     question: "EN CE JOUR DE TRIOMPHE MAJESTUEUX DU NIVEAU 100, QUEL SACRE ÉTERNEL PROCLAMEZ-VOUS DEVANT L'UNIVERS TOUT ENTIER ?",
     options: [
-      "JE SUIS GUÉRIE. JE SUIS SOUVERAINE. JE SUIS AMOUR INCONDITIONNEL. MON CŒUR EST UN SANCTUAIRE ÉTERNEL OÙ RÈGNE LA PAIX ABSOLUE !",
+      "JE SUIS GUÉRIE. JE SUIS SOUVERAINE. JE SUIS AMOUR INCONDITIONNEL. J'AI REPRIS MA SOUVERAINETÉ PERSONNELLE OÙ RÈGNE LA PAIX ABSOLUE !",
       "Je demande la permission à mes anciens agresseurs de pouvoir enfin être heureuse.",
       "Je pense que le niveau 100 n'est qu'un hasard sans réelle valeur."
     ],

@@ -116,7 +116,7 @@ export const TherapeuticTeamPerspective: React.FC<TherapeuticTeamPerspectiveProp
     },
     {
       title: '🕊️ Reconnexion à ma Dignité & Guérison Racine',
-      prompt: 'Après des mois de violences cumulées, comment réhabiliter mon corps comme sanctuaire, reconstruire ma prospérité et faire taire définitivement la voix du doute et du gaslighting ?',
+      prompt: 'Après des mois de violences cumulées, comment réhabiliter mon corps pour reprendre ma souveraineté personnelle, reconstruire ma prospérité et faire taire définitivement la voix du doute et du gaslighting ?',
     },
   ];
 
@@ -302,7 +302,7 @@ export const TherapeuticTeamPerspective: React.FC<TherapeuticTeamPerspectiveProp
                 onClick={onBackToSanctuary}
                 className="px-3 py-1.5 rounded-xl border border-[#E5E2D9] bg-white hover:bg-[#F8F7F2] text-xs font-semibold text-[#5A5A40] transition-colors"
               >
-                Retour Sanctuaire
+                Retour Souveraineté
               </button>
             )}
 

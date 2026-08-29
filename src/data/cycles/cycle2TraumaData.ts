@@ -374,19 +374,19 @@ export const CYCLE_2_QUESTIONS: Healing100QuestionItem[] = [
   {
     level: 47,
     cycleId: 2,
-    title: "Étape 47 : Le Sanctuaire Intérieur Inviolable",
-    theme: "Espace Psychique • Construction du Sanctuaire Énergétique",
-    question: "Comment concevoir votre sanctuaire intérieur pour que personne ne puisse plus jamais envahir votre paix d'esprit ?",
+    title: "Étape 47 : Reprendre sa Souveraineté Personnelle Inviolable",
+    theme: "Espace Psychique • Construction de la Souveraineté Personnelle",
+    question: "Comment concevoir votre espace souverain pour reprendre votre souveraineté personnelle et préserver votre paix d'esprit ?",
     options: [
       "En visualisant en moi une forteresse de lumière pure dont je suis l'unique gardienne détenant la clé d'entrée.",
       "En attendant que les autres fassent attention à ne pas me déranger.",
       "En laissant la porte grande ouverte à quiconque passe sans demander de compte."
     ],
     correctOptionIndex: 0, // A
-    explanation: "Le sanctuaire intérieur est un espace symbolique et somatique où vous décidez souverainement qui et quoi a le droit d'entrer.",
-    reflectionPrompt: "Décrivez en quelques mots la beauté et la sécurité absolue de votre sanctuaire intime :",
-    benevolentAffirmation: "« Mon âme est un temple inviolable. Seules la paix, la dignité et la vérité franchissent mon seuil. »",
-    unlockedRewardBadge: "Badge : Clé du Sanctuaire d'Or"
+    explanation: "Reprendre sa souveraineté personnelle est un acte symbolique et somatique où vous décidez souverainement qui et quoi a le droit d'entrer.",
+    reflectionPrompt: "Décrivez en quelques mots la force et la sécurité absolue de votre souveraineté personnelle retrouvée :",
+    benevolentAffirmation: "« Mon âme est un temple inviolable. Seules la paix, la dignité et la vérité franchissent mon seuil pour honorer ma souveraineté. »",
+    unlockedRewardBadge: "Badge : Clé de la Souveraineté d'Or"
   },
   {
     level: 48,

@@ -15,6 +15,7 @@ interface TrustedContactsManagerProps {
   onUpdateContacts: (contacts: TrustedContact[]) => void;
   alerts: EmergencyAlert[];
   onAlertDispatched: (alert: EmergencyAlert) => void;
+  onOpenGmail?: (options?: { mode?: 'inbox' | 'compose' | 'sos' | 'dossier'; recipient?: string; subject?: string; body?: string }) => void;
 }
 
 export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
@@ -22,6 +23,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
   onUpdateContacts,
   alerts,
   onAlertDispatched,
+  onOpenGmail,
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showImportGoogleContacts, setShowImportGoogleContacts] = useState(false);
@@ -440,15 +442,16 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
         </div>
 
         {/* Quick Emergency Hotlines Bar */}
-        <div className="mt-6 pt-5 border-t border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div className="mt-6 pt-5 border-t border-white/15 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
           <a
             href="tel:911"
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
+            title="911 : Police, Ambulances & Pompiers (Urgence vitale)"
           >
-            <div className="w-8 h-7 rounded-lg bg-[#A64D4D]/40 text-white flex items-center justify-center font-bold text-xs">911</div>
-            <div>
-              <span className="font-bold block text-white">911 / Police & Secours</span>
-              <span className="text-[10px] text-[#E5EAD9]">Urgence vitale</span>
+            <div className="w-8 h-7 rounded-lg bg-[#A64D4D]/40 text-white flex items-center justify-center font-bold text-xs shrink-0">911</div>
+            <div className="min-w-0">
+              <span className="font-bold block text-white truncate">911 / Police</span>
+              <span className="text-[10px] text-[#E5EAD9] block truncate">Urgence vitale 24/7</span>
             </div>
           </a>
 
@@ -458,34 +461,60 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors cursor-pointer"
             title="Appeler Urgence Santé 811 (Info-Santé / Info-Social 24/7)"
           >
-            <div className="w-8 h-7 rounded-lg bg-[#2563EB]/40 text-white flex items-center justify-center font-bold text-xs">811</div>
-            <div>
-              <span className="font-bold block text-white">811 / Urgence Santé</span>
-              <span className="text-[10px] text-[#E5EAD9] truncate max-w-[130px] block">
-                Info-Santé & Social 24/7
+            <div className="w-8 h-7 rounded-lg bg-[#2563EB]/40 text-white flex items-center justify-center font-bold text-xs shrink-0">811</div>
+            <div className="min-w-0">
+              <span className="font-bold block text-white truncate">811 / Santé</span>
+              <span className="text-[10px] text-[#E5EAD9] block truncate">
+                Info-Santé & Social
               </span>
             </div>
           </a>
 
           <a
-            href="tel:3919"
+            href="tel:988"
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
+            title="988 : Ligne d'urgence en cas de crise et de prévention du suicide. Service pancanadien gratuit disponible 24/7 par appel ou texto pour toute personne en détresse suicidaire ou en crise émotionnelle intense."
           >
-            <div className="w-7 h-7 rounded-lg bg-[#8A9A5B]/50 text-white flex items-center justify-center font-bold">3919</div>
-            <div>
-              <span className="font-bold block text-white">Femmes Info</span>
-              <span className="text-[10px] text-[#E5EAD9]">Gratuit, anonyme 24/7</span>
+            <div className="w-8 h-7 rounded-lg bg-[#9333EA]/40 text-white flex items-center justify-center font-bold text-xs shrink-0">988</div>
+            <div className="min-w-0">
+              <span className="font-bold block text-white truncate">988 / Crise</span>
+              <span className="text-[10px] text-[#E5EAD9] block truncate">Prévention suicide 24/7</span>
             </div>
           </a>
 
           <a
-            href="tel:15"
+            href="tel:18003639010"
             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
+            title="1 800 363-9010 : SOS Violence Conjugale — Assistance, orientation et mise en sécurité d'urgence (hébergement) pour les victimes de violence conjugale."
           >
-            <div className="w-7 h-7 rounded-lg bg-white/15 text-[#E5EAD9] flex items-center justify-center font-bold">15</div>
-            <div>
-              <span className="font-bold block text-white">SAMU Médical</span>
-              <span className="text-[10px] text-[#E5EAD9]">Blessures & Urgences</span>
+            <div className="w-8 h-7 rounded-lg bg-[#E11D48]/40 text-white flex items-center justify-center font-bold text-[10px] shrink-0">SOS</div>
+            <div className="min-w-0">
+              <span className="font-bold block text-white truncate">1 800 363-9010</span>
+              <span className="text-[10px] text-[#E5EAD9] block truncate">SOS Violence Conjugale</span>
+            </div>
+          </a>
+
+          <a
+            href="tel:18889339007"
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
+            title="1 888 933-9007 : Ligne-ressource provinciale pour les victimes d'agression sexuelle — Soutien d'urgence, écoute et orientation médicale/légale immédiate."
+          >
+            <div className="w-8 h-7 rounded-lg bg-[#D97706]/40 text-white flex items-center justify-center font-bold text-[10px] shrink-0">A.S.</div>
+            <div className="min-w-0">
+              <span className="font-bold block text-white truncate">1 888 933-9007</span>
+              <span className="text-[10px] text-[#E5EAD9] block truncate">Agressions sexuelles 24/7</span>
+            </div>
+          </a>
+
+          <a
+            href="tel:18006686868"
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2.5 transition-colors"
+            title="1 800 668-6868 (ou texto 686868) : Jeunesse, J'écoute — Intervention d'urgence psychosociale pour les enfants et adolescents."
+          >
+            <div className="w-8 h-7 rounded-lg bg-[#059669]/40 text-white flex items-center justify-center font-bold text-[10px] shrink-0">6868</div>
+            <div className="min-w-0">
+              <span className="font-bold block text-white truncate">1 800 668-6868</span>
+              <span className="text-[10px] text-[#E5EAD9] block truncate">Jeunesse, J'écoute (txt 686868)</span>
             </div>
           </a>
         </div>
@@ -561,6 +590,7 @@ export const TrustedContactsManager: React.FC<TrustedContactsManagerProps> = ({
                 onToggleActive={handleToggleActive}
                 onDelete={handleDelete}
                 onEditFull={handleOpenEdit}
+                onOpenGmail={onOpenGmail}
                 onSave={(updated) => {
                   const newContacts = contacts.map(c => c.id === updated.id ? updated : c);
                   onUpdateContacts(newContacts);
@@ -840,8 +870,9 @@ const ContactCard: React.FC<{
   onToggleActive: (id: string) => void;
   onDelete: (id: string) => void;
   onEditFull?: (contact: TrustedContact) => void;
+  onOpenGmail?: (options?: { mode?: 'inbox' | 'compose' | 'sos' | 'dossier'; recipient?: string; subject?: string; body?: string }) => void;
   onSave: (updatedContact: TrustedContact) => void;
-}> = ({ contact, tierInfo, onToggleActive, onDelete, onEditFull, onSave }) => {
+}> = ({ contact, tierInfo, onToggleActive, onDelete, onEditFull, onOpenGmail, onSave }) => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editForm, setEditForm] = React.useState({
     name: contact.name,
@@ -990,9 +1021,21 @@ const ContactCard: React.FC<{
                 <span className="flex items-center gap-1.5 text-[#5A5A40] font-bold">
                   <Mail className="w-3.5 h-3.5 text-[#8A9A5B]" /> Email :
                 </span>
-                <a href={`mailto:${contact.email}`} className="font-mono text-black font-bold truncate max-w-[180px] hover:underline">
-                  {contact.email}
-                </a>
+                <div className="flex items-center gap-1">
+                  <a href={`mailto:${contact.email}`} className="font-mono text-black font-bold truncate max-w-[150px] hover:underline">
+                    {contact.email}
+                  </a>
+                  {onOpenGmail && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenGmail({ mode: 'compose', recipient: contact.email })}
+                      className="p-1 rounded-md text-[#EA4335] hover:bg-[#FEF2F2] border border-[#FECACA] transition-colors"
+                      title="Rédiger un courriel Gmail sécurisé"
+                    >
+                      <Mail className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
             {contact.secretCodeWord && (

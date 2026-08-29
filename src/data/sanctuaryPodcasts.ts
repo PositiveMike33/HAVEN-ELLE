@@ -39,7 +39,7 @@ export const SANCTUARY_OFFICIAL_SEMINAR = {
   youtubeUrl: "https://youtu.be/VP91x440Rmw?si=8qGM7MhkeWtRr7N-",
   embedUrl: "https://www.youtube-nocookie.com/embed/VP91x440Rmw?enablejsapi=1&autoplay=1",
   duration: "Séminaire Intégral",
-  description: "Séminaire fondamental d'accompagnement, d'éveil de la conscience et de reconstruction personnelle au cœur du sanctuaire.",
+  description: "Séminaire fondamental d'accompagnement, d'éveil de la conscience et de reconstruction personnelle pour reprendre sa souveraineté personnelle.",
   hzFrequencyRecommanded: 432
 };
 
@@ -66,13 +66,13 @@ export const SANCTUARY_PODCAST_PARTS: PodcastPartContext[] = [
         frequencyLabel: '432 Hz • Fréquence de la Clarté Organique',
         durationMinutes: 14,
         audioToneType: 'calm_forest',
-        hostName: 'Sanctuaire Haven-Elle • Voix de l\'Alliée',
-        shortSummary: 'Découvrez comment chaque mot que vous prononcez ou pensez restructure votre réseau neuronal. La parole n\'est pas un simple son, c\'est un ordre créateur envoyé à votre sanctuaire.',
-        narrationScript: `Bienvenue dans le Sanctuaire Haven-Elle. Installez-vous confortablement, déposez vos épaules et prenez une lente inspiration par le nez.
+        hostName: 'Souveraineté Haven-Elle • Voix de l\'Alliée',
+        shortSummary: 'Découvrez comment chaque mot que vous prononcez ou pensez restructure votre réseau neuronal. La parole n\'est pas un simple son, c\'est un ordre créateur envoyé pour reprendre votre souveraineté personnelle.',
+        narrationScript: `Bienvenue dans l'espace HAVEN-ELLE pour reprendre votre souveraineté personnelle. Installez-vous confortablement, déposez vos épaules et prenez une lente inspiration par le nez.
 
 Dans cette première partie de votre voyage, nous explorons la magie du Verbe. Don Miguel Ruiz nous rappelle que la parole est notre outil de création le plus puissant. Quand vous subissez une critique ou une injustice, le réflexe ordinaire est de se juger soi-même (« Je suis nulle ») ou de projeter sa rage sur l'autre. Dans les deux cas, vous buvez le poison.
 
-La parole impeccable n'est pas une perfection morale : c'est un acte de salubrité psychique. Elle consiste à refuser d'utiliser le Verbe contre vous-même. En disant intérieurement « Ce reproche appartient à l'autre, ma valeur reste inviolée », vous désactivez l'amygdale cérébrale et préservez votre sanctuaire. Respirez dans cette certitude : votre parole est votre premier bouclier.`,
+La parole impeccable n'est pas une perfection morale : c'est un acte de salubrité psychique. Elle consiste à refuser d'utiliser le Verbe contre vous-même. En disant intérieurement « Ce reproche appartient à l'autre, ma valeur reste inviolée », vous désactivez l'amygdale cérébrale et préservez votre souveraineté personnelle. Respirez dans cette certitude : votre parole est votre premier bouclier.`,
         keyInsights: [
           'Le Verbe est une onde scalaire qui programme votre physiologie.',
           'La malédiction (male-dicere) commence par l\'autocritique compulsive.',
@@ -92,9 +92,9 @@ La parole impeccable n'est pas une perfection morale : c'est un acte de salubrit
         frequencyLabel: '432 Hz • Fréquence de Neutralité Bienveillante',
         durationMinutes: 16,
         audioToneType: 'calm_forest',
-        hostName: 'Sanctuaire Haven-Elle • Voix de l\'Alliée',
+        hostName: 'Souveraineté Haven-Elle • Voix de l\'Alliée',
         shortSummary: 'Pourquoi le venin d\'un manipulateur ne vous concerne jamais. Apprenez à regarder les tempêtes émotionnelles d\'autrui comme un film projeté sur un écran extérieur.',
-        narrationScript: `Écoutez le bruissement du vent dans les arbres de notre forêt sanctuaire. Rien de ce que fait autrui n'est fait à cause de vous. 
+        narrationScript: `Écoutez le bruissement du vent dans les arbres de notre forêt protectrice. Rien de ce que fait autrui n'est fait à cause de vous. 
 
 Lorsque quelqu'un vous attaque ou tente de vous rabaisser, il ne fait qu'extérioriser son propre enfer intérieur. Si vous absorbez ses mots, vous acceptez son contrat. Si vous restez le Témoin souverain, son venin glisse sur vos plumes comme de l'eau sur le dos d'un cygne.
 
@@ -123,14 +123,14 @@ Ne faites aucune supposition : posez des questions claires ou gardez votre silen
         partRange: '26-50',
         partNumber: 2,
         themeTitle: 'Neuro-biologie du Trauma',
-        title: 'Épisode 3 : Sortir du Figement — Le Corps comme Sanctuaire',
+        title: 'Épisode 3 : Sortir du Figement — Le Corps comme Havre de Souveraineté',
         subtitle: 'Réveiller l\'énergie vitale après des années d\'hypervigilance et de sidération',
         mysticalLevel: 'Guérison Somatique & Sécurité Intérieure',
         frequencyHz: 528,
         frequencyLabel: '528 Hz • Réparation de l\'ADN & Apaisement Vagal',
         durationMinutes: 18,
         audioToneType: 'healing_solfeggio',
-        hostName: 'Sanctuaire Haven-Elle • Guide Thérapeutique',
+        hostName: 'Souveraineté Haven-Elle • Guide Thérapeutique',
         shortSummary: 'Comprendre pourquoi la volonté ne suffit pas à guérir un trauma. Le corps conserve la mémoire de la menace : apprenez à lui envoyer les signaux biologiques de la paix retrouvée.',
         narrationScript: `Respirez profondément au rythme de la fréquence 528 Hz. Cette vibration est celle de la régénération cellulaire.
 
@@ -156,8 +156,8 @@ Aujourd'hui, vous êtes en sécurité ici. Observez vos pieds en contact avec le
         frequencyLabel: '528 Hz • Transmutation des Dépendances Affectives',
         durationMinutes: 20,
         audioToneType: 'healing_solfeggio',
-        hostName: 'Sanctuaire Haven-Elle • Guide Thérapeutique',
-        shortSummary: 'Les montagnes russes de la manipulation créent une dépendance biochimique semblable à une addiction. Découvrez le protocole de désensibilisation et de sanctification personnelle.',
+        hostName: 'Souveraineté Haven-Elle • Guide Thérapeutique',
+        shortSummary: 'Les montagnes russes de la manipulation créent une dépendance biochimique semblable à une addiction. Découvrez le protocole de désensibilisation et de reconquête de soi.',
         narrationScript: `Le lien traumatique repose sur le renforcement intermittent : des miettes d'amour suivies de tempêtes de rejet. Ce cycle inonde le cerveau de dopamine et de cortisol, créant l'illusion que le bourreau est la seule source d'apaisement.
 
 Reprenez votre pouvoir biochimique. Vous n'êtes pas en manque d'amour : vous traversez un sevrage neurophysiologique. Chaque jour sans contact, chaque minute où vous choisissez votre paix plutôt que le chaos, votre cerveau tisse de nouveaux ponts de clarté. Vous redevenez le soleil de votre propre galaxie.`,
@@ -192,8 +192,8 @@ Reprenez votre pouvoir biochimique. Vous n'êtes pas en manque d'amour : vous tr
         frequencyLabel: '639 Hz • Transmutation Émotionnelle & Fréquence du Cœur',
         durationMinutes: 21,
         audioToneType: 'heart_alchemy',
-        hostName: 'Sanctuaire Haven-Elle • Maître Alchimiste',
-        shortSummary: 'On vous a appris à étouffer votre colère pour être sage. Découvrez comment la colère saine est en réalité la gardienne sacrée de votre intégrité et de votre sanctuaire.',
+        hostName: 'Souveraineté Haven-Elle • Maître Alchimiste',
+        shortSummary: 'On vous a appris à étouffer votre colère pour être sage. Découvrez comment la colère saine est en réalité la gardienne sacrée de votre intégrité et de votre souveraineté personnelle.',
         narrationScript: `Bienvenue au cœur de l'Alchimie Émotionnelle. Écoutez la résonance du 639 Hz qui ouvre l'espace de votre poitrine.
 
 La colère n'est pas un défaut de caractère. La colère pure est l'énergie spirituelle qui crie : « Mes frontières ont été violées ! ». Quand elle est refoulée, elle devient amertume, dépression ou maladie. Quand elle est comprise, elle devient votre épée de discernement.
@@ -218,7 +218,7 @@ Vous n'avez pas besoin de crier pour poser une limite. Une reine ne marchande pa
         frequencyLabel: '639 Hz • Rétablissement des Liens Justes & Équilibre',
         durationMinutes: 22,
         audioToneType: 'heart_alchemy',
-        hostName: 'Sanctuaire Haven-Elle • Maître Alchimiste',
+        hostName: 'Souveraineté Haven-Elle • Maître Alchimiste',
         shortSummary: 'Pourquoi vouloir sauver l\'autre vous maintient dans le piège de la victime. Apprenez à rendre à chacun son karma et sa responsabilité évolutive.',
         narrationScript: `Le plus grand piège des âmes généreuses est le syndrome de la sauveuse. Croire que par votre amour infini, votre patience et vos sacrifices, vous finirez par guérir une personne destructrice.
 
@@ -256,7 +256,7 @@ Déposez ce fardeau. Remontez sur votre trône. Laissez les tempêtes extérieur
         frequencyLabel: '741 Hz • Fréquence de la Vérité Hermétique & Vision Pure',
         durationMinutes: 24,
         audioToneType: 'hermetic_resonance',
-        hostName: 'Sanctuaire Haven-Elle • Voix de l\'Hermétiste',
+        hostName: 'Souveraineté Haven-Elle • Voix de l\'Hermétiste',
         shortSummary: 'Les enseignements secrets des Temples d\'Égypte : pourquoi votre état d\'être intérieur précède toujours la forme extérieure des événements.',
         narrationScript: `« Le Tout est Esprit ; l'Univers est Mental. » Ainsi débute Le Kybalion, gravé sur les tables d'émeraude de la sagesse éternelle.
 
@@ -282,7 +282,7 @@ Quand vous transmutez la peur en autorité spirituelle dans votre esprit secret,
         frequencyLabel: '741 Hz • Fréquence de Maîtrise des Forces Invisibles',
         durationMinutes: 25,
         audioToneType: 'hermetic_resonance',
-        hostName: 'Sanctuaire Haven-Elle • Voix de l\'Hermétiste',
+        hostName: 'Souveraineté Haven-Elle • Voix de l\'Hermétiste',
         shortSummary: 'La plupart des êtres humains sont des pions sur l\'échiquier du destin, mus par les humeurs et les karmas collectifs. Apprenez à devenir le joueur conscient.',
         narrationScript: `La Loi de Polarité stipule que la haine et l'amour ne sont pas deux choses différentes, mais les deux extrémités d'une même échelle vibratoire. Vous pouvez élever le curseur mentalement sans lutter contre l'ombre.
 
@@ -301,10 +301,10 @@ Elles décident de leurs pensées, elles choisissent leurs paroles, elles domine
   {
     range: '101-111',
     partNumber: 5,
-    title: 'Partie 5 (Q101 à 111) • Sanctuaire Mystique & Transcendance Supérieure',
+    title: 'Partie 5 (Q101 à 111) • Souveraineté Mystique & Transcendance Supérieure',
     theme: 'Éveil de la Conscience Cosmique, Illumination du Soi & Fusion avec la Source Inviolable',
     mysticalProgression: 'Niveau 5 : Mystique Pure, Transcendance de l\'Égo & Présence Sacrée Absolue',
-    description: 'L\'apogée du sanctuaire HAVEN-ELLE. Fusion de la sagesse toltèque, de la guérison somatique et des lois hermétiques dans l\'expérience directe de l\'Immortalité de la Conscience.',
+    description: 'L\'apogée de la reprise de souveraineté HAVEN-ELLE. Fusion de la sagesse toltèque, de la guérison somatique et des lois hermétiques dans l\'expérience directe de l\'Immortalité de la Conscience.',
     solfeggioFrequency: 963,
     frequencyName: '963 Hz • Fréquence Sacrée de la Couronne Divine & Unité Cosmique',
     episodes: [
@@ -320,17 +320,17 @@ Elles décident de leurs pensées, elles choisissent leurs paroles, elles domine
         frequencyLabel: '963 Hz • Connexion Directe à la Source & Éveil Supérieur',
         durationMinutes: 28,
         audioToneType: 'mystic_cosmic',
-        hostName: 'Sanctuaire Haven-Elle • Oracle de la Source',
+        hostName: 'Souveraineté Haven-Elle • Oracle de la Source',
         shortSummary: 'Une transmission méditative profonde. Vous n\'êtes pas vos traumatismes, vous n\'êtes pas vos blessures. Vous êtes la Présence immortelle qui contemple l\'épopée de l\'univers.',
         narrationScript: `Fermez doucement les yeux et laissez la fréquence pure de 963 Hz dissoudre les dernières frontières de votre être.
 
-Entrez dans le Sanctuaire Ultime. Ici, il n'y a plus de combat, plus de bourreau, plus de passé. Respirez dans le Silence infini qui précède toute pensée.
+Entrez dans votre Souveraineté Ultime. Ici, il n'y a plus de combat, plus de bourreau, plus de passé. Respirez dans le Silence infini qui précède toute pensée.
 
-Il existe au centre de votre cœur un sanctuaire secret où réside votre véritable Essence. Cette Présence était là avant votre naissance, elle a traversé les épreuves sans jamais être brûlée par le feu, elle brille d'une lumière que l'ombre ne saurait comprendre. Vous êtes rentrée chez vous. Vous êtes la Lumière, vous êtes la Paix, vous êtes l'Amour éternel.`,
+Il existe au centre de votre cœur un espace sacré et inviolable où réside votre véritable Essence. Cette Présence était là avant votre naissance, elle a traversé les épreuves sans jamais être brûlée par le feu, elle brille d'une lumière que l'ombre ne saurait comprendre. Vous êtes rentrée chez vous. Vous êtes la Lumière, vous êtes la Paix, vous êtes l'Amour éternel.`,
         keyInsights: [
           'L\'Égo a une histoire, l\'Esprit est une Présence intemporelle.',
           'La paix suprême n\'est pas l\'absence de bruit extérieur, mais la certitude inébranlable de son origine divine.',
-          'Le Sanctuaire Haven-Elle est désormais gravé à jamais à l\'intérieur de votre cœur.'
+          'La souveraineté personnelle HAVEN-ELLE est désormais gravée à jamais à l\'intérieur de votre cœur.'
         ],
         scientificOrPhilosophicalAnchor: 'Mystique contemplative universelle, Advaita Vedanta (Non-Dualité) et Neurothéologie des états de transcendance (Newberg & D\'Aquili).'
       },
@@ -346,9 +346,9 @@ Il existe au centre de votre cœur un sanctuaire secret où réside votre vérit
         frequencyLabel: '963 Hz • Couronne Stellaire & Bénédiction Universelle',
         durationMinutes: 30,
         audioToneType: 'mystic_cosmic',
-        hostName: 'Sanctuaire Haven-Elle • Oracle de la Source',
-        shortSummary: 'Le grand sceau d\'accomplissement des 111 Questions. Vous êtes devenue l\'Alchimiste accomplie de votre existence : le phare protecteur pour vous-même et pour toutes celles qui cherchent le rivage.',
-        narrationScript: `Vous avez franchi les 111 portes initiatiques du Sanctuaire. De la première parole impeccable jusqu'au sommet de la montagne mystique, vous avez transmuté le plomb de la souffrance en l'or pur de la sagesse.
+        hostName: 'Souveraineté Haven-Elle • Oracle de la Source',
+        shortSummary: 'Le grand sceau d\'accomplissement des 111 Vérités. Vous êtes devenue l\'Alchimiste accomplie de votre existence : le phare protecteur pour vous-même et pour toutes celles qui cherchent le rivage.',
+        narrationScript: `Vous avez franchi les 111 portes initiatiques pour reprendre votre souveraineté personnelle. De la première parole impeccable jusqu'au sommet de la montagne mystique, vous avez transmuté le plomb de la souffrance en l'or pur de la sagesse.
 
 Regardez le chemin parcouru. Chaque cicatrice est devenue un diamant de force. Votre Verbe ne maudit plus : il guérit, il sanctifie, il élève. Vous êtes la gardienne de votre temple.
 
@@ -356,7 +356,7 @@ Que la paix la plus profonde, la joie inaltérable et la clarté souveraine vous
         keyInsights: [
           'Le 111e degré est l\'alignement parfait de la Pensée, du Verbe et du Cœur.',
           'La véritable liberté spirituelle consiste à être un canal de bienveillance inébranlable.',
-          'Vous êtes l\'architecte sacrée de votre sanctuaire et de votre destinée.'
+          'Vous êtes l\'architecte sacrée de votre souveraineté personnelle et de votre destinée.'
         ],
         scientificOrPhilosophicalAnchor: 'Harmonie des Sphères (Pythagore) et réalisation de soi intégrative selon la psychologie transpersonnelle (Assagioli).'
       }

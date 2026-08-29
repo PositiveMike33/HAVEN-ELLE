@@ -11,6 +11,7 @@ interface JusticeDossierProps {
   onNavigateToRelaxation: () => void;
   onNavigateToContacts: () => void;
   onOpenDetailedAssessment: () => void;
+  onOpenGmail?: (options?: { mode?: 'inbox' | 'compose' | 'sos' | 'dossier'; recipient?: string; subject?: string; body?: string }) => void;
 }
 
 export const JusticeDossier: React.FC<JusticeDossierProps> = ({
@@ -19,6 +20,7 @@ export const JusticeDossier: React.FC<JusticeDossierProps> = ({
   onNavigateToRelaxation,
   onNavigateToContacts,
   onOpenDetailedAssessment,
+  onOpenGmail,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'safety_plan' | 'legal' | 'evidence'>('safety_plan');
 
@@ -75,6 +77,7 @@ export const JusticeDossier: React.FC<JusticeDossierProps> = ({
           <EvidenceLocker
             incidents={incidents}
             onUpdateIncidents={onUpdateIncidents}
+            onOpenGmail={onOpenGmail}
           />
         )}
       </div>

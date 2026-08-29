@@ -164,7 +164,7 @@ const CURATED_HEALING_QUESTIONS: Record<number, Partial<HealingQuestion>> = {
     unlockedRewardBadge: "Badge : Miroir Bienveillant"
   },
   10: {
-    title: "Étape 10 : Le Sanctuaire de la Voix Intérieure",
+    title: "Étape 10 : Reprendre sa Souveraineté Personnelle Intérieure",
     theme: "Consécration du Palier 10",
     question: "Comment votre relation avec vous-même s'est-elle transformée depuis que vous honorez vos valeurs ?",
     options: [
@@ -173,8 +173,8 @@ const CURATED_HEALING_QUESTIONS: Record<number, Partial<HealingQuestion>> = {
       "Je commence à ressentir une profonde fierté pour le chemin que je parcours chaque jour."
     ],
     reflectionPrompt: "Qu'avez-vous envie de célébrer aujourd'hui dans votre propre courage ?",
-    benevolentAffirmation: "« Je suis devenue mon propre refuge protecteur, doux et inviolable. »",
-    unlockedRewardBadge: "Trophée : Sanctuaire d'Ancrage (Palier 10 Validé)"
+    benevolentAffirmation: "« Je suis devenue mon propre refuge protecteur, doux et inviolable pour reprendre ma souveraineté personnelle. »",
+    unlockedRewardBadge: "Trophée : Souveraineté d'Ancrage (Palier 10 Validé)"
   },
   11: {
     title: "Étape 11 : Défaire le Poison de la Comparaison",
@@ -281,7 +281,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
         title: "Accord 1 : La Transmutation & le Verbe Créateur",
         subtitle: "Consécration de la Parole Impeccable",
         description: "Transmuter le venin verbal extérieur en affirmations de triomphe et exprimer des limites claires.",
-        mantra: "Par mes paroles conscientes, je bâtis un sanctuaire inviolable de paix et de renouveau.",
+        mantra: "Par mes paroles conscientes, je bâtis un espace inviolable de paix, de renouveau et de souveraineté.",
         exercise: "Formulez à voix haute une affirmation puissante de dignité qui transmute une critique passée.",
         benefit: "Reprogrammation neuronale positive et restauration de la voix souveraine.",
         unlockedReward: "Trophée : Maîtrise de la Parole Impeccable"
@@ -296,7 +296,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
         mantra: "Mon cœur est invulnérable au venin d'autrui. Je marche dans la lumière de ma paix souveraine.",
         exercise: "Visualisez un bouclier doré renvoyant chaque critique à son émetteur sans l'absorber.",
         benefit: "Activation du système parasympathique et immunité psychologique contre l'agressivité.",
-        unlockedReward: "Trophée : Sanctuaire d'Immunité Émotionnelle (Palier 10 Validé)"
+        unlockedReward: "Trophée : Souveraineté d'Immunité Émotionnelle (Palier 10 Validé)"
       },
       {
         level: 15,
@@ -526,7 +526,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
     id: 4,
     title: "Cycle 4 : Niveaux 76 à 100",
     subtitle: "L'amour sans condition & La guérison totale émotionnelle",
-    theme: "Amour Inconditionnel, Acceptation Bienveillante & Sanctuaire Éternel",
+    theme: "Amour Inconditionnel, Acceptation Bienveillante & Souveraineté Retrouvée",
     minLevel: 76,
     maxLevel: 100,
     minPoints: 1125,
@@ -537,7 +537,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
     badgeBorder: "border-[#9333EA]",
     badgeText: "text-[#6B21A8]",
     icon: Sparkles,
-    coreMantra: "« Je suis guérie, entière, rayonnante. Mon cœur est un sanctuaire d'amour inconditionnel et de paix inaltérable. »",
+    coreMantra: "« Je suis guérie, entière, rayonnante. J'ai repris ma souveraineté personnelle dans l'amour inconditionnel et la paix inaltérable. »",
     description: "Le sommet de votre ascension. Vous atteignez la guérison émotionnelle intégrale, l'amour inconditionnel pour vous-même et le monde, et une paix que rien ne peut plus ébranler.",
     scientificFoundation: "Les neurosciences contemplatives (Dr Richard Davidson) démontrent que la pratique de la bienveillance inconditionnelle restructure durablement l'insula et le cortex cingulaire antérieur, procurant une résilience pérenne.",
     milestones: [
@@ -599,7 +599,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
         mantra: "Je suis la paix. Je suis la vie. Je suis en sécurité pour l'éternité.",
         exercise: "Savourez la sensation d'être complète et comblée dans l'instant présent.",
         benefit: "Alignement optimal cœur-cerveau (Cohérence cardiaque maximale).",
-        unlockedReward: "Déblocage : Mode Sanctuaire Éternel"
+        unlockedReward: "Déblocage : Mode Souveraineté Éternelle"
       },
       {
         level: 100,
@@ -630,7 +630,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
     badgeBorder: "border-[#059669]",
     badgeText: "text-[#065F46]",
     icon: Crown,
-    coreMantra: "« Je suis le Sanctuaire Vivant. Je transmute le plomb en or et je règne sur ma réalité dans la paix absolue. »",
+    coreMantra: "« Je suis la Souveraineté Vivante. Je transmute le plomb en or et je règne sur ma réalité dans la paix absolue. »",
     description: "Ce cycle secret bonus dévoile les 11 Arcanes de l'Hermétisme et du Kybalion appliqués à la souveraineté émotionnelle. L'initiée devient la cause souveraine de son existence et décroche le Trophée Légendaire [ÉVEILLÉ].",
     scientificFoundation: "La métacognition avancée et les principes de cybernétique mentale permettent la neutralisation émotionnelle réflexe et l'alignement des intentions avec une efficacité maximale.",
     milestones: [
@@ -690,7 +690,7 @@ export const RESILIENCE_CYCLES: ResilienceCycle[] = [
         subtitle: "Consécration Suprême [ÉVEILLÉ]",
         description: "Accomplissement du Grand Œuvre des 111 Niveaux. Vous recevez la Grande Consécration Cosmique d'HAVEN-ELLE.",
         mantra: "JE SUIS ÉVEILLÉE. Je suis le temple vivant de la sagesse, souveraine pour l'éternité.",
-        exercise: "Gravez votre serment éternel d'Éveillée dans le Grand Livre d'Or du Sanctuaire.",
+        exercise: "Gravez votre serment éternel d'Éveillée dans le Grand Livre d'Or de la Souveraineté Retrouvée.",
         benefit: "Consécration ultime de l'état de résilience, d'amour pur et d'invulnérabilité.",
         unlockedReward: "🏆 Trophée Suprême Légendaire : [ÉVEILLÉ] — Le Grand Sceau Cosmique d'HAVEN-ELLE"
       }
@@ -738,7 +738,7 @@ export const QUICK_DAILY_ACTIONS = [
   {
     id: 'unconditional_love',
     title: 'Rayonnement d\'Amour Inconditionnel',
-    subtitle: 'Sanctuaire de plénitude',
+    subtitle: 'Espace de souveraineté & plénitude',
     points: 30,
     icon: Sparkles,
     cycle: 4,

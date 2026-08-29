@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { TrustedContact, EmergencyAlert, LocationData, AlertMode } from '../types';
 import { StorageService } from '../utils/storage';
+import { sendEmergencySosEmail } from '../utils/gmailService';
 
 interface AlertTriggerModalProps {
   contacts: TrustedContact[];
@@ -175,6 +176,20 @@ export const AlertTriggerModal: React.FC<AlertTriggerModalProps> = ({
       });
     } catch (e) {
       console.warn('Backend alert post error, saved locally:', e);
+    }
+
+    // Attempt direct Gmail SOS transmission to contacts with an email
+    try {
+      const emailContacts = activeContacts.filter(c => c.email);
+      for (const contact of emailContacts) {
+        await sendEmergencySosEmail(
+          contact,
+          location ? { lat: location.latitude, lng: location.longitude } : null,
+          customMessage
+        );
+      }
+    } catch (e) {
+      console.warn('Gmail SOS transmission warning:', e);
     }
 
     // Persist to local secure storage

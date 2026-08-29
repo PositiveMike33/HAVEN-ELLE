@@ -891,12 +891,12 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="font-black text-sm">Radio Sanctuaire HAVEN-ELLE</h4>
+                      <h4 className="font-black text-sm">Radio Souveraineté HAVEN-ELLE</h4>
                       <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#15803D]/20 text-[#15803D] border border-[#15803D]/40">
                         {currentPart.frequencyName.split('•')[0].trim()}
                       </span>
                     </div>
-                    <p className="text-[11px] opacity-75 font-medium">Podcasts Contextuels & Fréquences Sacrées (1 à 111)</p>
+                    <p className="text-[11px] opacity-75 font-medium">Podcasts Contextuels & Fréquences pour Reprendre sa Souveraineté (1 à 111)</p>
                   </div>
                 </div>
                 <button
@@ -1270,7 +1270,7 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
                   <div className="p-3.5 rounded-2xl bg-black/5 border border-inherit/25 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase tracking-wider text-[#15803D]">
-                        Transmission Vocale du Sanctuaire
+                        Transmission Vocale • Souveraineté Personnelle
                       </span>
                       <span className="text-[10px] opacity-75 font-mono">
                         {selectedEpisode.hostName}
@@ -1399,7 +1399,7 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
             </div>
 
             <span className="font-black text-[11px] pr-1 flex items-center gap-1.5">
-              <span>Radio Sanctuaire</span>
+              <span>Radio Souveraineté</span>
               <span className="text-[10px] font-bold opacity-80 hidden sm:inline">
                 • {currentPart.range} ({selectedPartIndex === 0 ? 'Toltèque' : selectedPartIndex === 1 ? 'Trauma' : selectedPartIndex === 2 ? 'Souveraineté' : selectedPartIndex === 3 ? 'Hermétisme' : 'Mystique'})
               </span>
@@ -1419,7 +1419,7 @@ export const PeacefulForest3D: React.FC<PeacefulForest3DProps> = ({
                   ? 'bg-[#15803D] text-white shadow-xs'
                   : 'hover:bg-[#DCFCE7] text-[#15803D]'
               }`}
-              title={isPodcastPlaying ? 'Mettre en pause la radio' : 'Lancer les podcasts et fréquences du sanctuaire'}
+              title={isPodcastPlaying ? 'Mettre en pause la radio' : 'Lancer les podcasts et fréquences pour reprendre sa souveraineté'}
             >
               {isPodcastPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </button>

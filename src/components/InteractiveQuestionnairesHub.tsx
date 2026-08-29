@@ -231,7 +231,7 @@ export const InteractiveQuestionnairesHub: React.FC<InteractiveQuestionnairesHub
           </div>
           <div>
             <div className="text-xs font-black text-[#0F172A]">Espace d'Évaluation & Prise de Conscience Sécurisé</div>
-            <div className="text-[11px] text-white font-medium hidden sm:block">
+            <div className="text-[11px] text-[#475569] font-medium hidden sm:block">
               Aucun résultat stigmatisant • Pédagogie bienveillante • Données chiffrées localement
             </div>
           </div>
@@ -266,7 +266,7 @@ export const InteractiveQuestionnairesHub: React.FC<InteractiveQuestionnairesHub
       <div className="bg-white p-3 rounded-3xl border-2 border-[#CBD5E1] shadow-2xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#E2E8F0]">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-white">
+            <span className="text-[11px] font-black uppercase tracking-wider text-[#0F172A]">
               Outils d'Élucidation & Reconstitution
             </span>
             <h2 className="text-lg sm:text-xl font-black text-[#0F172A] font-serif">
@@ -389,23 +389,23 @@ export const InteractiveQuestionnairesHub: React.FC<InteractiveQuestionnairesHub
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                  <span className="text-xs font-black uppercase tracking-wider text-[#0F172A] bg-transparent">
                     Outil Central International de Repérage
                   </span>
-                  <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-[#14532D] border border-[#86EFAC]">
+                  <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-transparent text-[#14532D] border border-[#86EFAC]">
                     Gradation Clinique
                   </span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-[#0F172A] mt-1 font-serif">
+                <h3 className="text-xl sm:text-2xl font-black text-[#0F172A] mt-1 font-serif bg-transparent">
                   Le Violentomètre des Relations Amoureuses
                 </h3>
-                <p className="text-xs sm:text-sm text-white font-medium mt-1">
+                <p className="text-xs sm:text-sm text-[#475569] font-medium mt-1 bg-transparent">
                   Cochez les situations qui correspondent à votre quotidien. Cet outil permet d'évaluer la sécurité et l'équilibre de votre couple.
                 </p>
               </div>
 
               {/* Zone Filter Tabs */}
-              <div className="flex flex-wrap gap-1.5 bg-[#F8FAFC] p-1.5 rounded-2xl border border-[#CBD5E1] self-start md:self-center">
+              <div className="flex flex-wrap gap-1.5 bg-transparent p-1.5 rounded-2xl border border-[#CBD5E1] self-start md:self-center">
                 <button
                   onClick={() => setViolentometreFilter('all')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
@@ -454,43 +454,43 @@ export const InteractiveQuestionnairesHub: React.FC<InteractiveQuestionnairesHub
                       : 'text-[#B91C1C] hover:bg-[#FEE2E2]'
                   }`}
                 >
-                  🔴 Danger Important
+                  🔴 Danger Mortel (911)
                 </button>
               </div>
             </div>
 
             {/* Visual Color Bar Legend */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-              <div className="p-3 rounded-2xl bg-[#F0FDF4] border-2 border-[#86EFAC]">
-                <div className="text-xs font-black text-[#166534] flex items-center gap-1.5">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 bg-transparent">
+              <div className="p-3 rounded-2xl bg-transparent border-2 border-[#86EFAC]">
+                <div className="text-xs font-black text-[#166534] flex items-center gap-1.5 bg-transparent">
                   <span className="w-3 h-3 rounded-full bg-[#15803D]" />
                   🟢 RELATION SAINE
                 </div>
-                <div className="text-[11px] text-[#14532D] font-bold mt-1">Profite • Respect & Confiance mutuelle</div>
+                <div className="text-[11px] text-[#14532D] font-bold mt-1 bg-transparent">Profite • Respect & Confiance mutuelle</div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#FFFBEB] border-2 border-[#FDE68A]">
-                <div className="text-xs font-black text-[#92400E] flex items-center gap-1.5">
+              <div className="p-3 rounded-2xl bg-transparent border-2 border-[#FDE68A]">
+                <div className="text-xs font-black text-[#92400E] flex items-center gap-1.5 bg-transparent">
                   <span className="w-3 h-3 rounded-full bg-[#D97706]" />
                   🟡 VIGILANCE
                 </div>
-                <div className="text-[11px] text-[#78350F] font-bold mt-1">Dis stop • Comportements préoccupants</div>
+                <div className="text-[11px] text-[#78350F] font-bold mt-1 bg-transparent">Dis stop • Comportements préoccupants</div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#FFF7ED] border-2 border-[#FED7AA]">
-                <div className="text-xs font-black text-[#9A3412] flex items-center gap-1.5">
+              <div className="p-3 rounded-2xl bg-transparent border-2 border-[#FED7AA]">
+                <div className="text-xs font-black text-[#9A3412] flex items-center gap-1.5 bg-transparent">
                   <span className="w-3 h-3 rounded-full bg-[#EA580C]" />
                   🟠 VIOLENCE & CONTRÔLE
                 </div>
-                <div className="text-[11px] text-[#7C2D12] font-bold mt-1">Protège-toi • Demande de l’aide</div>
+                <div className="text-[11px] text-[#7C2D12] font-bold mt-1 bg-transparent">Protège-toi • Demande de l’aide</div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#FEF2F2] border-2 border-[#FECACA]">
-                <div className="text-xs font-black text-[#991B1B] flex items-center gap-1.5">
+              <div className="p-3 rounded-2xl bg-transparent border-2 border-[#FECACA]">
+                <div className="text-xs font-black text-[#991B1B] flex items-center gap-1.5 bg-transparent">
                   <span className="w-3 h-3 rounded-full bg-[#DC2626] animate-pulse" />
-                  🔴 DANGER IMPORTANT
+                  🔴 DANGER MORTEL - 911
                 </div>
-                <div className="text-[11px] text-[#7F1D1D] font-bold mt-1">Danger de mort • Appelle le 3919 / 17 / SOS</div>
+                <div className="text-[11px] text-[#7F1D1D] font-bold mt-1 bg-transparent">Danger de mort • Appelle le 911 / SOS</div>
               </div>
             </div>
 
@@ -558,7 +558,7 @@ export const InteractiveQuestionnairesHub: React.FC<InteractiveQuestionnairesHub
                           )}
                         </div>
                         <p className="text-sm font-black text-[#0F172A] mt-1">{item.label}</p>
-                        <p className="text-xs text-white font-medium mt-0.5">{item.scientificNote}</p>
+                        <p className="text-xs text-[#475569] font-medium mt-0.5">{item.scientificNote}</p>
                       </div>
                     </div>
 

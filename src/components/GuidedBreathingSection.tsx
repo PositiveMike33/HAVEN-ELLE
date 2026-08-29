@@ -274,7 +274,7 @@ export const GuidedBreathingSection: React.FC<GuidedBreathingSectionProps> = ({ 
             </div>
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1F201C] flex items-center gap-2">
               <Activity className="w-7 h-7 text-[#385117]" />
-              Sanctuaire de Respiration Apaisante
+              Respiration & Reprise de Souveraineté Personnelle
             </h2>
             <p className="text-sm text-[#403E3A] font-medium mt-1 max-w-2xl">
               Des animations visuelles fluides et rythmées basées sur les neurosciences pour faire baisser le rythme cardiaque, dissiper la panique et restaurer la clarté intérieure en quelques respirations.

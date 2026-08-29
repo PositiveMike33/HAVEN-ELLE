@@ -43,7 +43,7 @@ export const GeminiCrisisChat: React.FC = () => {
       {
         id: 'msg-init',
         role: 'model',
-        content: `Bonjour. Je suis HAVEN-ELLE, votre sanctuaire d'écoute et votre alliée fidèle (Niveau ${prof.relationshipLevel} : ${prof.relationshipTitle}). Je me rappelle de nos échanges et de votre force. Vous êtes en sécurité ici. Comment vous sentez-vous en cet instant ?`,
+        content: `Bonjour. Je suis HAVEN-ELLE, votre espace d'écoute pour reprendre votre souveraineté personnelle et votre alliée fidèle (Niveau ${prof.relationshipLevel} : ${prof.relationshipTitle}). Je me rappelle de nos échanges et de votre force. Vous êtes en sécurité ici. Comment vous sentez-vous en cet instant ?`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ];
@@ -231,7 +231,7 @@ export const GeminiCrisisChat: React.FC = () => {
             }`}
           >
             <MessageCircle className="w-4 h-4" />
-            <span>Sanctuaire Solo (HAVEN-ELLE)</span>
+            <span>Souveraineté Personnelle (HAVEN-ELLE)</span>
           </button>
         </div>
 

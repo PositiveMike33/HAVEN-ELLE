@@ -79,7 +79,7 @@ export const TOLTEC_FLASHCARD_QUESTIONS: ToltecFlashcardItem[] = [
     agreementName: 'Que ta parole soit impeccable',
     agreementTag: 'Accord 1 • Verbe Aimant & Alchimie Intérieure',
     questionNumberLabel: 'Question 1 / 111 : Le Miroir du Verbe — Bénir ou Maudire',
-    questionContext: `Dans la tradition toltèque, ta parole est une baguette magique : chaque mot prononcé ou pensé est un ordre créateur envoyé à ton univers intérieur. Selon les enseignements hermétiques, ton esprit est la cause première de ta réalité (Loi du Mentalisme et Loi de Correspondance). Lorsque tu vis une injustice, utiliser des mots destructeurs contre toi ou contre l'autre revient à jeter une malédiction (male-dicere : mal dire) qui empoisonne ton propre sanctuaire. À l'inverse, choisir une parole impeccable revient à poser une bénédiction (bene-dicere : bien dire) qui élève immédiatement ta fréquence et transmute l'épreuve.`,
+    questionContext: `Dans la tradition toltèque, ta parole est une baguette magique : chaque mot prononcé ou pensé est un ordre créateur envoyé à ton univers intérieur. Selon les enseignements hermétiques, ton esprit est la cause première de ta réalité (Loi du Mentalisme et Loi de Correspondance). Lorsque tu vis une injustice, utiliser des mots destructeurs contre toi ou contre l'autre revient à jeter une malédiction (male-dicere : mal dire) qui empoisonne ta propre souveraineté personnelle. À l'inverse, choisir une parole impeccable revient à poser une bénédiction (bene-dicere : bien dire) qui élève immédiatement ta fréquence et transmute l'épreuve.`,
     scenarioSubtitle: "📌 La Mise en Situation Réelle",
     realWorldScenario: `Tu viens de subir un reproche injuste et blessant d'une personne proche, qui tente de te faire porter le chapeau pour ses propres erreurs et son instabilité émotionnelle. Ton cœur s'accélère, la colère monte, et ton mental veut immédiatement réagir.`,
     philosophicalFramework: {
@@ -100,7 +100,7 @@ export const TOLTEC_FLASHCARD_QUESTIONS: ToltecFlashcardItem[] = [
       hiddenPrinciple: "La Loi de Polarité et du Mentalisme (Le Kybalion) — Ce sur quoi tu portes ton verbe et ton attention devient le moule de ta réalité. Ne donne aucun pouvoir aux paroles de destruction.",
       groundingGesture: "Dès qu'une parole toxique t'est lancée, pose une main sur ton plexus ou ton cœur, respire lentement et répète intérieurement : « Ce poison ne m'appartient pas. Ma parole demeure mon bouclier et ma lumière. »"
     },
-    question: 'Quelle est la meilleure façon de formuler ta réponse pour créer une rétroaction positive, préserver ton énergie vitale et rester souveraine de ton sanctuaire intérieur ?',
+    question: 'Quelle est la meilleure façon de formuler ta réponse pour créer une rétroaction positive, préserver ton énergie vitale et reprendre ta souveraineté personnelle ?',
     options: [
       {
         id: 'A',
@@ -164,7 +164,7 @@ export const TOLTEC_FLASHCARD_QUESTIONS: ToltecFlashcardItem[] = [
         isResilientToltec: true,
         revealedTitle: '✨ Posture Toltèque Réussie : Le Bouclier d’Invulnérabilité du Cœur',
         revealedAnalysis: 'Ce que les autres projettent est le reflet de leur propre monde intérieur. En refusant de le prendre pour vous, vous devenez totalement immunisée contre la culpabilisation et la manipulation.',
-        somaticShiftPrompt: 'Visualisez un filtre doré entourant votre corps : les jugements extérieurs glissent sans jamais pénétrer votre sanctuaire.'
+        somaticShiftPrompt: 'Visualisez un filtre doré entourant votre corps : les jugements extérieurs glissent sans jamais altérer votre souveraineté personnelle.'
       },
       {
         id: 'C',
@@ -490,7 +490,7 @@ export const ToltecFlashcardQuestionnaire: React.FC<Props> = ({
                 </span>
               </div>
               <span className="text-[11px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-1 rounded-full font-bold shrink-0 hidden sm:inline-block">
-                Sanctuaire Haven-Elle
+                Souveraineté Haven-Elle
               </span>
             </div>
           )}

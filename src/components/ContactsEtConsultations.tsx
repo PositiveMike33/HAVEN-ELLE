@@ -13,6 +13,7 @@ interface ContactsEtConsultationsProps {
   onUpdateAppointments: (appointments: DiscreetAppointment[]) => void;
   requestedSubTab: 'contacts' | 'appointments';
   onSubTabChange: (subTab: 'contacts' | 'appointments') => void;
+  onOpenGmail?: (options?: { mode?: 'inbox' | 'compose' | 'sos' | 'dossier'; recipient?: string; subject?: string; body?: string }) => void;
 }
 
 export const ContactsEtConsultations: React.FC<ContactsEtConsultationsProps> = ({
@@ -23,7 +24,8 @@ export const ContactsEtConsultations: React.FC<ContactsEtConsultationsProps> = (
   appointments,
   onUpdateAppointments,
   requestedSubTab,
-  onSubTabChange
+  onSubTabChange,
+  onOpenGmail,
 }) => {
   return (
     <div className="space-y-4 animate-in fade-in zoom-in duration-300">
@@ -61,6 +63,7 @@ export const ContactsEtConsultations: React.FC<ContactsEtConsultationsProps> = (
             onUpdateContacts={onUpdateContacts}
             alerts={alerts}
             onAlertDispatched={onAlertDispatched}
+            onOpenGmail={onOpenGmail}
           />
         )}
         {requestedSubTab === 'appointments' && (

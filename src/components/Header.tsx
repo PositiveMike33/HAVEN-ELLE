@@ -25,7 +25,8 @@ import {
   BookOpen,
   Settings,
   Trophy,
-  Headphones
+  Headphones,
+  Mail
 } from 'lucide-react';
 import { QuickLocationShare } from './QuickLocationShare';
 import { UiOpacityControl } from './UiOpacityControl';
@@ -48,6 +49,7 @@ interface HeaderProps {
   isAuthenticated?: boolean;
   isSyncing?: boolean;
   onLogin?: () => void;
+  onOpenGmail?: () => void;
   resiliencePoints?: number;
 }
 
@@ -68,6 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
   isAuthenticated = false,
   isSyncing = false,
   onLogin,
+  onOpenGmail,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -154,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-2">
               <span className="font-bold text-lg tracking-tight text-[#0F172A] font-serif-natural">HAVEN-ELLE</span>
               <span className="text-[10px] bg-[#DCFCE7] text-[#14532D] font-extrabold px-2.5 py-0.5 rounded-full border border-[#86EFAC]">
-                Sanctuaire Sécurisé
+                Souveraineté Personnelle
               </span>
             </div>
             <p className="text-xs text-[#475569] font-medium hidden sm:block">Protection, Écoute & Réseau d'Alerte pour Femmes</p>
@@ -256,6 +259,26 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
           )}
+
+          {/* Gmail SOS Emergency Gateway Button */}
+          {onOpenGmail && (
+            <button
+              id="header-gmail-hub-btn"
+              onClick={onOpenGmail}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-2xs border-2 ${
+                isNightMode
+                  ? 'bg-[#1E293B] text-[#FCA5A5] border-[#EF4444] hover:bg-[#7F1D1D]/50'
+                  : 'bg-[#FEF2F2] text-[#DC2626] border-[#FCA5A5] hover:bg-[#FEE2E2]'
+              }`}
+              title="Alerte SOS Gmail : diffusion instantanée et silencieuse par courriel à vos contacts"
+            >
+              <Mail className="w-3.5 h-3.5 text-[#DC2626] animate-pulse" />
+              <span className="text-xs font-black text-[#DC2626]">
+                Gmail SOS
+              </span>
+            </button>
+          )}
+
           {/* Quick Geolocation Sharing Button */}
           <QuickLocationShare isNightMode={isNightMode} />
 
